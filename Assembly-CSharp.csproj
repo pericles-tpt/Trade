@@ -79,6 +79,7 @@
     <Compile Include="Assets\Scripts\Core\Locations\Suburb.cs" />
     <Compile Include="Assets\Scripts\Core\Locations\Territory.cs" />
     <Compile Include="Assets\Scripts\Core\Ship.cs" />
+    <Compile Include="Assets\Scripts\View\NodeCreator.cs" />
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>C:/Users/Pericles Telemachou/Documents/GitHub/Trade/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
     </Reference>

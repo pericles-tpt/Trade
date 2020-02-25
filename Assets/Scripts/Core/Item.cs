@@ -1,16 +1,16 @@
-﻿using System.exception;
+﻿using System;
 
 public class Item {
 
     public enum condition              { broken, poor, damaged, good, excellent, mint };
     private long      _IGProductNumber {get; set;}
     private long      _IGSerialNumber  {get; set;}
-    private item[]    _Components;
+    private Item[]    _Components;
     private condition _Condition       {get; set;}
-    private float     _Value           {get; set;} // Note: this value is hidden from the player
+    public float     _Value            {get; private set;} // Note: this value is hidden from the player
     private string    _Name            {get; set;}
 
-    public void Item(long pn, long sn, condition cond, string name, bool hasComponents, item[] components = null) {
+    public Item(long pn, long sn, condition cond, string name, bool hasComponents, Item[] components = null) {
         _IGProductNumber = pn;
         _IGSerialNumber  = sn;
         _Condition       = cond;
@@ -33,19 +33,20 @@ public class Item {
         // e.g. float inVal = searchDBValue(pn);
 
         // Ensuring value of item found using pn is round to 2dp
-        float inVal     = 10.20;
-        float outVal    = Math.round(val, 2);
+        float inVal     = 10.20f;
+        //float outVal    = Math.Round(inVal, 2);
 
         // Calculating condition multiplier for value of item
         float condMulti = CalculateCondMulti(c);
 
         // Finally multiply the outVal * condMulti to arrive at final return value
-        return outVal * condMulti;
+        return inVal * condMulti;
 
     }
 
     public float CalculateCondMulti (condition provided) {
-        return ((provided + 1) * 0.25);
+        //return (((int)provided + 1) * 0.25);
+        return 1f;
 
     }
 

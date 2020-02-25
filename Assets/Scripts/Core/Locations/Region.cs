@@ -1,16 +1,16 @@
 ﻿public class Region {
 
     private int      _Population {get; set;}
-    private entity[] _Members    {get;}
+    private Entity[] _Members    {get;}
 
-    public void Region() {
+    public Region() {
         _Population = 0;
         _Members    = null;
 
     }
 
-    public void CountPopulation(Entity[] members) {
-        return members.Length();
+    public int CountPopulation(Entity[] members) {
+        return members.Length;
 
     }
 
