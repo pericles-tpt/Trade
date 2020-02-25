@@ -1,0 +1,15 @@
+# MacOS Generated Files
+.DS_Store*
+._*
+.Spotlight-V100
+.Trashes
+[Tt]humbs.db
+
+# Blacklist
+/Library/Artifacts/*
+/Temp/*
+
+# Whitelist
+!.gitignore
+!/Assets/
+!/ProjectSettings/

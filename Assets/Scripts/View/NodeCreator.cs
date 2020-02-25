@@ -24,7 +24,7 @@ public class NodeCreator : MonoBehaviour
             else if (v.x + 100 > (res[0]/2 - 20))
                 newX = Random.Range(0, -100);
             else
-                newX = Random.Range(-100, 100);
+                newX = Random.Range(-100, 99);
 
             int signY;
             if (v.y - 100 < (-res[1] / 2 + 20))
