@@ -1,3 +1,4 @@
+ 15 lines (13 sloc) 172 Bytes
 # MacOS Generated Files
 .DS_Store*
 ._*
@@ -6,10 +7,13 @@
 [Tt]humbs.db
 
 # Blacklist
-/Library/Artifacts/*
+/Library/*
 /Temp/*
 
 # Whitelist
-!.gitignore
+!.git*
 !/Assets/
 !/ProjectSettings/
+!README.md
+!*.sln
+!*.csproj

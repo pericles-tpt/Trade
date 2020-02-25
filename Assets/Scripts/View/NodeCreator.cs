@@ -17,7 +17,7 @@ public class NodeCreator : MonoBehaviour
         for (int i = 0; i < planetNum; i++) {
             Instantiate(node, v, Quaternion.identity);
 
-            // Figure out the co-ordinate of the next point in the space
+            // Figure out the co-ordinate of the next point in the spac
             float newX, newY;
             if (v.x - 100 < (-res[0]/2 + 20))
                 newX = Random.Range(0, 100);
