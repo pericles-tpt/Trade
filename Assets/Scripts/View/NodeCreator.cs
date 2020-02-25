@@ -73,47 +73,6 @@ public class NodeCreator : MonoBehaviour
             v = new Vector3((originDist * 100 * xSign) / 125, (originDist * 100 * ySign) / 125, nodeDepth);
             Debug.Log("Node placed at: " + "x: " + (originDist * 100 * xSign) + ", y: " + originDist * 100 * ySign);
 
-
-            /*nodeCoords[i] = v;
-
-            // Find allowable "signs" for the relative x and y positions that will not go
-            // out of bounds of the game space
-            float newX, newY;
-            int[] signX, signY;
-            if (((v.x - 100) < (-res[0] / 2 + 20)) || ((v.x + 100) > (res[0] / 2 - 20)))
-            {
-                if ((v.x - 100) < (-res[0] / 2 + 20))
-                    signX = new int[2] { 0, 1 };
-                else
-                    signX = new int[2] { -1, 0 };
-            }
-            else
-                signX = new int[2] { -1, 1 };
-
-            if (((v.y - 100) < (-res[1] / 2 + 20)) || ((v.y + 100) > (res[1] / 2 - 20)))
-            {
-                if ((v.y - 100) < (-res[1] / 2 + 20))
-                    signY = new int[2] { 0, 1 };
-                else
-                    signY = new int[2] { -1, 0 };
-            }
-            else
-                signY = new int[2] { -1, 1 };
-
-            // I have n coordinates x, y and I want to find a position on the game space where a
-            // new point will be at least 100px away from all other points
-            for(int j = 0; j < nodeCoords.Length; j++)
-            {
-
-            }
-
-
-            oldX = v.x;
-            newY = Mathf.Sqrt(Mathf.Pow(100, 2) - (Mathf.Sqrt(Mathf.Abs(newX - oldX))));
-            */
-
-
-
         }
         Debug.Log(addHun + " " + addFif);
     }
