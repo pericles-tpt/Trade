@@ -124,10 +124,19 @@ public class NodeCreator : MonoBehaviour
             {
                 e = planetCoords[j];
 
-                if (!planetLines.ContainsKey(Tuple.Create(e, s)))
-                    DrawLine(s, e, c, ref planetLines, 0);
-                else
-                    Debug.Log("Eliminated one crossover");
+                if (i != j)
+                {
+                    if (!planetLines.ContainsKey(Tuple.Create(e, s)))
+                        DrawLine(s, e, c, ref planetLines, 0);
+
+                    else
+                        Debug.Log("Eliminated one crossover");
+
+                } else
+                {
+                    Debug.Log("Prevented node line to self");
+
+                }
 
             }
         }
@@ -137,8 +146,7 @@ public class NodeCreator : MonoBehaviour
     // ToDo: Come up with own DrawLine function
     void DrawLine(Vector3 start, Vector3 end, Color color, ref Dictionary<Tuple<Vector3, Vector3>, GameObject> planetLines, float duration = 0.2f)
     {
-        // Return if line would cross the origin
-        // Line is y = mx + b
+        // Return if line would cross the origin (a.k.a the sun)
         float m = (end.y - start.y) / (end.x - start.x);
         float b = (start.y - (start.x * m));
         if (b == (0))
