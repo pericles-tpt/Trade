@@ -132,7 +132,7 @@ GameObject:
   - component: {fileID: 504937303}
   - component: {fileID: 504937302}
   m_Layer: 0
-  m_Name: node
+  m_Name: planet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
