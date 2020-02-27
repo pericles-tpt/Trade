@@ -5,11 +5,13 @@ using UnityEngine;
 
 public class NodeCreator : MonoBehaviour
 {
+    public GameObject planet;
+
     // Start is called before the first frame update
     void Start()
     {
         // Generates between 4 and 6 planets
-        int planetNum = UnityEngine.Random.Range(4, 6);
+        int planetNum = UnityEngine.Random.Range(4, 5);
 
         // Stores all node positions for comparing a new node to previous node
         // positions to determine if two nodes are too close together
@@ -29,40 +31,40 @@ public class NodeCreator : MonoBehaviour
     // Place planets
     void GeneratePlanets(ref Vector3[] nodeCoords, int planetNum)
     {
+
         // Planet are all on the same depth level
         const int planetDepth = -10;
-
-
-
-        // Initial planet is places 100px away from the "sun"
-        GameObject planet = GameObject.Find("planet");
-        Vector3 v = new Vector3(100, 0, planetDepth);
+        Vector3 v;
 
         int addHun = 2;
         int addFif = 2;
-        float originDist;
+        float originDist = 1;
 
-        for (int i = 0; i < planetNum; i++)
+        for (int i = 0; i < (planetNum); i++)
         {
             // Instantiate and record planet coords at start of iteration
-            Instantiate(planet, v, Quaternion.identity);
-            nodeCoords[i] = v;
-            originDist = i + 2;
+            originDist += i;
 
             // START SECTION: Code in here tries to create random initial placement
             // of planets' wrt distance and x,y positioning
 
             // Adds an extra 100px or 50px between planets to add some irregularity
-            if (UnityEngine.Random.Range(0, 2) == 1 && addHun > 0)
+            // If on 1st iteration add an extra hundred to make it a realistic distance
+            // from sun.
+            if (((UnityEngine.Random.Range(0, 2) == 1) || (i == 0)) && (addHun > 0))
             {
                 addHun--;
                 originDist++;
             }
-
-            if (UnityEngine.Random.Range(0, 2) == 1 && addFif > 0)
+            else
             {
-                addFif--;
-                originDist += 0.5f;
+
+                if (UnityEngine.Random.Range(0, 2) == 1 && addFif > 0)
+                {
+                    addFif--;
+                    originDist += 0.5f;
+                }
+
             }
 
             // Choose whether to make initial x and y coordinates +,- or 0
@@ -104,21 +106,26 @@ public class NodeCreator : MonoBehaviour
             // END SECTION
 
             // Stores new planet position in v from previous section
-            v = new Vector3((originDist * 100 * xSign) / 125, (originDist * 100 * ySign) / 125, planetDepth);
+            v = new Vector3((originDist * 100 * xSign) / 250, (originDist * 100 * ySign) / 250, planetDepth);
+            Instantiate(planet, v, Quaternion.identity);
+            nodeCoords[i] = v;
             Debug.Log("Node placed at: " + "x: " + (originDist * 100 * xSign) + ", y: " + originDist * 100 * ySign);
 
         }
-        Debug.Log(addHun + " " + addFif);
+
+        foreach (Vector3 v3 in nodeCoords)
+        {
+            Debug.Log("nodeCoords list: " + v3.ToString());
+        }
     }
 
     void DrawTradeLines(ref Vector3[] planetCoords, ref Dictionary<Tuple<Vector3, Vector3>, GameObject> planetLines)
     {
         Vector3 s;
-        Color c = new Color(1, 1, 1);
+        Color c = new Color(0, 0, 0);
         for (int i = 0; i < planetCoords.Length; i++)
         {
             s = planetCoords[i];
-            Debug.Log(s.ToString());
             Vector3 e;
             for (int j = 0; j < planetCoords.Length; j++)
             {
@@ -127,8 +134,11 @@ public class NodeCreator : MonoBehaviour
                 if (i != j)
                 {
                     if (!planetLines.ContainsKey(Tuple.Create(e, s)))
+                    {
+                        Debug.Log("Drawn line from: " + s.ToString() + "to: " + e.ToString());
                         DrawLine(s, e, c, ref planetLines, 0);
 
+                    }
                     else
                         Debug.Log("Eliminated one crossover");
 
@@ -149,7 +159,7 @@ public class NodeCreator : MonoBehaviour
         // Return if line would cross the origin (a.k.a the sun)
         float m = (end.y - start.y) / (end.x - start.x);
         float b = (start.y - (start.x * m));
-        if (b == (0))
+        if ((b == (0)) && ((start.y < 0 && end.y > 0) || (start.y > 0 && end.y < 0)))
             return;
 
         GameObject myLine = new GameObject();
