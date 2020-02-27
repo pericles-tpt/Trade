@@ -11,7 +11,7 @@ public class NodeCreator : MonoBehaviour
     void Start()
     {
         // Generates between 4 and 6 planets
-        int planetNum = UnityEngine.Random.Range(4, 5);
+        int planetNum = UnityEngine.Random.Range(4, 6);
 
         // Stores all node positions for comparing a new node to previous node
         // positions to determine if two nodes are too close together
@@ -36,7 +36,7 @@ public class NodeCreator : MonoBehaviour
         const int planetDepth = -10;
         Vector3 v;
 
-        int addHun = 2;
+        int addHun = 1;
         int addFif = 2;
         float originDist = 1;
 
@@ -49,9 +49,9 @@ public class NodeCreator : MonoBehaviour
             // of planets' wrt distance and x,y positioning
 
             // Adds an extra 100px or 50px between planets to add some irregularity
-            // If on 1st iteration add an extra hundred to make it a realistic distance
-            // from sun.
-            if (((UnityEngine.Random.Range(0, 2) == 1) || (i == 0)) && (addHun > 0))
+            // REM: If on 1st iteration add an extra hundred to make it a realistic distance
+            // from sun. Taken out as planets that are generated very close to sun can be molten
+            if (((UnityEngine.Random.Range(0, 2) == 1) /*|| (i == 0)*/) && (addHun > 0))
             {
                 addHun--;
                 originDist++;
