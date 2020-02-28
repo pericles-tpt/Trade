@@ -34,7 +34,7 @@ public class NodeCreator : MonoBehaviour
     {
         if (fCount % 60 == 0)
         {
-            RegeneratePlanets(ref planetCoords, planetNum);
+            MovePlanets(ref planetCoords, planetNum);
             DrawTradeLines(ref planetCoords, ref planetLines, true);
             fsCount++;
         }
@@ -200,7 +200,7 @@ public class NodeCreator : MonoBehaviour
         planetLines.Add(Tuple.Create(start, end), myLine);
     }
 
-    void RegeneratePlanets(ref Vector3[] nodeCoords, int planetNum)
+    void MovePlanets(ref Vector3[] nodeCoords, int planetNum)
     {
         // 1 unit from the sun is 100 day orbit
         int i = 0;
@@ -246,14 +246,12 @@ public class NodeCreator : MonoBehaviour
                 nextY = (-v.x * Mathf.Sin(orbitSectorAngleRadians)) + (v.y * Mathf.Cos(orbitSectorAngleRadians));
             }
 
-            // Destroy old planet
-            Destroy(planetObjects[i]);
-
             // Create new v
             Vector3 v3 = new Vector3(nextX, nextY, -10);
 
-            GameObject go = Instantiate(planet, v3, Quaternion.identity);
-            planetObjects[i] = go;
+            // Destroy old planet
+            planetObjects[i].transform.position = v3;
+
             nodeCoords[i] = v3;
             i++;
 
