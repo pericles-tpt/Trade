@@ -6,6 +6,12 @@ using UnityEngine;
 public class NodeCreator : MonoBehaviour
 {
     public GameObject planet;
+    public int fCount = 0;
+    public int fsCount = 0;
+    public int planetNum;
+    public Vector3[] planetCoords;
+    public GameObject[] planetObjects;
+    public Dictionary<Tuple<Vector3, Vector3>, GameObject> planetLines;
 
     // Start is called before the first frame update
     void Start()
@@ -15,17 +21,24 @@ public class NodeCreator : MonoBehaviour
 
         // Stores all node positions for comparing a new node to previous node
         // positions to determine if two nodes are too close together
-        Vector3[] planetCoords = new Vector3[planetNum];
-        var planetLines = new Dictionary<Tuple<Vector3, Vector3>, GameObject>();
+        planetCoords = new Vector3[planetNum];
+        planetObjects = new GameObject[planetNum];
+        planetLines = new Dictionary<Tuple<Vector3, Vector3>, GameObject>();
 
         GeneratePlanets(ref planetCoords, planetNum);
-        DrawTradeLines(ref planetCoords, ref planetLines);
+        DrawTradeLines(ref planetCoords, ref planetLines, false);
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (fCount % 60 == 0)
+        {
+            RegeneratePlanets(ref planetCoords, planetNum);
+            DrawTradeLines(ref planetCoords, ref planetLines, true);
+            fsCount++;
+        }
+        fCount++;
     }
 
     // Place planets
@@ -107,7 +120,8 @@ public class NodeCreator : MonoBehaviour
 
             // Stores new planet position in v from previous section
             v = new Vector3((originDist * 100 * xSign) / 250, (originDist * 100 * ySign) / 250, planetDepth);
-            Instantiate(planet, v, Quaternion.identity);
+            GameObject go = Instantiate(planet, v, Quaternion.identity);
+            planetObjects[i] = go;
             nodeCoords[i] = v;
             Debug.Log("Node placed at: " + "x: " + (originDist * 100 * xSign) + ", y: " + originDist * 100 * ySign);
 
@@ -119,19 +133,28 @@ public class NodeCreator : MonoBehaviour
         }
     }
 
-    void DrawTradeLines(ref Vector3[] planetCoords, ref Dictionary<Tuple<Vector3, Vector3>, GameObject> planetLines)
+    void DrawTradeLines(ref Vector3[] planetCoords, ref Dictionary<Tuple<Vector3, Vector3>, GameObject> planetLines, bool deleteOld)
     {
         Vector3 s;
         Color c = new Color(0, 0, 0);
-        for (int i = 0; i < planetCoords.Length; i++)
-        {
-            s = planetCoords[i];
-            Vector3 e;
-            for (int j = 0; j < planetCoords.Length; j++)
-            {
-                e = planetCoords[j];
+        int dl = 0;
 
-                if (i != j)
+        if (deleteOld)
+        {
+            foreach (KeyValuePair<Tuple<Vector3, Vector3>, GameObject> i in planetLines)
+                Destroy(i.Value);
+            planetLines.Clear();
+        }
+
+        for (int j = 0; j < planetCoords.Length; j++)
+        {
+            s = planetCoords[j];
+            Vector3 e;
+            for (int k = 0; k < planetCoords.Length; k++)
+            {
+                e = planetCoords[k];
+
+                if (j != k)
                 {
                     if (!planetLines.ContainsKey(Tuple.Create(e, s)))
                     {
@@ -150,6 +173,8 @@ public class NodeCreator : MonoBehaviour
 
             }
         }
+
+        Debug.Log("Drew " + dl + " lines");
     }
 
     // CREDIT (paranoidray): https://answers.unity.com/questions/8338/how-to-draw-a-line-using-script.html
@@ -159,7 +184,7 @@ public class NodeCreator : MonoBehaviour
         // Return if line would cross the origin (a.k.a the sun)
         float m = (end.y - start.y) / (end.x - start.x);
         float b = (start.y - (start.x * m));
-        if ((b == (0)) && ((start.y < 0 && end.y > 0) || (start.y > 0 && end.y < 0)))
+        if ((b <= (1.4) && b >= (-1.4)) && ((start.y <= 0 && end.y >= 0) || (start.y >= 0 && end.y <= 0)))
             return;
 
         GameObject myLine = new GameObject();
@@ -167,9 +192,71 @@ public class NodeCreator : MonoBehaviour
         myLine.AddComponent<LineRenderer>();
         LineRenderer lr = myLine.GetComponent<LineRenderer>();
         lr.startColor = color;
+        lr.endColor = color;
         lr.startWidth = 0.1f;
+        lr.endWidth = 0.1f;
         lr.SetPosition(0, start);
         lr.SetPosition(1, end);
         planetLines.Add(Tuple.Create(start, end), myLine);
+    }
+
+    void RegeneratePlanets(ref Vector3[] nodeCoords, int planetNum)
+    {
+        // 1 unit from the sun is 100 day orbit
+        int i = 0;
+
+        foreach (Vector3 v in nodeCoords)
+        {
+            // Just calculate distance from origin (or radius of orbit)
+            float radius;
+            float orbitInc;
+            float orbitCirc;
+            if (v.x == 0)
+            {
+                radius = v.y;
+
+            }
+            else if (v.y == 0)
+            {
+                radius = v.x;
+
+            }
+            else
+            {
+                radius = Mathf.Sqrt(Mathf.Pow(v.x, 2) + Mathf.Pow(v.y, 2));
+                Debug.Log("Radius is: " + radius);
+
+            }
+
+            orbitInc = radius * 100;
+            orbitCirc = 2 * Mathf.PI * radius;
+
+            float orbitSectorAngle = (360 / orbitInc);
+            float orbitSectorAngleRadians = orbitSectorAngle * Mathf.Deg2Rad;
+            float nextX, nextY;
+
+            if (i == 2)
+            {
+                nextX = (v.x * Mathf.Cos(-orbitSectorAngleRadians)) + (v.y * Mathf.Sin(-orbitSectorAngleRadians));
+                nextY = (-v.x * Mathf.Sin(-orbitSectorAngleRadians)) + (v.y * Mathf.Cos(-orbitSectorAngleRadians));
+
+            } else
+            {
+                nextX = (v.x * Mathf.Cos(orbitSectorAngleRadians)) + (v.y * Mathf.Sin(orbitSectorAngleRadians));
+                nextY = (-v.x * Mathf.Sin(orbitSectorAngleRadians)) + (v.y * Mathf.Cos(orbitSectorAngleRadians));
+            }
+
+            // Destroy old planet
+            Destroy(planetObjects[i]);
+
+            // Create new v
+            Vector3 v3 = new Vector3(nextX, nextY, -10);
+
+            GameObject go = Instantiate(planet, v3, Quaternion.identity);
+            planetObjects[i] = go;
+            nodeCoords[i] = v3;
+            i++;
+
+        }
     }
 }
