@@ -6,9 +6,11 @@ using UnityEngine;
 public class NodeCreator : MonoBehaviour
 {
     public GameObject planet;
+    public GameObject player;
     public int fCount = 0;
     public int fsCount = 0;
     public int planetNum;
+    public Ship initial;
     public Vector3[] planetCoords;
     public GameObject[] planetObjects;
     public Dictionary<Tuple<Vector3, Vector3>, GameObject> planetLines;
@@ -26,23 +28,25 @@ public class NodeCreator : MonoBehaviour
         planetLines = new Dictionary<Tuple<Vector3, Vector3>, GameObject>();
 
         GeneratePlanets(ref planetCoords, planetNum);
-        DrawTradeLines(ref planetCoords, ref planetLines, false);
+
+        Instantiate(player, new Vector3(100, 100, 100), Quaternion.identity);
+        //DrawTradeLines(ref planetCoords, ref planetLines, false);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (fCount % 60 == 0)
-        {
-            MovePlanets(ref planetCoords, planetNum);
-            DrawTradeLines(ref planetCoords, ref planetLines, true);
-            fsCount++;
-        }
-        fCount++;
+    }
+
+    public void IncrementOrbits()
+    {
+        MovePlanets(ref planetCoords, planetNum);
+        //DrawTradeLines(ref planetCoords, ref planetLines, true);
+
     }
 
     // Place planets
-    void GeneratePlanets(ref Vector3[] nodeCoords, int planetNum)
+    private void GeneratePlanets(ref Vector3[] nodeCoords, int planetNum)
     {
 
         // Planet are all on the same depth level
@@ -133,7 +137,7 @@ public class NodeCreator : MonoBehaviour
         }
     }
 
-    void DrawTradeLines(ref Vector3[] planetCoords, ref Dictionary<Tuple<Vector3, Vector3>, GameObject> planetLines, bool deleteOld)
+    private void DrawTradeLines(ref Vector3[] planetCoords, ref Dictionary<Tuple<Vector3, Vector3>, GameObject> planetLines, bool deleteOld)
     {
         Vector3 s;
         Color c = new Color(0, 0, 0);
@@ -141,9 +145,7 @@ public class NodeCreator : MonoBehaviour
 
         if (deleteOld)
         {
-            foreach (KeyValuePair<Tuple<Vector3, Vector3>, GameObject> i in planetLines)
-                Destroy(i.Value);
-            planetLines.Clear();
+            DestroyAllTradeLines();
         }
 
         for (int j = 0; j < planetCoords.Length; j++)
@@ -177,14 +179,54 @@ public class NodeCreator : MonoBehaviour
         Debug.Log("Drew " + dl + " lines");
     }
 
+    public void DrawTradeLines(GameObject findPlanet)
+    {
+        Vector3 s;
+        Color c = new Color(0, 0, 0);
+        int dl = 0;
+
+        DestroyAllTradeLines();
+
+        int selectedIndex = 0;
+        for (int i = 0; i < planetObjects.Length; i++)
+            if (planetObjects[i] == findPlanet)
+                selectedIndex = i;
+
+        s = planetCoords[selectedIndex];
+        Vector3 e;
+        for (int k = 0; k < planetCoords.Length; k++)
+        {
+            e = planetCoords[k];
+
+            if (selectedIndex != k)
+            {
+                if (!planetLines.ContainsKey(Tuple.Create(e, s)))
+                {
+                    Debug.Log("Drawn line from: " + s.ToString() + "to: " + e.ToString());
+                    DrawLine(s, e, c, ref planetLines, 0);
+
+                }
+                else
+                    Debug.Log("Eliminated one crossover");
+
+            }
+            else
+            {
+                Debug.Log("Prevented node line to self");
+
+            }
+
+        }
+
+        Debug.Log("Drew " + dl + " lines");
+    }
+
     // CREDIT (paranoidray): https://answers.unity.com/questions/8338/how-to-draw-a-line-using-script.html
     // ToDo: Come up with own DrawLine function
-    void DrawLine(Vector3 start, Vector3 end, Color color, ref Dictionary<Tuple<Vector3, Vector3>, GameObject> planetLines, float duration = 0.2f)
+    private void DrawLine(Vector3 start, Vector3 end, Color color, ref Dictionary<Tuple<Vector3, Vector3>, GameObject> planetLines, float duration = 0.2f)
     {
         // Return if line would cross the origin (a.k.a the sun)
-        float m = (end.y - start.y) / (end.x - start.x);
-        float b = (start.y - (start.x * m));
-        if ((b <= (1.4) && b >= (-1.4)) && ((start.y <= 0 && end.y >= 0) || (start.y >= 0 && end.y <= 0)))
+        if (LineIntersectsSun(start, end))
             return;
 
         GameObject myLine = new GameObject();
@@ -200,7 +242,7 @@ public class NodeCreator : MonoBehaviour
         planetLines.Add(Tuple.Create(start, end), myLine);
     }
 
-    void MovePlanets(ref Vector3[] nodeCoords, int planetNum)
+    private void MovePlanets(ref Vector3[] nodeCoords, int planetNum)
     {
         // 1 unit from the sun is 100 day orbit
         int i = 0;
@@ -256,5 +298,46 @@ public class NodeCreator : MonoBehaviour
             i++;
 
         }
+    }
+
+    public void DestroyAllTradeLines()
+    {
+        foreach (KeyValuePair<Tuple<Vector3, Vector3>, GameObject> i in planetLines)
+            Destroy(i.Value);
+        planetLines.Clear();
+    }
+
+    private bool LineIntersectsSun(Vector3 start, Vector3 end)
+    {
+        float m = (end.y - start.y) / (end.x - end.y);
+        bool ret = true;
+
+        if (m > 0) {
+            if ((start.y > 0) || (start.y < 0 && end.y < 0))
+                ret = false;
+
+        }
+
+        else if (m < 0)
+        {
+            if (start.y < 0)
+                ret = false;
+
+        }
+
+        else
+        {
+            if (((end.x > 0) && (start.x > 0)) || ((end.x < 0) && (start.x < 0)))
+                ret = false;
+
+        }
+
+        return ret;
+    }
+
+    public Vector3 InstantiateFirstShip(int planetIndex)
+    {
+        return planetCoords[planetIndex];
+
     }
 }
