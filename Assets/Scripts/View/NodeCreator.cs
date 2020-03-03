@@ -15,6 +15,10 @@ public class NodeCreator : MonoBehaviour
     public GameObject[] planetObjects;
     public Dictionary<Tuple<Vector3, Vector3>, GameObject> planetLines;
 
+    public Sprite Earth;
+    public Sprite Molten;
+    public Sprite Water;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -123,8 +127,27 @@ public class NodeCreator : MonoBehaviour
             // END SECTION
 
             // Stores new planet position in v from previous section
+
             v = new Vector3((originDist * 100 * xSign) / 250, (originDist * 100 * ySign) / 250, planetDepth);
             GameObject go = Instantiate(planet, v, Quaternion.identity);
+
+            SpriteRenderer sr = new SpriteRenderer();
+            if (i == 1)
+            {
+                sr.sprite = Molten;
+                go.GetComponent<SpriteRenderer>().sprite = sr.sprite;
+            }
+            else if (i == 2)
+            {
+                sr.sprite = Earth;
+                go.GetComponent<SpriteRenderer>().sprite = sr.sprite;
+            }
+            else if (i == 3)
+            {
+                sr.sprite = Water;
+                go.GetComponent<SpriteRenderer>().sprite = sr.sprite;
+            }
+
             planetObjects[i] = go;
             nodeCoords[i] = v;
             Debug.Log("Node placed at: " + "x: " + (originDist * 100 * xSign) + ", y: " + originDist * 100 * ySign);
