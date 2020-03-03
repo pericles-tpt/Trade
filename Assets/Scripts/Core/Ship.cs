@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Ship {
+public class Ship : Item {
 
     public InvGrid    _inventory     { get; private set; }
     public int        _fuelCurrent   { get; private set; }
@@ -12,8 +12,12 @@ public class Ship {
     public FuelType   _fuelType      { get; set; }
     public GameObject _gObject       { get; private set; }
     public GameObject ship;
+
+
+
+
     // For now a new instance of a ship can always start off with a full fuel tank
-    public Ship( int fuelCapacity, int igx, int igy, GameObject ship, int currentPlanet, FuelType ft = FuelType.ok) {
+    public Ship(itemProperties ip, int fuelCapacity, int igx, int igy, GameObject ship, int currentPlanet, FuelType ft = FuelType.ok) : base(ip.pn, ip.sn, ip.cond, ip.name, ip.hasComponents, ip.components) {
         _fuelCapacity = fuelCapacity;
         _fuelCurrent = _fuelCapacity;
         _fuelType = ft;
