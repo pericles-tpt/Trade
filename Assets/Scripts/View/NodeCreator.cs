@@ -131,21 +131,20 @@ public class NodeCreator : MonoBehaviour
             v = new Vector3((originDist * 100 * xSign) / 250, (originDist * 100 * ySign) / 250, planetDepth);
             GameObject go = Instantiate(planet, v, Quaternion.identity);
 
-            SpriteRenderer sr = new SpriteRenderer();
             if (i == 1)
             {
-                sr.sprite = Molten;
-                go.GetComponent<SpriteRenderer>().sprite = sr.sprite;
+                go.GetComponent<SpriteRenderer>().sprite = Molten;
+
             }
             else if (i == 2)
             {
-                sr.sprite = Earth;
-                go.GetComponent<SpriteRenderer>().sprite = sr.sprite;
+                go.GetComponent<SpriteRenderer>().sprite = Earth;
+
             }
             else if (i == 3)
             {
-                sr.sprite = Water;
-                go.GetComponent<SpriteRenderer>().sprite = sr.sprite;
+                go.GetComponent<SpriteRenderer>().sprite = Water;
+
             }
 
             planetObjects[i] = go;
@@ -184,7 +183,7 @@ public class NodeCreator : MonoBehaviour
                     if (!planetLines.ContainsKey(Tuple.Create(e, s)))
                     {
                         Debug.Log("Drawn line from: " + s.ToString() + "to: " + e.ToString());
-                        DrawLine(s, e, c, ref planetLines, 0);
+                        DrawLine(s, e, ref planetLines, 0);
 
                     }
                     else
@@ -223,14 +222,15 @@ public class NodeCreator : MonoBehaviour
 
             if (selectedIndex != k)
             {
+                Debug.Log("Drawn line from: " + s.ToString() + "to: " + e.ToString());
+                DrawLine(s, e, ref planetLines, 0);
+
+                /* NOT RELEVANT ON A PLANET TO PLANET BASIS
                 if (!planetLines.ContainsKey(Tuple.Create(e, s)))
                 {
-                    Debug.Log("Drawn line from: " + s.ToString() + "to: " + e.ToString());
-                    DrawLine(s, e, c, ref planetLines, 0);
-
                 }
                 else
-                    Debug.Log("Eliminated one crossover");
+                    Debug.Log("Eliminated one crossover"); */
 
             }
             else
@@ -246,7 +246,7 @@ public class NodeCreator : MonoBehaviour
 
     // CREDIT (paranoidray): https://answers.unity.com/questions/8338/how-to-draw-a-line-using-script.html
     // ToDo: Come up with own DrawLine function
-    private void DrawLine(Vector3 start, Vector3 end, Color color, ref Dictionary<Tuple<Vector3, Vector3>, GameObject> planetLines, float duration = 0.2f)
+    private void DrawLine(Vector3 start, Vector3 end, ref Dictionary<Tuple<Vector3, Vector3>, GameObject> planetLines, float duration = 0.2f)
     {
         // Return if line would cross the origin (a.k.a the sun)
         if (LineIntersectsSun(start, end))
@@ -256,12 +256,13 @@ public class NodeCreator : MonoBehaviour
         myLine.transform.position = start;
         myLine.AddComponent<LineRenderer>();
         LineRenderer lr = myLine.GetComponent<LineRenderer>();
-        lr.startColor = color;
-        lr.endColor = color;
-        lr.startWidth = 0.1f;
-        lr.endWidth = 0.1f;
+        lr.SetColors(Color.white, Color.white);
+        lr.SetWidth(0.1f, 0.1f);
         lr.SetPosition(0, start);
         lr.SetPosition(1, end);
+        Material whiteDiffuse = new Material(Shader.Find("Unlit/Texture"));
+        lr.material = whiteDiffuse;
+
         planetLines.Add(Tuple.Create(start, end), myLine);
     }
 
@@ -334,6 +335,8 @@ public class NodeCreator : MonoBehaviour
     {
         float m = (end.y - start.y) / (end.x - end.y);
         bool ret = true;
+
+        int sunRadius = 100 / 40;
 
         if (m > 0) {
             if ((start.y > 0) || (start.y < 0 && end.y < 0))
