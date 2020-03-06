@@ -3,12 +3,12 @@
 public class Item {
 
     public enum condition              { broken, poor, damaged, good, excellent, mint };
-    public long      _IGProductNumber {get; set;}
+    public long       _IGProductNumber {get; set;}
     private long      _IGSerialNumber  {get; set;}
     private Item[]    _Components;
     private condition _Condition       {get; set;}
-    public float      _Value            {get; private set;} // Note: this value is hidden from the player
-    public string    _Name            {get; private set;}
+    public float      _Value           {get; private set;} // Note: this value is hidden from the player
+    public string     _Name            {get; private set;}
 
     public struct itemProperties
     {

@@ -79,11 +79,12 @@
     <Compile Include="Assets\Scripts\Core\Locations\Suburb.cs" />
     <Compile Include="Assets\Scripts\Core\Locations\Territory.cs" />
     <Compile Include="Assets\Scripts\Core\Ship.cs" />
-    <Compile Include="Assets\Scripts\IncDayText.cs" />
-    <Compile Include="Assets\Scripts\View\EndTurn.cs" />
-    <Compile Include="Assets\Scripts\View\NodeCreator.cs" />
-    <Compile Include="Assets\Scripts\View\PlanetBehaviour.cs" />
+    <Compile Include="Assets\Scripts\View\GalaxyGenerator.cs" />
+    <Compile Include="Assets\Scripts\View\GameObjects\PlanetBehaviour.cs" />
     <Compile Include="Assets\Scripts\View\Player.cs" />
+    <Compile Include="Assets\Scripts\View\UI\Buttons\EndTurnBehaviour.cs" />
+    <Compile Include="Assets\Scripts\View\UI\Panels\PlanetPanelBehaviour.cs" />
+    <Compile Include="Assets\Scripts\View\UI\Text\DayTextBehaviour.cs" />
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>/Users/periclestelemachou/Documents/GitHub/Trade/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
     </Reference>

@@ -30,6 +30,7 @@ public class Ship : Item {
     public void UpdateShipPosition (Vector3 newPosition)
     {
         _gObject.transform.position = newPosition;
+
     }
 
     public enum FuelType { awful, bad, ok, good, great }
