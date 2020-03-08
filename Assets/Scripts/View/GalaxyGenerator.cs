@@ -12,7 +12,8 @@ public class GalaxyGenerator : MonoBehaviour
     public int planetNum;
     public Ship initial;
     public Vector3[] planetCoords;
-    public GameObject[] planetObjects;
+    public Planet[] planets;
+    public string[] planetNames;
     public Dictionary<Tuple<Vector3, Vector3>, GameObject> planetLines;
 
     public Sprite Earth;
@@ -28,7 +29,8 @@ public class GalaxyGenerator : MonoBehaviour
         // Stores all node positions for comparing a new node to previous node
         // positions to determine if two nodes are too close together
         planetCoords = new Vector3[planetNum];
-        planetObjects = new GameObject[planetNum];
+        planetNames = Planet.GimmeSomeNames(planetNum);
+        planets = new Planet[planetNum];
         planetLines = new Dictionary<Tuple<Vector3, Vector3>, GameObject>();
 
         GeneratePlanets(ref planetCoords, planetNum);
@@ -142,7 +144,32 @@ public class GalaxyGenerator : MonoBehaviour
 
             }
 
-            planetObjects[i] = go;
+            Planet.PlanetType pt;
+            int ptChoice;
+            if (originDist <= 1.5)
+                pt = Planet.PlanetType.volcanic;
+            else if (originDist <= 3) {
+                ptChoice = UnityEngine.Random.Range(1, 4);
+                if (ptChoice == 1)
+                    pt = Planet.PlanetType.arid;
+                else if (ptChoice == 2)
+                    pt = Planet.PlanetType.ideal;
+                else
+                    pt = Planet.PlanetType.oceanic;
+            } else
+            {
+                ptChoice = UnityEngine.Random.Range(1, 2);
+                if (ptChoice == 1)
+                    pt = Planet.PlanetType.ice;
+                else
+                {
+                    pt = Planet.PlanetType.gas;
+                }
+            }
+
+
+
+            Planet p = new Planet(planetNames[i], pt, go);
             nodeCoords[i] = v;
             Debug.Log("Node placed at: " + "x: " + (originDist * 100 * xSign) + ", y: " + originDist * 100 * ySign);
 
@@ -205,8 +232,8 @@ public class GalaxyGenerator : MonoBehaviour
         DestroyAllTradeLines();
 
         int selectedIndex = 0;
-        for (int i = 0; i < planetObjects.Length; i++)
-            if (planetObjects[i] == findPlanet)
+        for (int i = 0; i < planets.Length; i++)
+            if (planets[i]._GameObject == findPlanet)
                 selectedIndex = i;
 
         s = planetCoords[selectedIndex];
@@ -311,7 +338,7 @@ public class GalaxyGenerator : MonoBehaviour
             Vector3 v3 = new Vector3(nextX, nextY, -10);
 
             // Destroy old planet
-            planetObjects[i].transform.position = v3;
+            planets[i]._GameObject.transform.position = v3;
 
             nodeCoords[i] = v3;
             i++;
