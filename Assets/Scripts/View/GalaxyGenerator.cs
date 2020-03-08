@@ -7,69 +7,61 @@ public class GalaxyGenerator : MonoBehaviour
 {
     public GameObject planet;
     public GameObject player;
-    public int fCount = 0;
-    public int fsCount = 0;
-    public int planetNum;
-    public Ship initial;
-    public Vector3[] planetCoords;
-    public Planet[] planets;
-    public string[] planetNames;
-    public Dictionary<Tuple<Vector3, Vector3>, GameObject> planetLines;
 
     public Sprite Earth;
     public Sprite Molten;
     public Sprite Water;
 
+    public const int planetDepth = -10;
+    public int planetNum;
+
+    public Planet[] planets;
+    public string[] planetNames;
+    public Dictionary<Tuple<Vector3, Vector3>, GameObject> planetLines;
+
+
     // Start is called before the first frame update
     void Start()
     {
-        // Generates between 4 and 6 planets
+        // Chooses between 4 and 5 (inclusive) planets to generate
         int planetNum = UnityEngine.Random.Range(4, 6);
 
         // Stores all node positions for comparing a new node to previous node
         // positions to determine if two nodes are too close together
-        planetCoords = new Vector3[planetNum];
+        planetLines = new Dictionary<Tuple<Vector3, Vector3>, GameObject>();
         planetNames = Planet.GimmeSomeNames(planetNum);
         planets = new Planet[planetNum];
-        planetLines = new Dictionary<Tuple<Vector3, Vector3>, GameObject>();
 
-        GeneratePlanets(ref planetCoords, planetNum);
+        GeneratePlanets(planetNum);
 
+        // Create the player instance
         Instantiate(player, new Vector3(100, 100, 100), Quaternion.identity);
-        //DrawTradeLines(ref planetCoords, ref planetLines, false);
     }
 
     public void IncrementOrbits()
     {
-        MovePlanets(ref planetCoords, planetNum);
+        MovePlanets(planetNum);
         //DrawTradeLines(ref planetCoords, ref planetLines, true);
 
     }
 
     // Place planets
-    private void GeneratePlanets(ref Vector3[] nodeCoords, int planetNum)
+    private void GeneratePlanets(int planetNum)
     {
 
         // Planet are all on the same depth level
-        const int planetDepth = -10;
         Vector3 v;
-
         int addHun = 1;
         int addFif = 2;
         float originDist = 1;
 
         for (int i = 0; i < (planetNum); i++)
         {
-            // Instantiate and record planet coords at start of iteration
+            // Increment base distance of planet from origin (sun)
             originDist += i;
 
-            // START SECTION: Code in here tries to create random initial placement
-            // of planets' wrt distance and x,y positioning
-
-            // Adds an extra 100px or 50px between planets to add some irregularity
-            // REM: If on 1st iteration add an extra hundred to make it a realistic distance
-            // from sun. Taken out as planets that are generated very close to sun can be molten
-            if (((UnityEngine.Random.Range(0, 2) == 1) /*|| (i == 0)*/) && (addHun > 0))
+            // Decide whether to add 100 or 50 pixels onto distance from origin
+            if ((UnityEngine.Random.Range(0, 2) == 1) && (addHun > 0))
             {
                 addHun--;
                 originDist++;
@@ -100,10 +92,11 @@ public class GalaxyGenerator : MonoBehaviour
                 // Y can be -, + or 0
                 ySign = UnityEngine.Random.Range(-1, 2);
 
-            // This should move nodes that are in-line on the same axis away from
-            // each other if they're too close
-            foreach (Vector3 v3 in nodeCoords)
+            // FIX: This should move nodes that are in-line on the same axis
+            // away from each other if they're too close
+            foreach (Planet p in planets)
             {
+                Vector3 v3 = p._GameObject.transform.position;
                 int sign = 0;
                 while (sign == 0)
                     sign = UnityEngine.Random.Range(-1, 1);
@@ -124,64 +117,14 @@ public class GalaxyGenerator : MonoBehaviour
             // END SECTION
 
             // Stores new planet position in v from previous section
-
             v = new Vector3((originDist * 100 * xSign) / 250, (originDist * 100 * ySign) / 250, planetDepth);
-            GameObject go = Instantiate(planet, v, Quaternion.identity);
-
-            if (i == 1)
-            {
-                go.GetComponent<SpriteRenderer>().sprite = Molten;
-
-            }
-            else if (i == 2)
-            {
-                go.GetComponent<SpriteRenderer>().sprite = Earth;
-
-            }
-            else if (i == 3)
-            {
-                go.GetComponent<SpriteRenderer>().sprite = Water;
-
-            }
-
-            Planet.PlanetType pt;
-            int ptChoice;
-            if (originDist <= 1.5)
-                pt = Planet.PlanetType.volcanic;
-            else if (originDist <= 3) {
-                ptChoice = UnityEngine.Random.Range(1, 4);
-                if (ptChoice == 1)
-                    pt = Planet.PlanetType.arid;
-                else if (ptChoice == 2)
-                    pt = Planet.PlanetType.ideal;
-                else
-                    pt = Planet.PlanetType.oceanic;
-            } else
-            {
-                ptChoice = UnityEngine.Random.Range(1, 2);
-                if (ptChoice == 1)
-                    pt = Planet.PlanetType.ice;
-                else
-                {
-                    pt = Planet.PlanetType.gas;
-                }
-            }
-
-
-
-            Planet p = new Planet(planetNames[i], pt, go);
-            nodeCoords[i] = v;
-            Debug.Log("Node placed at: " + "x: " + (originDist * 100 * xSign) + ", y: " + originDist * 100 * ySign);
+            InstantiatePlanet(v, i, originDist);
 
         }
 
-        foreach (Vector3 v3 in nodeCoords)
-        {
-            Debug.Log("nodeCoords list: " + v3.ToString());
-        }
     }
 
-    private void DrawTradeLines(ref Vector3[] planetCoords, ref Dictionary<Tuple<Vector3, Vector3>, GameObject> planetLines, bool deleteOld)
+    private void DrawTradeLines(ref Dictionary<Tuple<Vector3, Vector3>, GameObject> planetLines, bool deleteOld)
     {
         Vector3 s;
         Color c = new Color(0, 0, 0);
@@ -189,16 +132,16 @@ public class GalaxyGenerator : MonoBehaviour
 
         if (deleteOld)
         {
-            DestroyAllTradeLines();
+            planetLines.Clear();
         }
 
-        for (int j = 0; j < planetCoords.Length; j++)
+        for (int j = 0; j < planets.Length; j++)
         {
-            s = planetCoords[j];
+            s = planets[j]._GameObject.transform.position;
             Vector3 e;
-            for (int k = 0; k < planetCoords.Length; k++)
+            for (int k = 0; k < planets.Length; k++)
             {
-                e = planetCoords[k];
+                e = planets[k]._GameObject.transform.position;
 
                 if (j != k)
                 {
@@ -229,18 +172,18 @@ public class GalaxyGenerator : MonoBehaviour
         Color c = new Color(0, 0, 0);
         int dl = 0;
 
-        DestroyAllTradeLines();
+        planetLines.Clear();
 
         int selectedIndex = 0;
         for (int i = 0; i < planets.Length; i++)
             if (planets[i]._GameObject == findPlanet)
                 selectedIndex = i;
 
-        s = planetCoords[selectedIndex];
+        s = planets[selectedIndex]._GameObject.transform.position;
         Vector3 e;
-        for (int k = 0; k < planetCoords.Length; k++)
+        for (int k = 0; k < planets.Length; k++)
         {
-            e = planetCoords[k];
+            e = planets[k]._GameObject.transform.position;
 
             if (selectedIndex != k)
             {
@@ -288,14 +231,15 @@ public class GalaxyGenerator : MonoBehaviour
         planetLines.Add(Tuple.Create(start, end), myLine);
     }
 
-    private void MovePlanets(ref Vector3[] nodeCoords, int planetNum)
+    private void MovePlanets(int planetNum)
     {
         // 1 unit from the sun is 100 day orbit
         int i = 0;
 
-        foreach (Vector3 v in nodeCoords)
+        foreach (Planet p in planets)
         {
             // Just calculate distance from origin (or radius of orbit)
+            Vector3 v = p._GameObject.transform.position;
             float radius;
             float orbitInc;
             float orbitCirc;
@@ -339,18 +283,9 @@ public class GalaxyGenerator : MonoBehaviour
 
             // Destroy old planet
             planets[i]._GameObject.transform.position = v3;
-
-            nodeCoords[i] = v3;
             i++;
 
         }
-    }
-
-    public void DestroyAllTradeLines()
-    {
-        foreach (KeyValuePair<Tuple<Vector3, Vector3>, GameObject> i in planetLines)
-            Destroy(i.Value);
-        planetLines.Clear();
     }
 
     // FIX: Just doesn't work...
@@ -372,7 +307,61 @@ public class GalaxyGenerator : MonoBehaviour
 
     public Vector3 GetPlanetPosition(int planetIndex)
     {
-        return planetCoords[planetIndex];
+        return planets[planetIndex]._GameObject.transform.position;
 
     }
+
+    public void InstantiatePlanet(Vector3 v, int index, float originDist)
+    {
+        // 1. Make GameObject at position
+        GameObject go = Instantiate(planet, v, Quaternion.identity);
+
+        // 2. Assign sprite to GameObject
+        if (index == 1)
+        {
+            go.GetComponent<SpriteRenderer>().sprite = Molten;
+
+        }
+        else if (index == 2)
+        {
+            go.GetComponent<SpriteRenderer>().sprite = Earth;
+
+        }
+        else if (index == 3)
+        {
+            go.GetComponent<SpriteRenderer>().sprite = Water;
+
+        }
+
+        // 3. Choose PlanetType for Planet instance depending on distance to sun
+        Planet.PlanetType pt;
+        int ptChoice;
+        if (originDist <= 1.5)
+            pt = Planet.PlanetType.volcanic;
+        else if (originDist <= 3)
+        {
+            ptChoice = UnityEngine.Random.Range(1, 4);
+            if (ptChoice == 1)
+                pt = Planet.PlanetType.arid;
+            else if (ptChoice == 2)
+                pt = Planet.PlanetType.ideal;
+            else
+                pt = Planet.PlanetType.oceanic;
+        }
+        else
+        {
+            ptChoice = UnityEngine.Random.Range(1, 2);
+            if (ptChoice == 1)
+                pt = Planet.PlanetType.ice;
+            else
+            {
+                pt = Planet.PlanetType.gas;
+            }
+        }
+
+        // 4. Create new planet instance and add it to the "planets" array        
+        Planet p = new Planet(planetNames[index], pt, go);
+        planets[index] = p;
+
+    } 
 }
