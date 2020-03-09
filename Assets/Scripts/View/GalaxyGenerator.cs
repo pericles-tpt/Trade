@@ -40,7 +40,7 @@ public class GalaxyGenerator : MonoBehaviour
 
     public void IncrementOrbits()
     {
-        MovePlanets(planetNum);
+        MovePlanets();
         //DrawTradeLines(ref planetCoords, ref planetLines, true);
 
     }
@@ -92,36 +92,21 @@ public class GalaxyGenerator : MonoBehaviour
                 // Y can be -, + or 0
                 ySign = UnityEngine.Random.Range(-1, 2);
 
-            // FIX: This should move nodes that are in-line on the same axis
-            // away from each other if they're too close
-            foreach (Planet p in planets)
-            {
-                Vector3 v3 = p._GameObject.transform.position;
-                int sign = 0;
-                while (sign == 0)
-                    sign = UnityEngine.Random.Range(-1, 1);
-
-                // ToDo: This statement doesn't do what it's supposed to (i.e. separate nodes too diagonally close to one another)
-                if ((Mathf.Abs(v3.x - (xSign * 100 * originDist)) <= 100f) && (Mathf.Abs(v3.y - (ySign * 100 * originDist)) <= 100f))
-                    xSign *= -1;
-                // ToDo: This statement won't solve issue if flipping the XSign will violate one of these other conditions, for a prior node
-                else if ((v3.x == (xSign * originDist)) && (v3.y == (ySign * originDist)))
-                    xSign *= -1;
-                else if ((v3.x == xSign) && (Mathf.Abs(v3.y - originDist * ySign) <= 100f))
-                    xSign = sign;
-                else if (v3.x == ySign && (Mathf.Abs(v3.y - originDist * ySign) <= 100f))
-                    ySign = sign;
-
-            }
-
-            // END SECTION
-
             // Stores new planet position in v from previous section
             v = new Vector3((originDist * 100 * xSign) / 250, (originDist * 100 * ySign) / 250, planetDepth);
             InstantiatePlanet(v, i, originDist);
 
         }
 
+        SeparatePlanets();
+
+    }
+
+    public void DestroyAllTradeLines()
+    {
+        foreach (KeyValuePair<Tuple<Vector3, Vector3>, GameObject> i in planetLines)
+            Destroy(i.Value);
+        planetLines.Clear();
     }
 
     private void DrawTradeLines(ref Dictionary<Tuple<Vector3, Vector3>, GameObject> planetLines, bool deleteOld)
@@ -132,7 +117,7 @@ public class GalaxyGenerator : MonoBehaviour
 
         if (deleteOld)
         {
-            planetLines.Clear();
+            DestroyAllTradeLines();
         }
 
         for (int j = 0; j < planets.Length; j++)
@@ -172,7 +157,7 @@ public class GalaxyGenerator : MonoBehaviour
         Color c = new Color(0, 0, 0);
         int dl = 0;
 
-        planetLines.Clear();
+        DestroyAllTradeLines();
 
         int selectedIndex = 0;
         for (int i = 0; i < planets.Length; i++)
@@ -231,7 +216,7 @@ public class GalaxyGenerator : MonoBehaviour
         planetLines.Add(Tuple.Create(start, end), myLine);
     }
 
-    private void MovePlanets(int planetNum)
+    private void MovePlanets()
     {
         // 1 unit from the sun is 100 day orbit
         int i = 0;
@@ -282,7 +267,7 @@ public class GalaxyGenerator : MonoBehaviour
             Vector3 v3 = new Vector3(nextX, nextY, -10);
 
             // Destroy old planet
-            planets[i]._GameObject.transform.position = v3;
+            p._GameObject.transform.position = v3;
             i++;
 
         }
@@ -363,5 +348,36 @@ public class GalaxyGenerator : MonoBehaviour
         Planet p = new Planet(planetNames[index], pt, go);
         planets[index] = p;
 
-    } 
+    }
+
+    private void SeparatePlanets()
+    {
+        Vector3 vOld = new Vector3(0,0,0);
+
+        foreach (Planet p in planets)
+        {
+            Vector3 vCurr = p._GameObject.transform.position;
+            int sign = 0;
+            while (sign == 0)
+                sign = UnityEngine.Random.Range(-1, 1);
+
+            if (vOld != null)
+            {
+                // ToDo: This statement doesn't do what it's supposed to (i.e. separate nodes too diagonally close to one another)
+                if ((Mathf.Abs(vCurr.x - vOld.x) <= 100f) && (Mathf.Abs(vCurr.y - vOld.y) <= 100f))
+                    vCurr.x *= -1;
+                /* ToDo: This statement won't solve issue if flipping the XSign will violate one of these other conditions, for a prior node
+                else if ((v3.x == (xSign * originDist)) && (v3.y == (ySign * originDist)))
+                    xSign *= -1;
+                else if ((v3.x == xSign) && (Mathf.Abs(v3.y - originDist * ySign) <= 100f))
+                    xSign = sign;
+                else if (v3.x == ySign && (Mathf.Abs(v3.y - originDist * ySign) <= 100f))
+                    ySign = sign;
+                */
+            }
+
+            vOld = vCurr;
+
+        }
+    }
 }

@@ -10,9 +10,10 @@ public class Player : MonoBehaviour
     Ship[] Fleet = new Ship[10];
     public GameObject ship;
 
+    /*
     void Start()
     {
-        int shipStartPlanet = UnityEngine.Random.Range(1, GameObject.Find("sun").GetComponent<GalaxyGenerator>().planetCoords.Length);
+        int shipStartPlanet = UnityEngine.Random.Range(1, GameObject.Find("sun").GetComponent<GalaxyGenerator>().planets.Length);
         Vector3 firstShipPos = GameObject.Find("sun").GetComponent<GalaxyGenerator>().GetPlanetPosition(shipStartPlanet);
         float x = firstShipPos.x;
         float y = firstShipPos.y;
@@ -25,10 +26,11 @@ public class Player : MonoBehaviour
 
     public void UpdateShipPositions()
     {
-        Vector3[] planetPositions = GameObject.Find("sun").GetComponent<GalaxyGenerator>().planetCoords;
+        Planet[] planetPositions = GameObject.Find("sun").GetComponent<GalaxyGenerator>().planets;
         foreach (Ship s in Fleet)
-            s.UpdateShipPosition(planetPositions[s._currentPlanet]);
+            s.UpdateShipPosition(planetPositions[s._currentPlanet]._GameObject.transform.position);
 
     }
+    */
 
 }

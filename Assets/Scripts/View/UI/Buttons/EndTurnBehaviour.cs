@@ -10,7 +10,7 @@ public class EndTurnBehaviour : MonoBehaviour
     {
         GameObject.Find("sun").GetComponent<GalaxyGenerator>().IncrementOrbits();
         GameObject.Find("Canvas").GetComponent<DayTextBehaviour>().UpdateDayText();
-        GameObject.Find("player").GetComponent<Player>().UpdateShipPositions();
+        //GameObject.Find("player").GetComponent<Player>().UpdateShipPositions();
 
     }
 
