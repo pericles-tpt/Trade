@@ -18,7 +18,7 @@ public class PlanetBehaviour : MonoBehaviour
 
     private void OnMouseDown()
     {
-        GameObject.Find("PlanetPanelGroup").GetComponent<PlanetPanelBehaviour>().ActivatePanel(this.gameObject);
+        GameObject.Find("pg_planet").GetComponent<PlanetPanelBehaviour>().ActivatePanel(this.gameObject);
 
     }
 
