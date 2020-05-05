@@ -8,31 +8,25 @@ public class PlanetPanelBehaviour : MonoBehaviour
     public Text PlanetName;
     public Image PlanetIcon;
 
-    // Start is called before the first frame update
     void Start()
     {
-        this.gameObject.GetComponent<CanvasGroup>().alpha = 0;
+        this.HidePanel();
 
     }
 
-    // Update is called once per frame
-    public void ActivatePanel(GameObject planet)
+
+    public void ShowPanel(GameObject planet)
     {
         PopulateFields(planet);
         this.gameObject.GetComponent<CanvasGroup>().alpha = 1;
 
     }
 
-    public void DeactivatePanel()
+    public void HidePanel()
     {
         this.gameObject.GetComponent<CanvasGroup>().alpha = 0;
-        ClearFields();
+        ClearInfo();
 
-    }
-
-    public void ClearFields()
-    {
-        // Do nothing atm
     }
 
     public void PopulateFields(GameObject planet)
@@ -40,6 +34,11 @@ public class PlanetPanelBehaviour : MonoBehaviour
         PlanetName.text = planet.GetInstanceID().ToString();
         PlanetIcon.sprite = planet.GetComponent<SpriteRenderer>().sprite;
 
+    }
+
+    public void ClearInfo()
+    {
+        // Do nothing atm
     }
 
 }

@@ -8,7 +8,7 @@ public class EndTurnBehaviour : MonoBehaviour
 {
     public void IncOrbit() 
     {
-        GameObject.Find("sun").GetComponent<GalaxyGenerator>().IncrementOrbits();
+        GameObject.Find("Camera").GetComponent<GameDirector>().IncrementOrbits();
         GameObject.Find("Canvas").GetComponent<DayTextBehaviour>().UpdateDayText();
         //GameObject.Find("player").GetComponent<Player>().UpdateShipPositions();
 

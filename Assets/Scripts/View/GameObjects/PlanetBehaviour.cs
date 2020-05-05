@@ -1,24 +1,23 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PlanetBehaviour : MonoBehaviour
 {
+
     private void OnMouseOver()
     {
-        GameObject.Find("sun").GetComponent<GalaxyGenerator>().DrawTradeLines(this.gameObject);
-
+        GameObject.Find("Camera").GetComponent<GameDirector>().DrawOnePlanetToAll(this.gameObject);
+        
     }
 
     private void OnMouseExit()
     {
-        GameObject.Find("sun").GetComponent<GalaxyGenerator>().DestroyAllTradeLines();
+        GameObject.Find("Camera").GetComponent<GameDirector>().DestroyAllLines();
 
     }
 
     private void OnMouseDown()
     {
-        GameObject.Find("pg_planet").GetComponent<PlanetPanelBehaviour>().ActivatePanel(this.gameObject);
+        GameObject.Find("pg_planet").GetComponent<PlanetPanelBehaviour>().ShowPanel(this.gameObject);
 
     }
 

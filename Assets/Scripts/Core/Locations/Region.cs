@@ -1,4 +1,4 @@
-﻿public class Region {
+﻿public abstract class Region {
 
     private int      _Population {get; set;}
     private Entity[] _Members    {get;}

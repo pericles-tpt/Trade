@@ -7,10 +7,10 @@ using UnityEngine.UI;
 public class DayTextBehaviour : MonoBehaviour
 {
     public Text DayText;
-    public void UpdateDayText()
+    public void UpdateDayText(int incAmount = 1)
     {
         int oldDay = Int32.Parse((DayText.text).Substring(4));
-        DayText.text = "Day " + (oldDay + 1).ToString();
+        DayText.text = "Day " + (oldDay + incAmount).ToString();
 
     }
 }
