@@ -17,6 +17,7 @@ public class PlanetBehaviour : MonoBehaviour
 
     private void OnMouseDown()
     {
+        Debug.Log("Mousedown is getting triggered!");
         GameObject.Find("pg_planet").GetComponent<PlanetPanelBehaviour>().ShowPanel(this.gameObject);
 
     }

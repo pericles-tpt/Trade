@@ -5,6 +5,7 @@ public class Galaxy
     public int       _PlanetNum   { get; private set; }
     public Planet[]  _Planets     { get; private set; }
     public const int _PlanetDepth = -10;
+    public const int _DistScale   = 75;
 
     public Galaxy(int planetNum)
     {
@@ -63,14 +64,14 @@ public class Galaxy
                 ySign = UnityEngine.Random.Range(-1, 2);
 
             // Stores new planet position in v from previous section
-            v = new Vector3((originDist * 100 * xSign) / 250, (originDist * 100 * ySign) / 250, _PlanetDepth);
+            v = new Vector3((originDist * 100 * xSign) / _DistScale, (originDist * 100 * ySign) / _DistScale, _PlanetDepth);
 
             if (originDist <= 2)
-                _Planets[i] = pf.CreateMoltenPlanet(v, "molten", i);
+                _Planets[i] = pf.CreateMoltenPlanet(v, GimmeAName(), i);
             else if (originDist > 5)
-                _Planets[i] = pf.CreateWaterPlanet(v, "water", i);
+                _Planets[i] = pf.CreateWaterPlanet(v, GimmeAName(), i);
             else
-                _Planets[i] = pf.CreateTemperatePlanet(v, "temperate", i);
+                _Planets[i] = pf.CreateTemperatePlanet(v, GimmeAName(), i);
 
             Debug.Log("Planet name: " + _Planets[i]._Name + " Planet coord: " + _Planets[i]._GameObject.transform.position);
 
@@ -94,9 +95,32 @@ public class Galaxy
         for(int i = 0; i < _PlanetNum; i++)
         {
             Planet p = _Planets[i];
+            p._PlanetPositions = new Vector3[_PlanetNum];
             for (int j = 0; j < _PlanetNum; j++)
+            {
+                Debug.Log("tis " + _Planets[j]._GameObject.transform.position);
                 p._PlanetPositions[j] = _Planets[j]._GameObject.transform.position;
+            }
         }
+    }
+
+    // DELETEME
+    private string GimmeAName()
+    {
+        string[] names = { "Yelmeree", "Zvaat", "Frotuus", "Kaxias", "Bireen", "Meldys", "Santoon", "Aorfun", "Codruis", "Dexlaa", "Epveen", "Gweroon", "Hexctus", "Inir", "Jkor", "Lqi", "Nexeneetf", "Onzii", "Plecsire", "Qaatni", "Riredun", "Tevelis", "Unbarekh", "Vol", "Wvalo", "Xeveles"};
+        string[] numbers = { "I", "II", "III", "IV", "V", "VI", "VII", "IX", "X" };
+
+        int chosen = UnityEngine.Random.Range(0, names.Length);
+        string ret = names[chosen];
+
+        if (UnityEngine.Random.Range(0, 3) == 1)
+        {
+            int num = UnityEngine.Random.Range(0, numbers.Length);
+            ret = ret + " " + numbers[num];
+
+        }
+
+        return ret;
     }
 
 }

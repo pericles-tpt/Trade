@@ -35,6 +35,16 @@ public class GameDirector : MonoBehaviour
         lm.DestroyAllLines();
     }
 
+    public Planet FindPlanet(GameObject go)
+    {
+        foreach (Planet p in current._Planets)
+        {
+            if (p._GameObject == go)
+                return p;
+        }
+        return null;
+    }
+
     // Update is called once per frame
     void Update()
     {

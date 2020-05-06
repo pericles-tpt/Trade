@@ -9,7 +9,7 @@ public class Planet
     public int                _Index           { get; private set; }
     public Sprite             _Icon            { get; private set; }
     public string             _Name            { get; private set; }
-    public Vector3[]          _PlanetPositions { get; private set; }
+    public Vector3[]          _PlanetPositions { get; set; }
 
     // Game Properties
     private PlanetType _PlanetType;

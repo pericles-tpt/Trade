@@ -31,8 +31,17 @@ public class PlanetPanelBehaviour : MonoBehaviour
 
     public void PopulateFields(GameObject planet)
     {
-        PlanetName.text = planet.GetInstanceID().ToString();
-        PlanetIcon.sprite = planet.GetComponent<SpriteRenderer>().sprite;
+        Planet p = GameObject.Find("Camera").GetComponent<GameDirector>().FindPlanet(planet);
+        if (p != null)
+        {
+            PlanetName.text = p._Name;
+            PlanetIcon.sprite = p._Icon;
+
+        } else
+        {
+            PlanetName.text = planet.GetInstanceID().ToString();
+
+        }
 
     }
 

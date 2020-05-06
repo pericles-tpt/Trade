@@ -3,21 +3,22 @@ using System.Collections;
 
 public class PlanetFactory : MonoBehaviour
 {
-    // Sprites needed to apply to planets
+    // Sprites needed to apply to planets - REMOVED
     public Sprite Temperate;
     public Sprite Molten;
     public Sprite Water;
 
-    public GameObject Pl;
+    public GameObject TemperatePlanet;
+    public GameObject MoltenPlanet;
+    public GameObject WaterPlanet;
 
     public Planet CreateMoltenPlanet(Vector3 v, string planetName, int index)
     {
         // 1. Make GameObject at position
-        GameObject go = Instantiate(Pl, v, Quaternion.identity);
+        GameObject go = Instantiate(MoltenPlanet, v, Quaternion.identity);
 
         // 2. Assign sprite to GameObject
         Sprite selected = Molten;
-        go.GetComponent<SpriteRenderer>().sprite = Molten;
 
         // 3. Choose PlanetType for Planet instance depending on distance to sun
         Planet.PlanetType pt;
@@ -32,11 +33,10 @@ public class PlanetFactory : MonoBehaviour
     public Planet CreateTemperatePlanet(Vector3 v, string planetName, int index)
     {
         // 1. Make GameObject at position
-        GameObject go = Instantiate(Pl, v, Quaternion.identity);
+        GameObject go = Instantiate(TemperatePlanet, v, Quaternion.identity);
 
         // 2. Assign sprite to GameObject
         Sprite selected = Temperate;
-        go.GetComponent<SpriteRenderer>().sprite = Temperate;
 
         // 3. Choose PlanetType for Planet instance depending on distance to sun
         Planet.PlanetType pt;
@@ -51,11 +51,10 @@ public class PlanetFactory : MonoBehaviour
     public Planet CreateWaterPlanet(Vector3 v, string planetName, int index)
     {
         // 1. Make GameObject at position
-        GameObject go = Instantiate(Pl, v, Quaternion.identity);
+        GameObject go = Instantiate(WaterPlanet, v, Quaternion.identity);
 
         // 2. Assign sprite to GameObject
         Sprite selected = Water;
-        go.GetComponent<SpriteRenderer>().sprite = Water;
 
         // 3. Choose PlanetType for Planet instance depending on distance to sun
         Planet.PlanetType pt;
