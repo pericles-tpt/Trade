@@ -1,4 +1,4 @@
-public class Country : Region {
+public class Country {
 
 	private Territory[] _Territory;
 

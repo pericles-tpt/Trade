@@ -73,7 +73,7 @@
     <Compile Include="Assets\Scripts\Core\Locations\Country.cs" />
     <Compile Include="Assets\Scripts\Core\Locations\Land.cs" />
     <Compile Include="Assets\Scripts\Core\Locations\Node.cs" />
-    <Compile Include="Assets\Scripts\Core\Locations\Region.cs" />
+    <Compile Include="Assets\Scripts\Core\Locations\Sector.cs" />
     <Compile Include="Assets\Scripts\Core\Locations\Street.cs" />
     <Compile Include="Assets\Scripts\Core\Locations\Suburb.cs" />
     <Compile Include="Assets\Scripts\Core\Locations\Territory.cs" />
@@ -89,6 +89,11 @@
     <Compile Include="Assets\Scripts\View\PlanetFactory.cs" />
     <Compile Include="Assets\Scripts\View\Player.cs" />
     <Compile Include="Assets\Scripts\View\UI\Buttons\EndTurnBehaviour.cs" />
+    <Compile Include="Assets\Scripts\View\UI\Buttons\LoadGameButton.cs" />
+    <Compile Include="Assets\Scripts\View\UI\Buttons\NewGameBehaviour.cs" />
+    <Compile Include="Assets\Scripts\View\UI\Buttons\OptionsMenuButton.cs" />
+    <Compile Include="Assets\Scripts\View\UI\Buttons\QuitGameBehaviour.cs" />
+    <Compile Include="Assets\Scripts\View\UI\Buttons\TogglePlanetViewBehaviour.cs" />
     <Compile Include="Assets\Scripts\View\UI\Panels\PlanetPanelBehaviour.cs" />
     <Compile Include="Assets\Scripts\View\UI\Text\DayTextBehaviour.cs" />
     <Reference Include="UnityEngine">

@@ -28,19 +28,19 @@ public class LineManager
 
             if (selectedIndex != k)
             {
-                Debug.Log("Drawn line from: " + s.ToString() + "to: " + e.ToString());
+                //Debug.Log("Drawn line from: " + s.ToString() + "to: " + e.ToString());
                 DrawLine(s, e, ref Lines, 0);
 
             }
             else
             {
-                Debug.Log("Prevented node line to self");
+                //Debug.Log("Prevented node line to self");
 
             }
 
         }
 
-        Debug.Log("Drew " + dl + " lines");
+        //Debug.Log("Drew " + dl + " lines");
     }
 
     public void DestroyAllLines()

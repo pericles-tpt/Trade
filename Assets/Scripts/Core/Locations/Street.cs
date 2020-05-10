@@ -1,4 +1,4 @@
-public class Street : Region {
+public class Street {
 
 	private Land[] _Land;
 

@@ -12,10 +12,11 @@ public class PlanetFactory : MonoBehaviour
     public GameObject MoltenPlanet;
     public GameObject WaterPlanet;
 
-    public Planet CreateMoltenPlanet(Vector3 v, string planetName, int index)
+    public Planet CreateMoltenPlanet(Vector3 v, string planetName, int index, float ssize, int pno)
     {
         // 1. Make GameObject at position
         GameObject go = Instantiate(MoltenPlanet, v, Quaternion.identity);
+        go.transform.localScale = new Vector3(ssize, ssize, ssize);
 
         // 2. Assign sprite to GameObject
         Sprite selected = Molten;
@@ -24,16 +25,18 @@ public class PlanetFactory : MonoBehaviour
         Planet.PlanetType pt;
         pt = Planet.PlanetType.molten;
 
+
         // 4. Create new planet instance and add it to the "planets" array        
-        Planet p = new Planet(planetName, index, selected, pt, go);
+        Planet p = new Planet(planetName, index, selected, pt, go, ssize, pno);
         return p;
 
     }
 
-    public Planet CreateTemperatePlanet(Vector3 v, string planetName, int index)
+    public Planet CreateTemperatePlanet(Vector3 v, string planetName, int index, float ssize, int pno)
     {
         // 1. Make GameObject at position
         GameObject go = Instantiate(TemperatePlanet, v, Quaternion.identity);
+        go.transform.localScale = new Vector3(ssize, ssize, ssize);
 
         // 2. Assign sprite to GameObject
         Sprite selected = Temperate;
@@ -43,15 +46,16 @@ public class PlanetFactory : MonoBehaviour
         pt = Planet.PlanetType.temperate;
 
         // 4. Create new planet instance and add it to the "planets" array        
-        Planet p = new Planet(planetName, index, selected, pt, go);
+        Planet p = new Planet(planetName, index, selected, pt, go, ssize, pno);
         return p;
 
     }
 
-    public Planet CreateWaterPlanet(Vector3 v, string planetName, int index)
+    public Planet CreateWaterPlanet(Vector3 v, string planetName, int index, float ssize, int pno)
     {
         // 1. Make GameObject at position
         GameObject go = Instantiate(WaterPlanet, v, Quaternion.identity);
+        go.transform.localScale = new Vector3(ssize, ssize, ssize);
 
         // 2. Assign sprite to GameObject
         Sprite selected = Water;
@@ -61,7 +65,7 @@ public class PlanetFactory : MonoBehaviour
         pt = Planet.PlanetType.water;
 
         // 4. Create new planet instance and add it to the "planets" array        
-        Planet p = new Planet(planetName, index, selected, pt, go);
+        Planet p = new Planet(planetName, index, selected, pt, go, ssize, pno);
         return p;
 
     }

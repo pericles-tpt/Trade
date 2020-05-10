@@ -25,6 +25,7 @@ public class Galaxy
         int addHun = 1;
         int addFif = 2;
         float originDist = 1;
+        float size;
 
         for (int i = 0; i < (planetNum); i++)
         {
@@ -66,14 +67,24 @@ public class Galaxy
             // Stores new planet position in v from previous section
             v = new Vector3((originDist * 100 * xSign) / _DistScale, (originDist * 100 * ySign) / _DistScale, _PlanetDepth);
 
-            if (originDist <= 2)
-                _Planets[i] = pf.CreateMoltenPlanet(v, GimmeAName(), i);
-            else if (originDist > 5)
-                _Planets[i] = pf.CreateWaterPlanet(v, GimmeAName(), i);
+            if (i == 0 || i == 1)
+                size = 1;
+            else if (i == 3)
+                size = 1.5f;
             else
-                _Planets[i] = pf.CreateTemperatePlanet(v, GimmeAName(), i);
+                size = 2;
 
-            Debug.Log("Planet name: " + _Planets[i]._Name + " Planet coord: " + _Planets[i]._GameObject.transform.position);
+            int pno = 0;
+            string name = GimmeAName(ref pno);
+
+            if (originDist <= 2)
+                _Planets[i] = pf.CreateMoltenPlanet(v, name, i, size, pno);
+            else if (originDist > 5)
+                _Planets[i] = pf.CreateWaterPlanet(v, name, i, size, pno);
+            else
+                _Planets[i] = pf.CreateTemperatePlanet(v, name, i, size, pno);
+
+            //Debug.Log("Planet name: " + _Planets[i]._Name + " Planet coord: " + _Planets[i]._GameObject.transform.position);
 
         }
 
@@ -95,17 +106,17 @@ public class Galaxy
         for(int i = 0; i < _PlanetNum; i++)
         {
             Planet p = _Planets[i];
-            p._PlanetPositions = new Vector3[_PlanetNum];
+            p._OtherPlanetPositions = new Vector3[_PlanetNum];
             for (int j = 0; j < _PlanetNum; j++)
             {
-                Debug.Log("tis " + _Planets[j]._GameObject.transform.position);
-                p._PlanetPositions[j] = _Planets[j]._GameObject.transform.position;
+                //Debug.Log("tis " + _Planets[j]._GameObject.transform.position); ", x: "
+                p._OtherPlanetPositions[j] = _Planets[j]._GameObject.transform.position;
             }
         }
     }
 
     // DELETEME
-    private string GimmeAName()
+    private string GimmeAName(ref int pno)
     {
         string[] names = { "Yelmeree", "Zvaat", "Frotuus", "Kaxias", "Bireen", "Meldys", "Santoon", "Aorfun", "Codruis", "Dexlaa", "Epveen", "Gweroon", "Hexctus", "Inir", "Jkor", "Lqi", "Nexeneetf", "Onzii", "Plecsire", "Qaatni", "Riredun", "Tevelis", "Unbarekh", "Vol", "Wvalo", "Xeveles"};
         string[] numbers = { "I", "II", "III", "IV", "V", "VI", "VII", "IX", "X" };
@@ -117,6 +128,7 @@ public class Galaxy
         {
             int num = UnityEngine.Random.Range(0, numbers.Length);
             ret = ret + " " + numbers[num];
+            pno = num; 
 
         }
 
