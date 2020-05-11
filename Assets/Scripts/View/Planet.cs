@@ -120,10 +120,8 @@ public class Planet
         Vertices = AssignSphereCoordinatesToVertices(size, maxCoord);
         m.vertices = Vertices;
 
-
         // Create int[] for holding triangles
-        int ta_size = (2000);
-        Debug.Log("size is " + ta_size);
+        int ta_size = (420);//(2 * maxCoord) + (2 * 4 * maxCoord) + (5 * (6 * maxCoord)) + 300);
         int[] ta = new int[ta_size];
         ta = AssignSphereTrianglesToTArray(Vertices, maxCoord, ta_size); // NOTE: Assigned coordinates may not be correct come back here
         m.triangles = ta;
@@ -137,9 +135,8 @@ public class Planet
         m.uv = uv;
 
         // Finally assign the new mesh to the gameobject
+        m.name = "Test";
         _GameObject.GetComponent<MeshFilter>().mesh = m;
-
-
 
     }
 
@@ -235,8 +232,8 @@ public class Planet
         }
 
         // Do all the points in between the top and bottom
-        int bottomRowIndex = (maxCoord * (maxCoord - 1));
-        for (int i = 1; i < bottomRowIndex; i++)
+        int bottomRowIndex = (maxCoord * (maxCoord - 2));
+        for (int i = 1; i <= bottomRowIndex; i++)
         {
             int bl, br, tl, tr;
             // For triangle 1: tl, bl, tr
@@ -259,7 +256,8 @@ public class Planet
 
         // Do the bottom point to row above it
         int c = 0;
-        for (int i = bottomRowIndex; i < (maxCoord * maxCoord); i++)
+        Debug.Log("bottom row index " + bottomRowIndex);
+        for (int i = bottomRowIndex + 1; i < ((maxCoord * (maxCoord - 1))); i++)
         {
             ret[l] = i;
             l++;
@@ -274,6 +272,11 @@ public class Planet
         }
 
         Debug.Log(l + " values assigned");
+
+        for (int i = 0; i < ret.Length; i++) {
+            if ((ret[i] > ((maxCoord * (maxCoord - 1)) + 2)) || (ret[i] < 0))
+                Debug.Log("Hey! " + ret[i]);
+        }
 
         return ret;
     }
