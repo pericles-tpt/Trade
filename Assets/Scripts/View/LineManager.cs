@@ -83,7 +83,7 @@ public class LineManager
         myLine.AddComponent<LineRenderer>();
         LineRenderer lr = myLine.GetComponent<LineRenderer>();
         lr.SetColors(Color.white, Color.white);
-        lr.SetWidth(0.1f, 0.1f);
+        lr.SetWidth(0.01f, 0.01f); // NOTE: Was 0.1f before
         lr.SetPosition(0, start);
         lr.SetPosition(1, end);
         Material whiteDiffuse = new Material(Shader.Find("Unlit/Texture"));

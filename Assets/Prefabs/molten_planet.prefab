@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 7098622035599555133}
   - component: {fileID: -6244134410394646582}
   m_Layer: 0
-  m_Name: planet
+  m_Name: molten_planet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

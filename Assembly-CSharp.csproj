@@ -78,6 +78,7 @@
     <Compile Include="Assets\Scripts\Core\Locations\Suburb.cs" />
     <Compile Include="Assets\Scripts\Core\Locations\Territory.cs" />
     <Compile Include="Assets\Scripts\Core\Ship.cs" />
+    <Compile Include="Assets\Scripts\ExternalCode\CreateIcoSphere.cs" />
     <Compile Include="Assets\Scripts\MISC\GalaxyGenerator.cs" />
     <Compile Include="Assets\Scripts\MISC\OLDCODE.cs" />
     <Compile Include="Assets\Scripts\View\Galaxy.cs" />

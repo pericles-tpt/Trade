@@ -1,26 +1,32 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections.Generic;
+using System.Numerics;
+using UnityEngine;
+using Vector2 = UnityEngine.Vector2;
+using Vector3 = UnityEngine.Vector3;
 public class Planet
 {
     // Enums
     public enum PlanetType { arid, gas, molten, oceanic, ice, water, temperate }
 
     // Unity Properties
-    public GameObject                            _GameObject      { get; private set; }
-    public int                                   _Index           { get; private set; }
-    public Sprite                                _Icon            { get; private set; }
-    public string                                _Name            { get; private set; }
-    public int                                   _NameNo          { get; private set; }
-    public float                                 _SphereSize      { get; private set; }
+    public GameObject                            _GameObject           { get; private set; }
+    public int                                   _Index                { get; private set; }
+    public Sprite                                _Icon                 { get; private set; }
+    public string                                _Name                 { get; private set; }
+    public int                                   _NameNo               { get; private set; }
+    public float                                 _SphereSize           { get; private set; }
 
-    public Vector3                               _PlanetOrigin    { get; private set; }
-    public Vector3                               _PlanetTop       { get; private set; }
-    public Vector3                               _PlanetBottom    { get; private set; }
+    public Vector3                               _PlanetOrigin         { get; private set; }
+    public Vector3                               _PlanetTop            { get; private set; }
+    public Vector3                               _PlanetBottom         { get; private set; }
 
     public Vector3[]                             _OtherPlanetPositions { get; set; }
     
     
     public Sector[,]                             _PlanetSectors;
     private const int                            _SectorSize = 8;
+    private LineManager _SectorLines;
 
 
     // Game Properties
@@ -37,6 +43,7 @@ public class Planet
         _Name = name;
         _SphereSize = ssize;
         _NameNo = nn;
+        _SectorLines = new LineManager();
 
         _PlanetType = pt;
         _GravFactor = gf;
@@ -103,91 +110,36 @@ public class Planet
     {
         // NOTE: Need to store vector for bl corner of sector as RELATIVE since planet coords change in orbit of sun
         int maxCoord = (int)(size * _SectorSize);
+        Mesh m = new Mesh();
 
         // Initialise _PlanetSectors 2D array for this planet
         _PlanetSectors = new Sector[maxCoord, maxCoord];
 
-        // Gets radius of planet in Unity units
-        float r   = _GameObject.GetComponent<SphereCollider>().radius;
-        float d   = 2 * r;
-
-        _PlanetOrigin = _GameObject.transform.position;
-        float max_z = _PlanetOrigin.z + r;
-        float min_z = _PlanetOrigin.z - r;
-
-        Debug.Log("HEY ORIGIN: " + _PlanetOrigin);
-
-        // Get the angle to increment sectors by dividing 360 (degrees) by no of increments
-        float sectorAngle = 360 / maxCoord;
-
-        // Temporary variables for storing x, y and z values
-        float z;
-
-        // Go from bottom to top of sphere recording blCoords creating a new sector 
-        // at each point like this:
-
-        // A ... Z
-        //  1 ... n
-
-        // Up to and including (maxCoord + 1) because including both the top and bottom point on sphere
-        for (int i = 0; i <= (maxCoord); i++)
-        {
-            if (i == 0)
-            {
-                _PlanetTop = new Vector3(0, 0, max_z);
-                Debug.Log("HEY TOP: " + _PlanetTop);
-
-            }
-            else if (i == (maxCoord))
-            {
-                _PlanetBottom = new Vector3(0, 0, min_z);
-                Debug.Log("HEY BOTTOM: " + _PlanetBottom);
-
-            }
-            else
-            {
-                // z-value is the only component that stays the same for all points on the circumference of the level
-                z = max_z - (((float)i / (float)maxCoord) * d);
-
-                // Calculate y-value using pythagorus' thm
-                float y = Mathf.Sqrt((Mathf.Pow(r, 2) - Mathf.Pow((z - _PlanetOrigin.z), 2)));
-                Debug.Log(y);
-                Debug.Log("z " + (Mathf.Pow(r,2)));
-                Debug.Log("diff " + (z - _PlanetOrigin.z));
-                Vector3 lastPoint = new Vector3(_PlanetOrigin.x, _PlanetOrigin.y + y, z);
-
-                _PlanetSectors[0, i - 1] = new Sector(NameSector(0, i - 1), new Vector3(0, lastPoint.y - _PlanetOrigin.y, lastPoint.z - _PlanetOrigin.z));
-                Debug.Log(lastPoint.ToString());
-
-                if (Vector3.Distance(_PlanetOrigin, lastPoint) == r)
-                    Debug.Log("Hoorah");
-                else
-                    Debug.Log("Nah");
-
-                for (int j = 1; j < maxCoord; j++)
-                {
-                    float sectorAngleRadians = sectorAngle * Mathf.Deg2Rad;
-                    float nextX, nextY;
-
-                    nextX = (lastPoint.x * Mathf.Cos(-sectorAngleRadians)) + (lastPoint.y * Mathf.Sin(-sectorAngleRadians));
-                    nextY = (-lastPoint.x * Mathf.Sin(-sectorAngleRadians)) + (lastPoint.y * Mathf.Cos(-sectorAngleRadians));
-
-                    lastPoint = new Vector3(nextX, nextY, z);
-                    _PlanetSectors[j, i - 1] = new Sector(NameSector(j, i - 1), new Vector3(lastPoint.x - _PlanetOrigin.x, lastPoint.y - _PlanetOrigin.y, lastPoint.z - _PlanetOrigin.z));
-                    Debug.Log(lastPoint.ToString());
-
-                    /*if (Vector3.Distance(lastPoint, _PlanetOrigin) == r)
-                        Debug.Log("Hoorah");
-                    else
-                        Debug.Log("Nah");
-                    */
-
-                }
+        // Create Vector3[] for holding coordinates of mesh
+        Vector3[] Vertices = new Vector3[maxCoord * maxCoord];
+        Vertices = AssignSphereCoordinatesToVertices(size, maxCoord);
+        m.vertices = Vertices;
 
 
-            }
+        // Create int[] for holding triangles
+        int ta_size = (2000);
+        Debug.Log("size is " + ta_size);
+        int[] ta = new int[ta_size];
+        ta = AssignSphereTrianglesToTArray(Vertices, maxCoord, ta_size); // NOTE: Assigned coordinates may not be correct come back here
+        m.triangles = ta;
 
-        }
+        // Create Vector3[] for holding normals of mesh... thank god there's a function for that
+        m.RecalculateNormals();
+
+        // Create texture coordinates
+        Vector2[] uv = new Vector2[Vertices.Length];
+        uv = SetAllTextureCoordsOne(Vertices.Length);
+        m.uv = uv;
+
+        // Finally assign the new mesh to the gameobject
+        _GameObject.GetComponent<MeshFilter>().mesh = m;
+
+
 
     }
 
@@ -199,7 +151,153 @@ public class Planet
 
         return (_Name.Substring(0, 3).ToUpper() + _NameNo + "-" + x + yCoord);
 
+    }
 
+    private Vector3[] AssignSphereCoordinatesToVertices (float size, float maxCoord)
+    {
+        Vector3[] ret = new Vector3[(int)(((maxCoord - 1) * maxCoord) + 2)];
+        int i = 0;
+
+        // Gets radius of planet in Unity units
+        float r = _GameObject.GetComponent<SphereCollider>().radius * size;
+
+        // Assign the top of the sphere to the array first
+        ret[i] = new Vector3(0, 0, 0 + r);
+        Debug.Log("Top: " + ret[i].ToString());
+        i++;
+
+        Vector3 Origin = new Vector3(0, 0, 0);
+
+        // Angles for incrementing circle along "longitude" and "latitude"
+        float longAngInc = 360 / maxCoord;
+        float latAngInc  = 90 / (maxCoord / 2);
+
+        // Go from bottom to top of sphere recording blCoords creating a new sector 
+        // at each point like this:
+
+        // A ... Z
+        //  1 ... n
+
+        // Up to and including (maxCoord + 1) because including both the top and bottom point on sphere
+        for (int y = 0; y < (maxCoord - 1); y++)
+        {
+            Vector3 Offset    = PolarToVector(r, (latAngInc * (y + 1)) * Mathf.Deg2Rad, 0);
+            Vector3 lastPoint = new Vector3(Origin.x + Offset.x, Origin.y + Offset.y, Origin.z + Offset.z);
+
+            _PlanetSectors[0, y] = new Sector(NameSector(0, y), lastPoint);
+
+            ret[i] = lastPoint;
+            Debug.Log("Point: " + ret[i].ToString());
+            i++;
+
+            for (int x = 1; x < maxCoord; x++)
+            {
+                Offset    = PolarToVector(r, (latAngInc * (y + 1)) * Mathf.Deg2Rad, (longAngInc * x) * Mathf.Deg2Rad);
+                lastPoint = new Vector3(Origin.x + Offset.x, Origin.y + Offset.y, Origin.z + Offset.z);
+
+                _PlanetSectors[x, y] = new Sector(NameSector(x, y), lastPoint);
+
+                ret[i] = lastPoint;
+                Debug.Log("Point: " + ret[i].ToString());
+                i++;
+
+            }
+
+        }
+
+        // Assign the bottom of the sphere to the array last
+        ret[i] = new Vector3(0, 0, 0 - r);
+        Debug.Log("Bottom: " + ret[i].ToString());
+        i++;
+
+        return ret;
+
+    }
+
+    private int[] AssignSphereTrianglesToTArray(Vector3[] Vertices, int maxCoord, int size)
+    {
+        int[] ret = new int[size];
+        int topIndex = 0;
+        int botIndex = Vertices.Length - 1;
+        int l = 0;
+
+        // Do the top point to row below it
+        for (int i = 1; i <= maxCoord; i++)
+        {
+            ret[l] = i;
+            l++;
+            ret[l] = topIndex;
+            l++;
+            ret[l] = i + 1;
+            l++;
+
+
+        }
+
+        // Do all the points in between the top and bottom
+        int bottomRowIndex = (maxCoord * (maxCoord - 1));
+        for (int i = 1; i < bottomRowIndex; i++)
+        {
+            int bl, br, tl, tr;
+            // For triangle 1: tl, bl, tr
+            tl = ret[l] = i;
+            l++;
+            bl = ret[l] = i + maxCoord;
+            l++;
+            tr = ret[l] = i + 1;
+            l++;
+
+            // For triangle 2: bl, tr, br
+            ret[l] = bl;
+            l++;
+            ret[l] = tr;
+            l++;
+            ret[l] = bl + 1;
+            l++;
+
+        }
+
+        // Do the bottom point to row above it
+        int c = 0;
+        for (int i = bottomRowIndex; i < (maxCoord * maxCoord); i++)
+        {
+            ret[l] = i;
+            l++;
+            c++;
+            ret[l] = botIndex;
+            l++;
+            c++;
+            ret[l] = i + 1;
+            l++;
+            c++;
+
+        }
+
+        Debug.Log(l + " values assigned");
+
+        return ret;
+    }
+
+    private Vector2[] SetAllTextureCoordsOne(int size)
+    {
+        Vector2[] ret = new Vector2[size];
+        for (int i = 0; i < size; i++)
+        {
+            ret[i] = new Vector2(1, 1);
+
+        }
+        return ret;
+
+    }
+
+    private Vector3 PolarToVector (float radius, float IncRad, float AziRad)
+    {
+
+        float x = radius * Mathf.Sin(IncRad) * Mathf.Cos(AziRad);
+        float y = radius * Mathf.Sin(IncRad) * Mathf.Cos(AziRad);
+        float z = radius * Mathf.Cos(IncRad);
+
+        return new Vector3 (x, y, z);
     }
 
 }
