@@ -25,7 +25,7 @@ public class Planet
     
     
     public Sector[,]                             _PlanetSectors;
-    private const int                            _SectorSize = 8;
+    private const int                            _SectorSize = 16;
     private LineManager _SectorLines;
 
 
@@ -145,6 +145,9 @@ public class Planet
         m.name = "Test";
         _GameObject.GetComponent<MeshFilter>().mesh = m;
 
+        // FIX: This doesn't belong here but this is how i'll get it to work for now... cbf to refactor this file atm
+        _GameObject.GetComponent<SphereCollider>().radius = _GameObject.GetComponent<SphereCollider>().radius * size;
+
     }
 
     private string NameSector (int x, int y)
@@ -198,7 +201,7 @@ public class Planet
 
             for (int x = 1; x < maxCoord; x++)
             {
-                Offset    = PolarToVector(r, (latAngInc * (y + 1)) * Mathf.Deg2Rad, (longAngInc * x) * Mathf.Deg2Rad);
+                Offset    = PolarToVector(r, (latAngInc * (y + 1)) * Mathf.Deg2Rad, (longAngInc * x) * Mathf.Deg2Rad); // NOTE: Issue with sphere is on this line
                 lastPoint = new Vector3(Origin.x + Offset.x, Origin.y + Offset.y, Origin.z + Offset.z);
 
                 _PlanetSectors[x, y] = new Sector(NameSector(x, y), lastPoint);
@@ -312,7 +315,7 @@ public class Planet
     {
 
         float x = radius * Mathf.Sin(IncRad) * Mathf.Cos(AziRad);
-        float y = radius * Mathf.Sin(IncRad) * Mathf.Cos(AziRad);
+        float y = radius * Mathf.Sin(IncRad) * Mathf.Sin(AziRad);
         float z = radius * Mathf.Cos(IncRad);
 
         return new Vector3 (x, y, z);
