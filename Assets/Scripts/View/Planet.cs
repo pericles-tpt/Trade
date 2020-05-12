@@ -120,10 +120,17 @@ public class Planet
         Vertices = AssignSphereCoordinatesToVertices(size, maxCoord);
         m.vertices = Vertices;
 
-        // Create int[] for holding triangles
-        int ta_size = (420);//(2 * maxCoord) + (2 * 4 * maxCoord) + (5 * (6 * maxCoord)) + 300);
+        // Create int[] for holding triangles - NOTE: Return here the triangle triplets aren't being ordered appropriately to make a sphere
+        // Counts structed as timesPointUsed * noOfPoints *  noOfRows = Count
+        int maxMinPointsCount          = (maxCoord * 1 * 2);
+        int ringToMaxMinCount          = (2 * maxCoord * 2);
+        int ringToBelowRingCount       = (3 * maxCoord * 2);
+        int ringToAboveBelowRingsCount = (6 * maxCoord * (maxCoord - 3));
+
+        int ta_size = (maxMinPointsCount + ringToMaxMinCount + ringToBelowRingCount + ringToAboveBelowRingsCount);
+        Debug.Log("Triangle array size is: " + ta_size + ", for planet of size " + size);
         int[] ta = new int[ta_size];
-        ta = AssignSphereTrianglesToTArray(Vertices, maxCoord, ta_size); // NOTE: Assigned coordinates may not be correct come back here
+        ta = AssignSphereTrianglesToTArray(Vertices, maxCoord, ta_size);
         m.triangles = ta;
 
         // Create Vector3[] for holding normals of mesh... thank god there's a function for that
@@ -160,7 +167,7 @@ public class Planet
 
         // Assign the top of the sphere to the array first
         ret[i] = new Vector3(0, 0, 0 + r);
-        Debug.Log("Top: " + ret[i].ToString());
+        Debug.Log("Top " + i + ": " + ret[i].ToString());
         i++;
 
         Vector3 Origin = new Vector3(0, 0, 0);
@@ -181,10 +188,12 @@ public class Planet
             Vector3 Offset    = PolarToVector(r, (latAngInc * (y + 1)) * Mathf.Deg2Rad, 0);
             Vector3 lastPoint = new Vector3(Origin.x + Offset.x, Origin.y + Offset.y, Origin.z + Offset.z);
 
+            // NOTE: DON'T NEED to record all coordinates for _PlanetSectors only need bl coord and shape of sector (i.e. square or triangle)
+            // (ADD THIS to the Sector class for sector shape definition upon instantiation)
             _PlanetSectors[0, y] = new Sector(NameSector(0, y), lastPoint);
 
             ret[i] = lastPoint;
-            Debug.Log("Point: " + ret[i].ToString());
+            Debug.Log("Point " + i + ": " + ret[i].ToString());
             i++;
 
             for (int x = 1; x < maxCoord; x++)
@@ -195,7 +204,7 @@ public class Planet
                 _PlanetSectors[x, y] = new Sector(NameSector(x, y), lastPoint);
 
                 ret[i] = lastPoint;
-                Debug.Log("Point: " + ret[i].ToString());
+                Debug.Log("Point " + i + ": " + ret[i].ToString());
                 i++;
 
             }
@@ -204,7 +213,7 @@ public class Planet
 
         // Assign the bottom of the sphere to the array last
         ret[i] = new Vector3(0, 0, 0 - r);
-        Debug.Log("Bottom: " + ret[i].ToString());
+        Debug.Log("Bottom " + i + ": " + ret[i].ToString());
         i++;
 
         return ret;
@@ -231,12 +240,16 @@ public class Planet
 
         }
 
+        int indexTop = l;
+        Debug.Log(l + " values assigned top");
+
         // Do all the points in between the top and bottom
-        int bottomRowIndex = (maxCoord * (maxCoord - 2));
-        for (int i = 1; i <= bottomRowIndex; i++)
+        int bottomRowIndex = ((maxCoord * (maxCoord - 2)) + 1);
+        for (int i = 1; i < bottomRowIndex; i++)
         {
             int bl, br, tl, tr;
             // For triangle 1: tl, bl, tr
+            Debug.Log("l is: " + l);
             tl = ret[l] = i;
             l++;
             bl = ret[l] = i + maxCoord;
@@ -254,10 +267,12 @@ public class Planet
 
         }
 
+        Debug.Log("values assigned middle " + (l - indexTop));
+
         // Do the bottom point to row above it
         int c = 0;
         Debug.Log("bottom row index " + bottomRowIndex);
-        for (int i = bottomRowIndex + 1; i < ((maxCoord * (maxCoord - 1))); i++)
+        for (int i = bottomRowIndex; i < botIndex; i++)
         {
             ret[l] = i;
             l++;
@@ -271,7 +286,7 @@ public class Planet
 
         }
 
-        Debug.Log(l + " values assigned");
+        Debug.Log(c + " values assigned bottom");
 
         for (int i = 0; i < ret.Length; i++) {
             if ((ret[i] > ((maxCoord * (maxCoord - 1)) + 2)) || (ret[i] < 0))
