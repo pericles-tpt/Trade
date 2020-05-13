@@ -22,15 +22,17 @@ public class PlanetBehaviour : MonoBehaviour
 
         GameObject.Find("pg_planet").GetComponent<PlanetPanelBehaviour>().ShowPanel(this.gameObject);
         GameObject.Find("Camera").GetComponent<GameDirector>().SetSelectedPlanet(this.gameObject);
-        
-        // Zoom into planet
+
+        // Draw sector lines and zoom into planet
         // TODO: Make it smooth
+        GameObject.Find("Camera").GetComponent<GameDirector>().ToggleSectorLines(true, GameObject.Find("Camera").GetComponent<GameDirector>().FindPlanet(this.gameObject));
+        GameObject.Find("Camera").GetComponent<GameDirector>().ToggleTradeLines(false);
+
+
         Camera cam = GameObject.Find("Camera").GetComponent<Camera>();
         cam.transform.LookAt(this.gameObject.transform);
-        cam.orthographicSize = 0.65f;
-
-        // Also when zoomed into planet disable tradelines showing up
-        GameObject.Find("Camera").GetComponent<GameDirector>().ToggleTradeLines(false);
+        cam.orthographicSize = 0.55f * Mathf.Pow(GameObject.Find("Camera").GetComponent<GameDirector>().GetSelectedPlanet().transform.localScale.x, 2);
+        //cam.transform.Rotate(new Vector3(-90, 0, 0));
     }
 
 }

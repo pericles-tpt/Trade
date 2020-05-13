@@ -50,6 +50,12 @@ public class LineManager
         Lines.Clear();
     }
 
+    public void ToggleHideAllLines (bool show)
+    {
+        foreach (KeyValuePair<Tuple<Vector3, Vector3>, GameObject> i in Lines)
+            i.Value.GetComponent<LineRenderer>().forceRenderingOff = show;
+    }
+
     public void DestroyLineByCoord(Tuple<Vector3, Vector3> Coord)
     {
         foreach (KeyValuePair<Tuple<Vector3, Vector3>, GameObject> i in Lines)
@@ -83,7 +89,7 @@ public class LineManager
         myLine.AddComponent<LineRenderer>();
         LineRenderer lr = myLine.GetComponent<LineRenderer>();
         lr.SetColors(Color.white, Color.white);
-        lr.SetWidth(0.01f, 0.01f); // NOTE: Was 0.1f before
+        lr.SetWidth(0.1f, 0.1f); // NOTE: Was 0.1f before
         lr.SetPosition(0, start);
         lr.SetPosition(1, end);
         Material whiteDiffuse = new Material(Shader.Find("Unlit/Texture"));
@@ -91,5 +97,25 @@ public class LineManager
 
         planetLines.Add(Tuple.Create(start, end), myLine);
     }
-   
+
+    public void DrawLine(Vector3 start, Vector3 end, float width = 0.01f, float duration = 0.2f)
+    {
+        // Return if line would cross the origin (a.k.a the sun)
+        //if (LineIntersectsSun(start, end))
+        //    return;
+
+        GameObject myLine = new GameObject();
+        myLine.transform.position = start;
+        myLine.AddComponent<LineRenderer>();
+        LineRenderer lr = myLine.GetComponent<LineRenderer>();
+        lr.SetColors(Color.white, Color.white);
+        lr.SetWidth(width, width); // NOTE: Was 0.1f before
+        lr.SetPosition(0, start);
+        lr.SetPosition(1, end);
+        Material whiteDiffuse = new Material(Shader.Find("Unlit/Texture"));
+        lr.material = whiteDiffuse;
+
+        Lines.Add(Tuple.Create(start, end), myLine);
+    }
+
 }

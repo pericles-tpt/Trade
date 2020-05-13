@@ -8,6 +8,7 @@ public class GameDirector : MonoBehaviour
     GameObject PlanetSelected;
 
     private bool TradeLinesOn = true;
+    private bool SectorLinesOn = false;
 
     // Use this for initialization
     void Start()
@@ -46,6 +47,18 @@ public class GameDirector : MonoBehaviour
         if (setting == false)
             DestroyAllLines();
         TradeLinesOn = setting;
+    }
+
+    public void ToggleSectorLines(bool setting, Planet p)
+    {
+        if (setting == false)
+            p._SectorLines.DestroyAllLines();
+        else
+        {
+            p._SectorLines.DestroyAllLines();
+            p.DrawSectorLines((int)p._ThisSectorSize);
+        }
+        SectorLinesOn = setting;
     }
 
     public Planet FindPlanet(GameObject go)
