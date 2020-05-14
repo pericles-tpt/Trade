@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 public class GameDirector : MonoBehaviour
@@ -59,6 +60,16 @@ public class GameDirector : MonoBehaviour
             p.DrawSectorLines((int)p._ThisSectorSize);
         }
         SectorLinesOn = setting;
+    }
+
+    public void ToggleHidePlanetsNotSelected(bool isShown)
+    {
+        GameObject.Find("sun").gameObject.GetComponent<Renderer>().enabled = isShown;
+        foreach (Planet p in current._Planets)
+        {
+            if (p._GameObject != PlanetSelected)
+                p._GameObject.SetActive(isShown);
+        }
     }
 
     public Planet FindPlanet(GameObject go)

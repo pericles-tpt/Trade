@@ -1,6 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Numerics;
 using UnityEngine;
+using Quaternion = UnityEngine.Quaternion;
+using Vector3 = UnityEngine.Vector3;
 
 public class TogglePlanetViewBehaviour : MonoBehaviour
 {
@@ -12,13 +15,19 @@ public class TogglePlanetViewBehaviour : MonoBehaviour
         else
             planetView = true;
 
+        Quaternion galaxyCameraRotation = new Quaternion();
+
         if (planetView)
         {
             //Debug.Log(planetView);
             // Zoom into planet
             // TODO: Make it smooth
+            GameObject.Find("Camera").GetComponent<GameDirector>().ToggleHidePlanetsNotSelected(true);
+
             Camera cam = GameObject.Find("Camera").GetComponent<Camera>();
-            cam.transform.LookAt(GameObject.Find("sun").transform);
+            cam.transform.LookAt(new Vector3(0,0,0));
+            cam.transform.rotation = galaxyCameraRotation;
+            cam.transform.position = new Vector3 (0, 0, -20);
             cam.orthographicSize = 15;
 
             // Also when zoomed into planet disable tradelines showing up
@@ -30,9 +39,15 @@ public class TogglePlanetViewBehaviour : MonoBehaviour
             // Debug.Log(planetView);
             // Zoom into planet
             // TODO: Make it smooth
+            GameObject.Find("Camera").GetComponent<GameDirector>().ToggleHidePlanetsNotSelected(false);
+
             Camera cam = GameObject.Find("Camera").GetComponent<Camera>();
-            cam.transform.LookAt(GameObject.Find("Camera").GetComponent<GameDirector>().GetSelectedPlanet().transform);
+            galaxyCameraRotation = cam.transform.rotation;
+
+            cam.transform.LookAt(GameObject.Find("Camera").GetComponent<GameDirector>().GetSelectedPlanet().transform, new Vector3(0, 0, -1));
+            //cam.transform.RotateAround(GameObject.Find("Camera").GetComponent<GameDirector>().GetSelectedPlanet().transform.position, new Vector3(0, 1, 0), -25f);
             cam.orthographicSize = 0.55f * Mathf.Pow(GameObject.Find("Camera").GetComponent<GameDirector>().GetSelectedPlanet().transform.localScale.x, 2);
+            //cam.transform.Rotate(Vector3(45, 45, 45));
 
             // Also when zoomed into planet disable tradelines showing up
             GameObject.Find("Camera").GetComponent<GameDirector>().ToggleSectorLines(true, GameObject.Find("Camera").GetComponent<GameDirector>().FindPlanet(GameObject.Find("Camera").GetComponent<GameDirector>().GetSelectedPlanet()));

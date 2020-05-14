@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System;
 using System.Collections.Generic;
+using System.Numerics;
+using Vector3 = UnityEngine.Vector3;
 
 public class LineManager
 {
@@ -29,7 +31,8 @@ public class LineManager
             if (selectedIndex != k)
             {
                 //Debug.Log("Drawn line from: " + s.ToString() + "to: " + e.ToString());
-                DrawLine(s, e, ref Lines, 0);
+                if (!LineHitsSunCollider(s, e))
+                    DrawLine(s, e, ref Lines, 0);
 
             }
             else
@@ -115,7 +118,21 @@ public class LineManager
         Material whiteDiffuse = new Material(Shader.Find("Unlit/Texture"));
         lr.material = whiteDiffuse;
 
+        float length = Vector3.Distance(end, start);
+
+        Debug.Log("Created line at z-position (end): " + end.z + ", of length: " + length);
+
         Lines.Add(Tuple.Create(start, end), myLine);
+    }
+
+    private bool LineHitsSunCollider(Vector3 start, Vector3 end)
+    {
+        Vector3 direction = new Vector3(end.x - start.x, end.y - start.y, end.z - start.z);
+        float maxLength = Vector3.Distance(start, end);
+        Ray ray = new Ray(start, direction);
+        RaycastHit info = new RaycastHit();
+        return(GameObject.Find("sun").GetComponent<SphereCollider>().Raycast(ray, out info, maxLength));
+
     }
 
 }

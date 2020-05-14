@@ -123,7 +123,6 @@ public class Planet
         // Create Vector3[] for holding coordinates of mesh
         Vector3[] Vertices = new Vector3[maxCoord * maxCoord];
         Vertices = AssignSphereCoordinatesToVertices(size, maxCoord);
-        m.vertices = Vertices;
         
         // Create int[] for holding triangles - NOTE: Return here the triangle triplets aren't being ordered appropriately to make a sphere
         // Counts structed as timesPointUsed * noOfPoints *  noOfRows = Count
@@ -132,22 +131,26 @@ public class Planet
         int ringToBelowRingCount       = (3 * maxCoord * 2);
         int ringToAboveBelowRingsCount = (6 * maxCoord * (maxCoord - 3));
 
-        int ta_size = (maxMinPointsCount + ringToMaxMinCount + ringToBelowRingCount + ringToAboveBelowRingsCount);
-        Debug.Log("Triangle array size is: " + ta_size + ", for planet of size " + size);
-        int[] ta = new int[ta_size];
-        ta = AssignSphereTrianglesToTArray(Vertices, maxCoord, ta_size);
-        m.triangles = ta;
-
-        // Create Vector3[] for holding normals of mesh... thank god there's a function for that
-        m.RecalculateNormals();
 
         // Assign and calculate uv's for the mesh
         Vector2[] uv = new Vector2[Vertices.Length];
         uv = CalculateUVs(Vertices, Vertices.Length);
-        m.uv = uv;
+
+        // Create Vector3[] for holding normals of mesh... thank god there's a function for that
+        Vector3[] normals = CalculateNormals(Vertices);//CalculateNormals(Vertices);
+
+        int ta_size = (maxMinPointsCount + ringToMaxMinCount + ringToBelowRingCount + ringToAboveBelowRingsCount);
+        Debug.Log("Triangle array size is: " + ta_size + ", for planet of size " + size);
+        int[] ta = new int[ta_size];
+        ta = AssignSphereTrianglesToTArray(Vertices, maxCoord, ta_size);
 
         // Finally assign the new mesh to the gameobject
         m.name = "Test";
+        m.vertices = Vertices;
+        m.normals = normals;
+        m.uv = uv;
+        m.triangles = ta;
+        
         _GameObject.GetComponent<MeshFilter>().mesh = m;
 
         // FIX: This doesn't belong here but this is how i'll get it to work for now... cbf to refactor this file atm
@@ -309,14 +312,12 @@ public class Planet
             int bl, br, tl, tr;
             // For triangle 1: tl, bl, tr
             Debug.Log("l is: " + l);
-            tl = ret[l] = i;
-            l++;
             bl = ret[l] = i + maxCoord;
+            l++;
+            tl = ret[l] = i;
             l++;
             tr = ret[l] = i + 1;
             l++;
-
-            Debug.Log("triangle middle 1: " + "(" + tl + ", " + bl + ", " + tr + ")");
 
             // For triangle 2: bl, tr, br
             ret[l] = bl;
@@ -326,7 +327,7 @@ public class Planet
             br = ret[l] = bl + 1;
             l++;
 
-            Debug.Log("triangle middle 2: " + "(" + bl + ", " + tr + ", " + br + ")");
+            Debug.Log("triangle 1: " + "(" + bl + ", " + tl + ", " + tr + "), triangle 2: (" + bl + ", " + tr + ", " + br + ")");
 
         }
 
@@ -337,10 +338,10 @@ public class Planet
         Debug.Log("bottom row index " + bottomRowIndex);
         for (int i = bottomRowIndex; i < botIndex; i++)
         {
-            ret[l] = i;
+            ret[l] = botIndex;
             l++;
             c++;
-            ret[l] = botIndex;
+            ret[l] = i;
             l++;
             c++;
             int p3b;
@@ -348,6 +349,7 @@ public class Planet
             {
                 p3b = bottomRowIndex;
                 ret[l] = p3b;
+                Debug.Log("botIndex: " + botIndex + ", i: " + i + ", bottomRowIndex: " + bottomRowIndex);
                 l++;
             }
             else
@@ -356,7 +358,7 @@ public class Planet
                 ret[l] = p3b;
                 l++;
             }
-            Debug.Log("triangle bottom: " + "(" + i + ", " + botIndex + ", " + p3b + ")");
+            //Debug.Log("triangle bottom: " + "(" + i + ", " + botIndex + ", " + p3b + ")");
 
         }
 
@@ -433,14 +435,53 @@ public class Planet
         Vector2[] ret = new Vector2[size];
         for (int i = 0; i < size; i++)
         {
-            float u = 0.5f + (Mathf.Atan2(vertices[i].x, vertices[i].y) / (2 * Mathf.PI));
-            float v = 0.5f - (Mathf.Asin(vertices[i].z) / Mathf.PI);
+            //Vector3 pts = new Vector3(-vertices[i].x, -vertices[i].y, -vertices[i].z);
+            //float mag = Mathf.Sqrt(Mathf.Pow(pts.x, 2f) + Mathf.Pow(pts.y, 2f) + Mathf.Pow(pts.z, 2f));
+            //Vector3 puv = new Vector3(pts.x / mag, pts.y / mag, pts.z / mag);
+
+            Vector3 c = vertices[i];
+
+            float u = 0.5f + (Mathf.Atan2(c.x, c.z) / (-2 * Mathf.PI));
+
+            if (u < 0f)
+                u += 1f;
+
+            float v = /*0.5f - (Mathf.Asin(c.y) / Mathf.PI)*/ Mathf.Asin(c.y) / Mathf.PI + 0.5f;
             ret[i] = new Vector2(u, v);
 
         }
         return ret;
 
     }
+
+    // OLD
+    private Vector3[] CalculateNormals(Vector3[] vertices)
+    {
+        Vector3[] ret = new Vector3[vertices.Length];
+        int i = 0;
+        foreach (Vector3 v in vertices)
+        {
+            //float mag = Mathf.Sqrt(Mathf.Pow((2 * v.x), 2) + Mathf.Pow((2 * v.y), 2) + Mathf.Pow((2 * v.z), 2));
+            //Vector3 nv = new Vector3((2*v.x) / mag, (2*v.y) / mag, (2*v.z) / mag);
+            ret[i] = v.normalized;
+            i++;
+        }
+        return ret;
+    }
+
+    /*private Vector3[] CalculateNormals(Vector2[] uvs)
+    {
+        Vector3[] ret = new Vector3[uvs.Length];
+        int i = 0;
+        foreach (Vector2 v in uvs)
+        {
+            Vector3 nv = new Vector3((Mathf.Cos(v.x) * Mathf.Sin(v.y)), (Mathf.Sin(v.x) * Mathf.Sin(v.y)), (Mathf.Cos(v.y)));
+
+            ret[i] = nv;
+            i++;
+        }
+        return ret;
+    }*/
 
     private Vector3 PolarToVector (float radius, float IncRad, float AziRad)
     {
