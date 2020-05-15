@@ -24,4 +24,28 @@ public class Sector {
 
     }
 
+    public static string NameSector(int x, int y)
+    {
+        // Naming scheme is 3 first letters to planet, number of planet if valid, x coord in integers, y coord in integers.
+        // e.g. HOD3-4-4
+        int maxSectorSize = 2 * Planet._SectorSize;
+        int numberPrefixesSize = (maxSectorSize.ToString().Length - 1);
+
+        string[] numberPrefixes = new string[numberPrefixesSize];
+        string lastPrefix = "";
+        for (int i = 0; i < numberPrefixesSize; i++)
+        {
+            numberPrefixes[i] = lastPrefix + "0";
+            lastPrefix = numberPrefixes[i];
+        }
+
+        int index = numberPrefixesSize - x.ToString().Length;
+
+        if (index < 0)
+            return ("X" + x + "Y" + y);
+        else
+            return ("X" + numberPrefixes[index] + x + "Y" + y);
+
+    }
+
 }

@@ -1663,6 +1663,7 @@ GameObject:
   - component: {fileID: 1150049407}
   - component: {fileID: 1150049409}
   - component: {fileID: 1150049410}
+  - component: {fileID: 1150049411}
   m_Layer: 0
   m_Name: Camera
   m_TagString: Untagged
@@ -1744,7 +1745,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1150049405}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f361e3cf342dd754a8b6adf50b5c2589, type: 3}
+  m_Script: {fileID: 11500000, guid: f734750b67b074e40a0caddae7d3d959, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &1150049410
@@ -1756,12 +1757,24 @@ MonoBehaviour:
   m_GameObject: {fileID: 1150049405}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a9890466a32c2844fa4fbdeeabc585f7, type: 3}
+  m_Script: {fileID: 11500000, guid: 526f76bc92a516e4ca18758143263a0d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Temperate: {fileID: 21300000, guid: 02334aa46872d48ae81a69d0bee6e134, type: 3}
-  Molten: {fileID: 21300000, guid: e74797e54a7af42a4b5eda1dd13d62ab, type: 3}
-  Water: {fileID: 21300000, guid: 51de3df8776f14b26a674aa50268e2f2, type: 3}
+--- !u!114 &1150049411
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1150049405}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc5ffff1132d42042b0bb9c933ab8eb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Temperate: {fileID: 21300000, guid: 7d7c879c96e8946f498b6e96cba97e45, type: 3}
+  Molten: {fileID: 21300000, guid: 5c90da3de666a4c348b4f25284b79165, type: 3}
+  Water: {fileID: 21300000, guid: 1d6b726f7ae9e430a88a9f650aa60a05, type: 3}
   TemperatePlanet: {fileID: 2502290665765389085, guid: 3eab5db2aa27f964681c34c33485087e,
     type: 3}
   MoltenPlanet: {fileID: 2502290665765389085, guid: 07b82e88902532b4aa75bb776a7bb592,
@@ -2265,7 +2278,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: player
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5598459548085153147, guid: 38f8086ddf9244413879700cc3f34786, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 38f8086ddf9244413879700cc3f34786, type: 3}
 --- !u!1 &1407452872
 GameObject:

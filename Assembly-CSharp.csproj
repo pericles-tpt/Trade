@@ -63,41 +63,30 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\KeyInputController.cs" />
+    <Compile Include="Assets\Scripts\Core\DP_Factory\GalaxyFactory.cs" />
+    <Compile Include="Assets\Scripts\Core\DP_Factory\PlanetFactory.cs" />
     <Compile Include="Assets\Scripts\Core\Entities\Entity.cs" />
-    <Compile Include="Assets\Scripts\Core\Entities\Humanoid.cs" />
-    <Compile Include="Assets\Scripts\Core\Entities\Living.cs" />
-    <Compile Include="Assets\Scripts\Core\Entities\Manufactured.cs" />
-    <Compile Include="Assets\Scripts\Core\InvGrid.cs" />
-    <Compile Include="Assets\Scripts\Core\Item.cs" />
-    <Compile Include="Assets\Scripts\Core\Locations\City.cs" />
-    <Compile Include="Assets\Scripts\Core\Locations\Country.cs" />
-    <Compile Include="Assets\Scripts\Core\Locations\Land.cs" />
-    <Compile Include="Assets\Scripts\Core\Locations\Node.cs" />
+    <Compile Include="Assets\Scripts\Core\Entities\Player.cs" />
+    <Compile Include="Assets\Scripts\Core\Items\InvGrid.cs" />
+    <Compile Include="Assets\Scripts\Core\Items\Item.cs" />
+    <Compile Include="Assets\Scripts\Core\Items\Ship.cs" />
+    <Compile Include="Assets\Scripts\Core\Locations\Galaxy.cs" />
+    <Compile Include="Assets\Scripts\Core\Locations\Planet.cs" />
     <Compile Include="Assets\Scripts\Core\Locations\Sector.cs" />
-    <Compile Include="Assets\Scripts\Core\Locations\Street.cs" />
-    <Compile Include="Assets\Scripts\Core\Locations\Suburb.cs" />
-    <Compile Include="Assets\Scripts\Core\Locations\Territory.cs" />
-    <Compile Include="Assets\Scripts\Core\Ship.cs" />
-    <Compile Include="Assets\Scripts\ExternalCode\CreateIcoSphere.cs" />
-    <Compile Include="Assets\Scripts\MISC\GalaxyGenerator.cs" />
-    <Compile Include="Assets\Scripts\MISC\OLDCODE.cs" />
-    <Compile Include="Assets\Scripts\View\Galaxy.cs" />
-    <Compile Include="Assets\Scripts\View\GalaxyFactory.cs" />
-    <Compile Include="Assets\Scripts\View\GameDirector.cs" />
+    <Compile Include="Assets\Scripts\Core\Management\GameDirector.cs" />
+    <Compile Include="Assets\Scripts\Core\Management\LineManager.cs" />
+    <Compile Include="Assets\Scripts\Core\SphereMeshGenerator.cs" />
+    <Compile Include="Assets\Scripts\OLD_CODE\GalaxyGenerator.cs" />
+    <Compile Include="Assets\Scripts\OLD_CODE\OLDCODE.cs" />
     <Compile Include="Assets\Scripts\View\GameObjects\PlanetBehaviour.cs" />
-    <Compile Include="Assets\Scripts\View\LineManager.cs" />
-    <Compile Include="Assets\Scripts\View\Planet.cs" />
-    <Compile Include="Assets\Scripts\View\PlanetFactory.cs" />
-    <Compile Include="Assets\Scripts\View\Player.cs" />
-    <Compile Include="Assets\Scripts\View\UI\Buttons\EndTurnBehaviour.cs" />
-    <Compile Include="Assets\Scripts\View\UI\Buttons\LoadGameButton.cs" />
-    <Compile Include="Assets\Scripts\View\UI\Buttons\NewGameBehaviour.cs" />
-    <Compile Include="Assets\Scripts\View\UI\Buttons\OptionsMenuButton.cs" />
-    <Compile Include="Assets\Scripts\View\UI\Buttons\QuitGameBehaviour.cs" />
-    <Compile Include="Assets\Scripts\View\UI\Buttons\TogglePlanetViewBehaviour.cs" />
+    <Compile Include="Assets\Scripts\View\Input\KeyInputController.cs" />
+    <Compile Include="Assets\Scripts\View\UI\Buttons\GameUI\EndTurnBehaviour.cs" />
+    <Compile Include="Assets\Scripts\View\UI\Buttons\GameUI\TogglePlanetViewBehaviour.cs" />
+    <Compile Include="Assets\Scripts\View\UI\Buttons\MainMenu\NewGameBehaviour.cs" />
+    <Compile Include="Assets\Scripts\View\UI\Buttons\MainMenu\QuitGameBehaviour.cs" />
     <Compile Include="Assets\Scripts\View\UI\Panels\PlanetPanelBehaviour.cs" />
     <Compile Include="Assets\Scripts\View\UI\Text\DayTextBehaviour.cs" />
+    <Compile Include="Assets\script.cs" />
     <Reference Include="UnityEngine">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2019.3.13f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
     </Reference>
