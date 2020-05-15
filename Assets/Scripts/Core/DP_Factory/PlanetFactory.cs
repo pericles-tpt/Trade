@@ -20,7 +20,7 @@ public class PlanetFactory : MonoBehaviour
     private Mesh MediumMesh;
     private Mesh LargeMesh;
 
-    void Start()
+    void Awake()
     {
          SmallMesh = SMG.GenerateMesh(1, Planet._SectorSize * 1, ref storedSectorsSmall);
          MediumMesh = SMG.GenerateMesh(1.5f, (int)(Planet._SectorSize * 1.5f), ref storedSectorsMedium);
@@ -46,6 +46,8 @@ public class PlanetFactory : MonoBehaviour
 
         // 5. Assign mesh to the planet's gameobject
         Mesh m = GetMeshForSize(ssize);
+
+        Debug.Log("MESH HAS " + m.vertices + " VERTICES WHICH SHOULD BE > 0");
 
         go.GetComponent<MeshFilter>().mesh = m;
         go.GetComponent<MeshCollider>().sharedMesh = m;
