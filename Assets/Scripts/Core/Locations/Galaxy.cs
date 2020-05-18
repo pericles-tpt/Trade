@@ -138,4 +138,9 @@ public class Galaxy
         return ret;
     }
 
+    public PlanetFactory GetPlanetFactory()
+    {
+        return pf;
+    }
+
 }

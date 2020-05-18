@@ -92,6 +92,11 @@ public class GameDirector : MonoBehaviour
         return PlanetSelected;
     }
 
+    public PlanetFactory GetPlanetFactory()
+    {
+        return current.GetPlanetFactory();
+    }
+
     // Update is called once per frame
     void Update()
     {

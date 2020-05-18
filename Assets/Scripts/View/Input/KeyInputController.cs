@@ -17,23 +17,22 @@ public class KeyInputController : MonoBehaviour
         {
             if (Input.GetKey("up"))
             {
-
-                GameObject.Find("Camera").transform.RotateAround(GameObject.Find("Camera").GetComponent<GameDirector>().GetSelectedPlanet().transform.position, new Vector3(0, 1, 0), -2f);
+                GameObject.Find("Camera").transform.RotateAround(GameObject.Find("Camera").GetComponent<GameDirector>().GetSelectedPlanet().transform.position, new Vector3(0, 1, 0), -1f);
             }
 
             if (Input.GetKey("down"))
             {
-                GameObject.Find("Camera").transform.RotateAround(GameObject.Find("Camera").GetComponent<GameDirector>().GetSelectedPlanet().transform.position, new Vector3(0, 1, 0), 2f);
+                GameObject.Find("Camera").transform.RotateAround(GameObject.Find("Camera").GetComponent<GameDirector>().GetSelectedPlanet().transform.position, new Vector3(0, 1, 0), 1f);
             }
 
             if (Input.GetKey("left"))
             {
-                GameObject.Find("Camera").transform.RotateAround(GameObject.Find("Camera").GetComponent<GameDirector>().GetSelectedPlanet().transform.position, new Vector3(0, 0, 1), -2f);
+                GameObject.Find("Camera").transform.RotateAround(GameObject.Find("Camera").GetComponent<GameDirector>().GetSelectedPlanet().transform.position, new Vector3(0, 0, 1), -1f);
             }
 
             if (Input.GetKey("right"))
             {
-                GameObject.Find("Camera").transform.RotateAround(GameObject.Find("Camera").GetComponent<GameDirector>().GetSelectedPlanet().transform.position, new Vector3(0, 0, 1), 2f);
+                GameObject.Find("Camera").transform.RotateAround(GameObject.Find("Camera").GetComponent<GameDirector>().GetSelectedPlanet().transform.position, new Vector3(0, 0, 1), 1f);
 
             }
         }
