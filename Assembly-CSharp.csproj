@@ -75,7 +75,9 @@
     <Compile Include="Assets\Scripts\Core\Locations\Sector.cs" />
     <Compile Include="Assets\Scripts\Core\Management\GameDirector.cs" />
     <Compile Include="Assets\Scripts\Core\Management\LineManager.cs" />
+    <Compile Include="Assets\Scripts\Core\QuadMeshGenerator.cs" />
     <Compile Include="Assets\Scripts\Core\SphereMeshGenerator.cs" />
+    <Compile Include="Assets\Scripts\Core\TriangleMeshGenerator.cs" />
     <Compile Include="Assets\Scripts\OLD_CODE\GalaxyGenerator.cs" />
     <Compile Include="Assets\Scripts\OLD_CODE\OLDCODE.cs" />
     <Compile Include="Assets\Scripts\View\GameObjects\PlanetBehaviour.cs" />

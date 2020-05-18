@@ -9,6 +9,8 @@ using Vector3 = UnityEngine.Vector3;
 public class PlanetBehaviour : MonoBehaviour
 {
     bool trackCursorPosition = false;
+    QuadMeshGenerator QMG = new QuadMeshGenerator();
+    TriangleMeshGenerator TMG = new TriangleMeshGenerator();
 
     private void OnMouseOver()
     {
@@ -51,162 +53,122 @@ public class PlanetBehaviour : MonoBehaviour
             Sector[,] PlanetSectors = GameObject.Find("Camera").GetComponent<GameDirector>().FindPlanet(this.gameObject)._PlanetSectors;
             float sphereScale = GameObject.Find("Camera").GetComponent<GameDirector>().FindPlanet(this.gameObject)._SphereSize;
 
-            // 1. Find the North, South, East and West GameObject that were created when the planet view was toggled on
-            GameObject N = GameObject.Find("North");
-            GameObject S = GameObject.Find("South");
-            GameObject E = GameObject.Find("East");
-            GameObject W = GameObject.Find("West");
+            Camera cam = GameObject.Find("Camera").GetComponent<Camera>();
 
-            // 2. Get the point on the mesh that wil be hit by a ray cast from the cursor
-            Ray ray = GameObject.Find("Camera").GetComponent<Camera>().ScreenPointToRay(Input.mousePosition);
-            float maxLength = 100f;
-            RaycastHit info = new RaycastHit();
-            GameObject.Find(this.gameObject.name).GetComponent<MeshCollider>().Raycast(ray, out info, maxLength);
-            Debug.Log("Hit mesh at point " + new Vector3(info.point.x - this.gameObject.transform.position.x, info.point.y - this.gameObject.transform.position.y, info.point.z - this.gameObject.transform.position.z));
-            Vector3 mPoint = info.point;
+            //2. Get the point on the mesh that wil be hit by a ray cast from the cursor
+            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+            RaycastHit rHit;
+            Physics.Raycast(ray, out rHit, Mathf.Infinity);
 
-            Debug.Log("Hit mesh at point absolute " + info.point);
+            Debug.Log("Raycast position " + rHit.point);
 
-            // 3. Find how far along the N -> S and E -> W line mPoint is and thus find its corresponding sector
-            // USING FIRST METHOD FROM: https://www.youtube.com/watch?v=9wznbg_aKOo
-            // 3.1. (x - x_0 / a) = (y - y_0 / b) = (z - z_0 / c), U is UP (SN), R is RIGHT (WE)
-            float xDiffU = (S.transform.position.x - N.transform.position.x);
-            float yDiffU = (S.transform.position.y - N.transform.position.y);
-            float zDiffU = (S.transform.position.z - N.transform.position.z);
-
-            float xDiffR = (W.transform.position.x - E.transform.position.x);
-            float yDiffR = (W.transform.position.y - E.transform.position.y);
-            float zDiffR = (W.transform.position.z - E.transform.position.z);
-
-            // 3.2. Find the smallest of the numerators
-            float minDiffU = FindMinFromThree(xDiffU, yDiffU, zDiffU);
-            float minDiffR = FindMinFromThree(xDiffR, yDiffR, zDiffR);
-
-            Debug.Log("xDiffU: " + xDiffU + ", yDiffU: " + yDiffU + ", zDiffU: " + zDiffU);
-            Debug.Log("minDiffU: " + minDiffU);
-
-            Debug.Log("xDiffR: " + xDiffR + ", yDiffR: " + yDiffR + ", zDiffR: " + zDiffR);
-            Debug.Log("minDiffR: " + minDiffR);
-
-            // 3.3. Divide each numerator by the smallest number from above to get the a, b and c from (2.1)
-            float UA = xDiffU / minDiffU;
-            float UB = yDiffU / minDiffU;
-            float UC = zDiffU / minDiffU;
-
-            float RA = xDiffR / minDiffR;
-            float RB = yDiffR / minDiffR;
-            float RC = zDiffR / minDiffR;
-
-            Debug.Log("UA: " + UA + ", UB: " + UB + ", UC: " + UC);
-            Debug.Log("RA: " + RA + ", RB: " + RB + ", RC: " + RC);
-
-            // 3.4. Find d for the equation of the plane for U and R i.e. (a, b, c) . (x, y, z) = (a, b, c) . (point) = d
-            float du = (UA * mPoint.x) + (UB * mPoint.y) + (UC * mPoint.z);
-            float dr = (RA * mPoint.x) + (RB * mPoint.y) + (RC * mPoint.z);
-
-            // 3.5 Substitue parametric equations into the equation of the plane
-            // 3.5.1. Parametric equations for U and R are
-            // tu = (x - N.transform.position.x)/UA = (y - N.transform.position.y)/UB = (z - N.transform.position.z)/UC
-            // tr = (x - E.transform.position.x)/RA = (y - E.transform.position.y)/RB = (z - E.transform.position.z)/RC
-
-            // 3.5.2. Rearrange parametric equations for x, y and z
-            // (UA * t) - N.transform.position.x = x
-            // (UB * t) - N.transform.position.y = y
-            // (UC * t) - N.transform.position.z = z
-
-            // (RA * t) - E.transform.position.x = x
-            // (RB * t) - E.transform.position.y = y
-            // (RC * t) - E.transform.position.z = z
-
-            // 3.5.2. Calculate t coefficient and integer component
-            float tcu = ((UA * UA) + (UB * UB) + (UC * UC));
-            float icu = ((UA * -N.transform.position.x) + (UB * -N.transform.position.y) + (UC * -N.transform.position.z) - du);
-
-            float tcr = ((RA * RA) + (RB * RB) + (RC * RC));
-            float icr = ((RA * -E.transform.position.x) + (RB * -E.transform.position.y) + (RC * -E.transform.position.z) - dr);
-
-            // 3.5.3 To find t divide integer component by t coefficient
-            float tu = icu / tcu;
-            float tr = icr / tcr;
-
-            // 4. Finally we can find the point on the N->S and E->W lines by substituting round t-values into parametric equations
-            // for the x, y and z components of the perpendicular point on the U and R lines
-            Vector3 pointU = new Vector3()
-            {
-                x = (UA * tu) - N.transform.position.x,
-                y = (UB * tu) - N.transform.position.y,
-                z = (UC * tu) - N.transform.position.z
-            };
-
-            Vector3 pointR = new Vector3()
-            {
-                x = (RA * tr) - E.transform.position.x,
-                y = (RB * tr) - E.transform.position.y,
-                z = (RC * tr) - E.transform.position.z
-            };
-
-            // 4. Find the distance of the points on the U and R line from the North and East respectively
-            Debug.Log("point u is " + pointU);
-            Debug.Log("point r is " + pointR);
-
-            float distFromNorth = Vector3.Distance(pointU, N.transform.position);
-            float distFromEast = Vector3.Distance(pointR, E.transform.position);
-
-            // Distance from north should indicate the "x" position of the sector that the cursor is in, and distance from
-            // east should indicate the "y" position of the sector that the cursor is in, in the 2D sector's array for that shape
-
-
-
-            // 5. Get starting vector on sphere (i.e. origin + z-level below pole), find if hit point is above/below and left/right of that position
             int maxCoord = (int)(Planet._SectorSize * sphereScale);
             float radius = sphereScale / 2;
 
-            int hi = -1, vi = -1;
+            Vector3[] verts = this.GetComponent<MeshFilter>().mesh.vertices;
 
-            // Use planet sectors to increment through that mesh
+            int zi = -1;
+            for (int i = 0; i < maxCoord; i++)
+            {
+                Debug.Log("Index is " + i);
+
+                float z = -1000000;
+                if (i < (maxCoord - 1))
+                    z = (verts[PlanetSectors[0, i]._CoordIndex].z * sphereScale) + (this.gameObject.transform.position.z);
+                if (i == (maxCoord - 1))
+                    z = (verts[PlanetSectors[0, maxCoord - 2]._CoordIndex].z * sphereScale) + (this.gameObject.transform.position.z);
+
+                Debug.Log("z is " + z);
+                if (i == (maxCoord - 1))
+                {
+                    if (rHit.point.z < z)
+                    {
+                        Debug.Log("I found u your index is " + i + "and the z coord that is < this is " + z);
+                        zi = i;
+                        break;
+                    }
+                } else {
+                    if (rHit.point.z >= z)
+                    {
+                        Debug.Log("I found u your index is " + i + "and the z coord that is < this is " + z);
+                        zi = i;
+                        break;
+                    }
+                }
+            }
+
+            if (zi == -1)
+                throw new System.Exception("y coord for Sector not found");
+
+            int hi = -1;
             for (int i = 0; i < (maxCoord); i++)
             {
-                Debug.Log(this.GetComponent<MeshFilter>().mesh);
-                Debug.Log(this.GetComponent<MeshFilter>().mesh.vertices);
-                Debug.Log(this.GetComponent<MeshFilter>().mesh.vertices[0]);
-                Debug.Log(this.GetComponent<MeshFilter>().mesh.vertices[0].z);
-                Debug.Log(i);
+                float x = (verts[PlanetSectors[i, zi]._CoordIndex].x * sphereScale) + (this.gameObject.transform.position.x);
+                float y = (verts[PlanetSectors[i, zi]._CoordIndex].y * sphereScale) + (this.gameObject.transform.position.y);
 
-                float z = this.GetComponent<MeshFilter>().mesh.vertices[PlanetSectors[0, i]._CoordIndex].z;
-                Debug.Log(z);
+                Debug.Log("Index is " + i + "level is " + zi);
 
-                Debug.Log("radius - z: " + (radius - z) + ", distFromNorth: " + distFromNorth);
+                float yp;
+                if (i < (maxCoord - 1))
+                    yp = (verts[PlanetSectors[i + 1, zi]._CoordIndex].y * sphereScale) + (this.gameObject.transform.position.y);
+                else 
+                    yp = (verts[PlanetSectors[0, zi]._CoordIndex].y * sphereScale) + (this.gameObject.transform.position.y);
 
-                // Find the first z-value where distFromNorth < zFromNorth 
-                if (distFromNorth <= (radius - z))
+                Debug.Log("y is " + y + ", x is " + x);
+
+                Debug.Log("rhit.y " + rHit.point.y + ", y: " + y + ", yp: " + yp);
+
+                if ((rHit.point.x <= this.gameObject.transform.position.x) && (x <= this.gameObject.transform.position.x))
                 {
-                    vi = (i);
-                    break;
+                    if (rHit.point.y <= y && rHit.point.y > yp)
+                    {
+                        Debug.Log("I found u your index is " + i + "and the z coord that is < this is " + y);
+                        hi = i;
+                        break;
+
+                    }
+                } else if ((rHit.point.x > this.gameObject.transform.position.x) && (x > this.gameObject.transform.position.x))
+                {
+                    // y is going down
+                    if (rHit.point.y >= y && rHit.point.y < yp)
+                    {
+                        Debug.Log("I found u your index is " + i + "and the z coord that is < this is " + y);
+                        hi = i;
+                        break;
+
+                    }
+                } else if (((rHit.point.x > this.gameObject.transform.position.x) && (x < this.gameObject.transform.position.x)) || ((rHit.point.x <= this.gameObject.transform.position.x) && (x <= this.gameObject.transform.position.x)))
+                {
+                    Debug.Log("aha we got ya");
                 }
 
             }
 
-            for (int j = 0; j < maxCoord; j++)
-            {
-                float y = this.GetComponent<MeshFilter>().mesh.vertices[PlanetSectors[j, vi]._CoordIndex].y;
+            Debug.Log("rHit is " + rHit.point.y);
 
-                // TODO: DO the parametric stuff above with X as well to find the sign and determine the exact y coordinate here, because y here could conceivable have 2 valid points
-                // Find the first z-value where distFromNorth < zFromNorth 
-                if (distFromEast <= (radius - y))
+            GameObject highlighted = new GameObject();
+            highlighted.name = "highlighted";
+
+            if (hi == -1)
+                throw new System.Exception("y coord for Sector not found");
+            else {
+                if (PlanetSectors[hi, zi]._Shape == Sector.Shape.square)
                 {
-                    hi = j;
-                    break;
+                    highlighted = QMG.GenerateMesh(verts[PlanetSectors[hi, zi]._CoordIndex], verts[PlanetSectors[hi + 1, zi]._CoordIndex], verts[PlanetSectors[hi, zi - 1]._CoordIndex], verts[PlanetSectors[hi + 1, zi - 1]._CoordIndex]);
+                    highlighted.transform.position = verts[PlanetSectors[hi, zi]._CoordIndex];
                 }
-
+                else if (PlanetSectors[hi, zi]._Shape == Sector.Shape.triangleDown)
+                {
+                    highlighted = TMG.GenerateMesh(verts[PlanetSectors[hi, zi]._CoordIndex], verts[PlanetSectors[hi + 1, zi]._CoordIndex], new Vector3(this.gameObject.transform.position.x, this.gameObject.transform.position.y, this.gameObject.transform.position.z - radius), false);
+                    highlighted.transform.position = verts[PlanetSectors[hi, zi]._CoordIndex];
+                }
+                else
+                {
+                    highlighted = TMG.GenerateMesh(verts[PlanetSectors[hi, zi]._CoordIndex], verts[PlanetSectors[hi + 1, zi]._CoordIndex], new Vector3(this.gameObject.transform.position.x, this.gameObject.transform.position.y, this.gameObject.transform.position.z + radius), true);
+                    highlighted.transform.position = verts[PlanetSectors[hi, zi]._CoordIndex];
+                }
             }
 
-            Sector FoundSector;
-            if (hi == -1 || vi == -1)
-                throw new System.Exception("Valid sector was not found");
-            else
-                FoundSector = PlanetSectors[hi, vi];
-
-            Debug.Log(FoundSector._Name + "index: " + FoundSector._CoordIndex);
 
             /*Vector3 start = PolarToVector(this.gameObject.GetComponent<SphereCollider>().radius * this.gameObject.transform.localScale.x, Inc * Mathf.Deg2Rad, 0);
             Vector3 relativePoint = new Vector3(info.point.x - this.gameObject.transform.position.x, info.point.y - this.gameObject.transform.position.y, info.point.z - this.gameObject.transform.position.z);
