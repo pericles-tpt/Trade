@@ -175,7 +175,7 @@ public class PlanetBehaviour : MonoBehaviour
             else {
                 if (drawNewSector)
                 {
-                    //p._SectorLines.DestroyAllLines();
+                    p._SectorLines.DestroyAllLines();
 
                     if (PlanetSectors[hi, zi]._Shape == Sector.Shape.square)
                     {

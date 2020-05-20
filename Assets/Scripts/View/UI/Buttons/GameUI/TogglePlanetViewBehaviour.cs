@@ -45,7 +45,7 @@ public class TogglePlanetViewBehaviour : MonoBehaviour
             cam.orthographicSize = 0.55f * Mathf.Pow(GameObject.Find("Camera").GetComponent<GameDirector>().GetSelectedPlanet().transform.localScale.x, 2);
 
             // Enable sector lines on planet showing up and disable trade lines showing up
-            GameObject.Find("Camera").GetComponent<GameDirector>().ToggleSectorLines(true, GameObject.Find("Camera").GetComponent<GameDirector>().FindPlanet(GameObject.Find("Camera").GetComponent<GameDirector>().GetSelectedPlanet()));
+            GameObject.Find("Camera").GetComponent<GameDirector>().ToggleSectorLines(false, GameObject.Find("Camera").GetComponent<GameDirector>().FindPlanet(GameObject.Find("Camera").GetComponent<GameDirector>().GetSelectedPlanet()));
             GameObject.Find("Camera").GetComponent<GameDirector>().ToggleTradeLines(false);
             planetView = true;
         }
