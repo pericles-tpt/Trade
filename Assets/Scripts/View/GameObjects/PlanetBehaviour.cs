@@ -1,9 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Numerics;
 using System.Runtime;
 using UnityEngine;
 using UnityEngine.UI;
+using Quaternion = UnityEngine.Quaternion;
 using Vector3 = UnityEngine.Vector3;
 
 public class PlanetBehaviour : MonoBehaviour
@@ -11,6 +14,8 @@ public class PlanetBehaviour : MonoBehaviour
     bool trackCursorPosition = false;
     QuadMeshGenerator QMG = new QuadMeshGenerator();
     TriangleMeshGenerator TMG = new TriangleMeshGenerator();
+    int selectedSector;
+    bool drawNewSector = true;
 
     private void OnMouseOver()
     {
@@ -51,6 +56,7 @@ public class PlanetBehaviour : MonoBehaviour
             // 0. Get the appropriate PlanetSectors array for the size of this mesh, will be used later to pinpoint sector
             // that cursor is in once the correct coordinates for the PlanetSectors array are found
             Sector[,] PlanetSectors = GameObject.Find("Camera").GetComponent<GameDirector>().FindPlanet(this.gameObject)._PlanetSectors;
+            Planet p = GameObject.Find("Camera").GetComponent<GameDirector>().FindPlanet(this.gameObject);
             float sphereScale = GameObject.Find("Camera").GetComponent<GameDirector>().FindPlanet(this.gameObject)._SphereSize;
 
             Camera cam = GameObject.Find("Camera").GetComponent<Camera>();
@@ -103,6 +109,7 @@ public class PlanetBehaviour : MonoBehaviour
             int hi = -1;
             for (int i = 0; i < (maxCoord); i++)
             {
+                Debug.Log("i: " + i + ", zi: " + zi);
                 float x = (verts[PlanetSectors[i, zi]._CoordIndex].x * sphereScale) + (this.gameObject.transform.position.x);
                 float y = (verts[PlanetSectors[i, zi]._CoordIndex].y * sphereScale) + (this.gameObject.transform.position.y);
 
@@ -144,6 +151,20 @@ public class PlanetBehaviour : MonoBehaviour
 
             }
 
+            Debug.Log("hi is: " + hi + ", zi is: " + zi);
+            if (selectedSector == null) {
+                selectedSector = PlanetSectors[hi, zi]._CoordIndex;
+                drawNewSector = true;
+            } else if (selectedSector != PlanetSectors[hi, zi]._CoordIndex)
+            {
+                selectedSector = PlanetSectors[hi, zi]._CoordIndex;
+                drawNewSector = true;
+            } else
+            {
+                drawNewSector = false;
+            }
+
+
             Debug.Log("rHit is " + rHit.point.y);
 
             GameObject highlighted = new GameObject();
@@ -152,20 +173,23 @@ public class PlanetBehaviour : MonoBehaviour
             if (hi == -1)
                 throw new System.Exception("y coord for Sector not found");
             else {
-                if (PlanetSectors[hi, zi]._Shape == Sector.Shape.square)
+                if (drawNewSector)
                 {
-                    highlighted = QMG.GenerateMesh(verts[PlanetSectors[hi, zi]._CoordIndex], verts[PlanetSectors[hi + 1, zi]._CoordIndex], verts[PlanetSectors[hi, zi - 1]._CoordIndex], verts[PlanetSectors[hi + 1, zi - 1]._CoordIndex]);
-                    highlighted.transform.position = verts[PlanetSectors[hi, zi]._CoordIndex];
-                }
-                else if (PlanetSectors[hi, zi]._Shape == Sector.Shape.triangleDown)
-                {
-                    highlighted = TMG.GenerateMesh(verts[PlanetSectors[hi, zi]._CoordIndex], verts[PlanetSectors[hi + 1, zi]._CoordIndex], new Vector3(this.gameObject.transform.position.x, this.gameObject.transform.position.y, this.gameObject.transform.position.z - radius), false);
-                    highlighted.transform.position = verts[PlanetSectors[hi, zi]._CoordIndex];
-                }
-                else
-                {
-                    highlighted = TMG.GenerateMesh(verts[PlanetSectors[hi, zi]._CoordIndex], verts[PlanetSectors[hi + 1, zi]._CoordIndex], new Vector3(this.gameObject.transform.position.x, this.gameObject.transform.position.y, this.gameObject.transform.position.z + radius), true);
-                    highlighted.transform.position = verts[PlanetSectors[hi, zi]._CoordIndex];
+                    //p._SectorLines.DestroyAllLines();
+
+                    if (PlanetSectors[hi, zi]._Shape == Sector.Shape.square)
+                    {
+                        p.DrawQuadSectorBoundaries(verts[PlanetSectors[hi, zi]._CoordIndex], verts[PlanetSectors[(int)(hi + sphereScale), zi]._CoordIndex], verts[PlanetSectors[hi, (int)(zi - sphereScale)]._CoordIndex], verts[PlanetSectors[(int)(hi + sphereScale), (int)(zi - sphereScale)]._CoordIndex]);
+
+                    }
+                    else if (PlanetSectors[hi, zi]._Shape == Sector.Shape.triangleDown)
+                    {
+                        p.DrawTriangleSectorBoundaries(verts[PlanetSectors[hi, zi]._CoordIndex], verts[PlanetSectors[(int)(hi + sphereScale), zi]._CoordIndex], new Vector3(this.gameObject.transform.position.x, this.gameObject.transform.position.y, this.gameObject.transform.position.z - radius));
+                    }
+                    else
+                    {
+                        p.DrawTriangleSectorBoundaries(verts[PlanetSectors[hi, zi]._CoordIndex], verts[PlanetSectors[(int)(hi + sphereScale), zi]._CoordIndex], new Vector3(this.gameObject.transform.position.x, this.gameObject.transform.position.y, this.gameObject.transform.position.z + radius));
+                    }
                 }
             }
 

@@ -156,6 +156,32 @@ public class Planet
         }
     }
 
+    public void DrawQuadSectorBoundaries(Vector3 bl, Vector3 br, Vector3 tl, Vector3 tr)
+    {
+        bl = MakeRelativeToGO(bl);
+        br = MakeRelativeToGO(br);
+        tl = MakeRelativeToGO(tl);
+        tr = MakeRelativeToGO(tr);
+
+        this._SectorLines.DrawLine(bl, br);
+        this._SectorLines.DrawLine(br, tr);
+        this._SectorLines.DrawLine(tr, tl);
+        this._SectorLines.DrawLine(tl, bl);
+
+    }
+
+    public void DrawTriangleSectorBoundaries(Vector3 bl, Vector3 br, Vector3 tb)
+    {
+        bl = MakeRelativeToGO(bl);
+        br = MakeRelativeToGO(br);
+        tb = MakeRelativeToGO(tb);
+
+        this._SectorLines.DrawLine(bl, br);
+        this._SectorLines.DrawLine(br, tb);
+        this._SectorLines.DrawLine(tb, bl);
+
+    }
+
 
     private Vector3 MakeRelativeToGO(Vector3 relativeOffset)
     {

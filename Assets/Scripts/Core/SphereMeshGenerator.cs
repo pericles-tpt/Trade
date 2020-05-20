@@ -17,7 +17,7 @@ public class SphereMeshGenerator
         storedSectors = new Sector[divisions, divisions];
 
         // Mesh:
-        Mesh m = new Mesh();
+        Mesh m1 = new Mesh();
 
         // Vertices:
         Vector3[] Vertices = CalculateVertices(scale, divisions, ref storedSectors);
@@ -34,20 +34,20 @@ public class SphereMeshGenerator
         int[] TriangleArray = DefineTriangles(Vertices, divisions, ta_size);
 
         // UV's: Assign and calculate uv's for the mesh
-        Vector2[] UV = CalculateUVs(Vertices, Vertices.Length);
+        Vector2[] UV = CalculateUVs(Vertices, Vertices.Length, divisions);
 
         // Normals:
-        Vector3[] Normals = CalculateNormals(Vertices);//CalculateNormals(Vertices);
-
+        Vector3[] Normals1 = CalculateNormals(Vertices, 1);
+        Vector3[] Normals2 = CalculateNormals(Vertices, -1);            
 
         // Finally assign the new mesh to the gameobject
-        m.name = "Test";
-        m.vertices = Vertices;
-        m.normals = Normals;
-        m.uv = UV;
-        m.triangles = TriangleArray;
+        m1.name = "Test";
+        m1.vertices = Vertices;
+        m1.normals = Normals1;
+        m1.uv = UV;
+        m1.triangles = TriangleArray;
 
-        return m;
+        return m1;
 
     }
 
@@ -149,10 +149,6 @@ public class SphereMeshGenerator
         // Do the top point to row below it
         for (int i = 1; i <= (maxCoord); i++)
         {
-            ret[l] = i;
-            l++;
-            ret[l] = topIndex;
-            l++;
 
             int p3t;
             if (i == maxCoord)
@@ -167,6 +163,12 @@ public class SphereMeshGenerator
                 ret[l] = p3t;
                 l++;
             }
+
+            ret[l] = topIndex;
+            l++;
+            ret[l] = i;
+            l++;
+
             Debug.Log("triangle top: " + "(" + i + ", " + topIndex + ", " + p3t + ")");
 
 
@@ -180,22 +182,44 @@ public class SphereMeshGenerator
         for (int i = 1; i < bottomRowIndex; i++)
         {
             int bl, br, tl, tr;
-            // For triangle 1: tl, bl, tr
             Debug.Log("l is: " + l);
-            bl = ret[l] = i + maxCoord;
-            l++;
-            tl = ret[l] = i;
-            l++;
-            tr = ret[l] = i + 1;
-            l++;
+            if (i % maxCoord == 0)
+            {
+                Debug.Log("Index is " + i + " at i % maxCoord == 0");
+                tr = ret[l] = i - (maxCoord - 1);
+                l++;
+                br = ret[l] = i;
+                l++;
+                bl = ret[l] = i + maxCoord;
+                l++;
 
-            // For triangle 2: bl, tr, br
-            ret[l] = bl;
-            l++;
-            ret[l] = tr;
-            l++;
-            br = ret[l] = bl + 1;
-            l++;
+                // For triangle 2: bl, tr, br
+                tl = ret[l] = tr + maxCoord;
+                l++;
+                ret[l] = tr;
+                l++;
+                ret[l] = bl;
+                l++;
+
+            }
+            else
+            {
+                tr = ret[l] = i + 1;
+                l++;
+                tl = ret[l] = i;
+                l++;
+                bl = ret[l] = i + maxCoord;
+                l++;
+
+                // For triangle 2: bl, tr, br
+                br = ret[l] = bl + 1;
+                l++;
+                ret[l] = tr;
+                l++;
+                ret[l] = bl;
+                l++;
+            }
+
 
             Debug.Log("triangle 1: " + "(" + bl + ", " + tl + ", " + tr + "), triangle 2: (" + bl + ", " + tr + ", " + br + ")");
 
@@ -208,12 +232,6 @@ public class SphereMeshGenerator
         Debug.Log("bottom row index " + bottomRowIndex);
         for (int i = bottomRowIndex; i < botIndex; i++)
         {
-            ret[l] = botIndex;
-            l++;
-            c++;
-            ret[l] = i;
-            l++;
-            c++;
             int p3b;
             if (i == (botIndex - 1))
             {
@@ -228,7 +246,14 @@ public class SphereMeshGenerator
                 ret[l] = p3b;
                 l++;
             }
+            c++;
             //Debug.Log("triangle bottom: " + "(" + i + ", " + botIndex + ", " + p3b + ")");
+            ret[l] = i;
+            l++;
+            c++;
+            ret[l] = botIndex;
+            l++;
+            c++;
 
         }
 
@@ -243,39 +268,39 @@ public class SphereMeshGenerator
         return ret;
     }
 
-    private Vector2[] CalculateUVs(Vector3[] vertices, int size)
+    private Vector2[] CalculateUVs(Vector3[] vertices, int size, int divisions)
     {
-        Vector2[] ret = new Vector2[size];
-        for (int i = 0; i < size; i++)
-        {
-            //Vector3 pts = new Vector3(-vertices[i].x, -vertices[i].y, -vertices[i].z);
-            //float mag = Mathf.Sqrt(Mathf.Pow(pts.x, 2f) + Mathf.Pow(pts.y, 2f) + Mathf.Pow(pts.z, 2f));
-            //Vector3 puv = new Vector3(pts.x / mag, pts.y / mag, pts.z / mag);
 
+        int multipleOf = -1;
+        Vector2[] ret = new Vector2[size];
+        for (int i = 0; i < vertices.Length; i++)
+        {
             Vector3 c = vertices[i];
 
-            float u = 0.5f + (Mathf.Atan2(c.x, c.z) / (-2 * Mathf.PI));
+            Debug.Log("The length of this bad boy is " + vertices.Length);
 
-            if (u < 0f)
-                u += 1f;
+            float u, v;
 
-            float v = /*0.5f - (Mathf.Asin(c.y) / Mathf.PI)*/ Mathf.Asin(c.y) / Mathf.PI + 0.5f;
+
+            u = 0.5f + ((Mathf.Atan2(c.x, c.y)) / (2 * Mathf.PI));
+            v = 0.5f - ((Mathf.Asin(c.z)) / (1 * Mathf.PI));
+
+
             ret[i] = new Vector2(u, v);
-
         }
+
         return ret;
 
     }
 
-    private Vector3[] CalculateNormals(Vector3[] vertices)
+    private Vector3[] CalculateNormals(Vector3[] vertices, int normalsSign)
     {
         Vector3[] ret = new Vector3[vertices.Length];
         int i = 0;
+        Debug.Log("VERTICES IS " + vertices.Length + " HALF VERTICES IS " + vertices.Length / 2);
         foreach (Vector3 v in vertices)
         {
-            //float mag = Mathf.Sqrt(Mathf.Pow((2 * v.x), 2) + Mathf.Pow((2 * v.y), 2) + Mathf.Pow((2 * v.z), 2));
-            //Vector3 nv = new Vector3((2*v.x) / mag, (2*v.y) / mag, (2*v.z) / mag);
-            ret[i] = v.normalized;
+            ret[i] = new Vector3(normalsSign * v.x, normalsSign * v.y, normalsSign * v.z);
             i++;
         }
         return ret;

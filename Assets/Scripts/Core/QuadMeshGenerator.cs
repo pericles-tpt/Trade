@@ -12,7 +12,7 @@ public class QuadMeshGenerator
 
     // mesh = CreateSectors(scale, scale * sectorsize, ref Sector[,] Sectors = null
 
-    public GameObject GenerateMesh(Vector3 bl, Vector3 br, Vector3 tl, Vector3 tr)
+    public GameObject GenerateMesh(Vector3 bl, Vector3 br, Vector3 tl, Vector3 tr, Vector3[] normals)
     {
         // Mesh:
         Mesh m = new Mesh();
@@ -33,7 +33,7 @@ public class QuadMeshGenerator
         };
         m.triangles = triangles;
 
-        m.RecalculateNormals();
+        m.normals = normals;
 
         Vector2[] uv = new Vector2[4]
         {
