@@ -43,6 +43,7 @@ public class PlanetBehaviour : MonoBehaviour
         {
             GameObject.Find("pg_planet").GetComponent<PlanetPanelBehaviour>().ShowPanel(this.gameObject);
             GameObject.Find("Camera").GetComponent<GameDirector>().SetSelectedPlanet(this.gameObject);
+            GameObject.Find("Camera").GetComponent<GameDirector>().SetPlanetPositionBeforeZoom(this.gameObject.transform.position);
             GameObject.Find("b_toggle_planet_view").GetComponent<TogglePlanetViewBehaviour>().TogglePlanetView();
             trackCursorPosition = true;
         }

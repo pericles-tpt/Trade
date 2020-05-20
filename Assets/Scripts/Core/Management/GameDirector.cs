@@ -7,6 +7,7 @@ public class GameDirector : MonoBehaviour
     Galaxy current;
     LineManager lm;
     GameObject PlanetSelected;
+    Vector3 planetPositionBeforeZoom;
 
     private bool TradeLinesOn = true;
     private bool SectorLinesOn = false;
@@ -90,6 +91,16 @@ public class GameDirector : MonoBehaviour
     public GameObject GetSelectedPlanet ()
     {
         return PlanetSelected;
+    }
+
+    public void SetPlanetPositionBeforeZoom (Vector3 Pos)
+    {
+        planetPositionBeforeZoom= Pos;
+    }
+
+    public Vector3 GetPlanetPositionBeforeZoom()
+    {
+        return planetPositionBeforeZoom;
     }
 
     public PlanetFactory GetPlanetFactory()
