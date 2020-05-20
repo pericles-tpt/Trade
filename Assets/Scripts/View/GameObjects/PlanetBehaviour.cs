@@ -178,18 +178,24 @@ public class PlanetBehaviour : MonoBehaviour
                 {
                     p._SectorLines.DestroyAllLines();
 
+                    float lineWidth = 0.02f;
+                    if (p._SphereSize == 2)
+                        lineWidth *= 2;
+                    else if (p._SphereSize == 1.5f)
+                        lineWidth *= 1.5f;
+
                     if (PlanetSectors[hi, zi]._Shape == Sector.Shape.square)
                     {
-                        p.DrawQuadSectorBoundaries(verts[PlanetSectors[hi, zi]._CoordIndex], verts[PlanetSectors[(int)(hi + sphereScale), zi]._CoordIndex], verts[PlanetSectors[hi, (int)(zi - sphereScale)]._CoordIndex], verts[PlanetSectors[(int)(hi + sphereScale), (int)(zi - sphereScale)]._CoordIndex]);
+                        p.DrawQuadSectorBoundaries(verts[PlanetSectors[hi, zi]._CoordIndex], verts[PlanetSectors[(int)(hi + sphereScale), zi]._CoordIndex], verts[PlanetSectors[hi, (int)(zi - sphereScale)]._CoordIndex], verts[PlanetSectors[(int)(hi + sphereScale), (int)(zi - sphereScale)]._CoordIndex], lineWidth);
 
                     }
                     else if (PlanetSectors[hi, zi]._Shape == Sector.Shape.triangleDown)
                     {
-                        p.DrawTriangleSectorBoundaries(verts[PlanetSectors[hi, zi]._CoordIndex], verts[PlanetSectors[(int)(hi + sphereScale), zi]._CoordIndex], new Vector3(this.gameObject.transform.position.x, this.gameObject.transform.position.y, this.gameObject.transform.position.z - radius));
+                        p.DrawTriangleSectorBoundaries(verts[PlanetSectors[hi, zi]._CoordIndex], verts[PlanetSectors[(int)(hi + sphereScale), zi]._CoordIndex], new Vector3(this.gameObject.transform.position.x, this.gameObject.transform.position.y, this.gameObject.transform.position.z - radius), lineWidth);
                     }
                     else
                     {
-                        p.DrawTriangleSectorBoundaries(verts[PlanetSectors[hi, zi]._CoordIndex], verts[PlanetSectors[(int)(hi + sphereScale), zi]._CoordIndex], new Vector3(this.gameObject.transform.position.x, this.gameObject.transform.position.y, this.gameObject.transform.position.z + radius));
+                        p.DrawTriangleSectorBoundaries(verts[PlanetSectors[hi, zi]._CoordIndex], verts[PlanetSectors[(int)(hi + sphereScale), zi]._CoordIndex], new Vector3(this.gameObject.transform.position.x, this.gameObject.transform.position.y, this.gameObject.transform.position.z + radius), lineWidth);
                     }
                 }
             }
