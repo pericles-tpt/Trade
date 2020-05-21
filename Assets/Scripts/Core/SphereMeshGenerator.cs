@@ -89,11 +89,11 @@ public class SphereMeshGenerator
             // whether the sector is an up-triangle, square or down-triangle and give the sector a name using planet
             // and position
             if (y == 0)
-                storedSectors[0, y] = new Sector(Sector.NameSector(0, y), Sector.Shape.triangleUp, i);
+                storedSectors[0, y] = new Sector(Sector.NameSector(0, y), Sector.Shape.triangleDown, i);
             else if (y == (divisions - 2))
             {
                 storedSectors[0, y] = new Sector(Sector.NameSector(0, y), Sector.Shape.square, i);
-                storedSectors[0, y] = new Sector(Sector.NameSector(0, y), Sector.Shape.triangleDown, i);
+                storedSectors[0, y] = new Sector(Sector.NameSector(0, y), Sector.Shape.triangleUp, i);
 
             }
             else

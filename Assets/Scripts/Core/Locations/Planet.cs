@@ -205,4 +205,14 @@ public class Planet
         );
     }
 
+    private Vector3 MakeRelativeToGONotScaled(Vector3 relativeOffset)
+    {
+        Vector3 goPos = this._GameObject.transform.position;
+        return new Vector3(
+            goPos.x + (relativeOffset.x),
+            goPos.y + (relativeOffset.y),
+            goPos.z + (relativeOffset.z)
+        );
+    }
+
 }

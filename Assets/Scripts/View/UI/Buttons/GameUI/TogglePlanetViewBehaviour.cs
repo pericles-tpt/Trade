@@ -28,7 +28,7 @@ public class TogglePlanetViewBehaviour : MonoBehaviour
             //Debug.Log(planetView);
             // Zoom into planet
             // TODO: Make it smooth
-            GD.ToggleHidePlanetsNotSelected(true);
+            GD.ToggleMovePlanetsNotSelected(false);
 
             planetGO.transform.position = GD.GetPlanetPositionBeforeZoom();
 
@@ -37,6 +37,8 @@ public class TogglePlanetViewBehaviour : MonoBehaviour
             cam.transform.position = new Vector3 (0, 0, -20);
             cam.orthographicSize = 15;
 
+            GD.ToggleSectorTooltipVisible(false);
+
             // Also when zoomed into planet disable tradelines showing up
             GD.ToggleSectorLines(false, planet);
             GD.ToggleTradeLines(true);
@@ -44,10 +46,12 @@ public class TogglePlanetViewBehaviour : MonoBehaviour
         } else
         {   
             // Zoom and rotate the camera into the planet and hide all other planets in the scene so that they don't block the view of the planet - THIS COULD CAUSE PROBLEM LATER IF SELECTING POINT ON PLANET COVERING THIS ONE
-            GD.ToggleHidePlanetsNotSelected(false);
+            GD.ToggleMovePlanetsNotSelected(true);
             galaxyCameraRotation = cam.transform.rotation;
 
             planetGO.transform.position = new Vector3(-4, 0, -10);
+
+            GD.ToggleSectorTooltipVisible(true);
 
             cam.transform.LookAt(planetGO.transform.position, new Vector3(planetGO.transform.position.x,planetGO.transform.position.y,planetGO.transform.position.z + 1));
             cam.orthographicSize = 0.55f * Mathf.Pow(planet._SphereSize, 2);

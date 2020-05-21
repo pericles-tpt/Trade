@@ -8,6 +8,10 @@ public class GameDirector : MonoBehaviour
     LineManager lm;
     GameObject PlanetSelected;
     Vector3 planetPositionBeforeZoom;
+    Vector3[] oldPlanetPos;
+
+    public GameObject tooltip;
+    GameObject activeTooltip;
 
     private bool TradeLinesOn = true;
     private bool SectorLinesOn = false;
@@ -19,6 +23,7 @@ public class GameDirector : MonoBehaviour
         GalaxyFactory gf = new GalaxyFactory();
         current = gf.CreateGalaxy();
         current.GeneratePlanets(current._Planets.Length);
+        oldPlanetPos = new Vector3[current._Planets.Length];
 
     }
 
@@ -63,13 +68,38 @@ public class GameDirector : MonoBehaviour
         SectorLinesOn = setting;
     }
 
-    public void ToggleHidePlanetsNotSelected(bool isShown)
+    public void ToggleMovePlanetsNotSelected(bool moveOut)
     {
-        GameObject.Find("sun").gameObject.GetComponent<Renderer>().enabled = isShown;
-        foreach (Planet p in current._Planets)
+        if (moveOut)
         {
-            if (p._GameObject != PlanetSelected)
-                p._GameObject.SetActive(isShown);
+            int i = 0;
+            oldPlanetPos[i] = GameObject.Find("sun").gameObject.transform.position;
+            i++;
+            GameObject.Find("sun").gameObject.transform.position = new Vector3(-100, -100, -100);
+            foreach (Planet p in current._Planets)
+            {
+                if (p._GameObject != PlanetSelected)
+                {
+                    oldPlanetPos[i] = p._GameObject.transform.position;
+                    i++;
+                    p._GameObject.transform.position = new Vector3(-100, -100, -100);
+                }
+            }
+
+        }
+        else
+        {
+            int i = 0;
+            GameObject.Find("sun").gameObject.transform.position = oldPlanetPos[i];
+            i++;
+            foreach (Planet p in current._Planets)
+            {
+                if (p._GameObject != PlanetSelected)
+                {
+                    p._GameObject.transform.position = oldPlanetPos[i];
+                    i++;
+                }
+            }
         }
     }
 
@@ -106,6 +136,17 @@ public class GameDirector : MonoBehaviour
     public PlanetFactory GetPlanetFactory()
     {
         return current.GetPlanetFactory();
+    }
+
+    public void ToggleSectorTooltipVisible(bool isVisible)
+    {
+        int nAlpha;
+        if (isVisible)
+            nAlpha = 1;
+        else
+            nAlpha = 0;
+
+        GameObject.Find("sector_tooltip").GetComponent<CanvasGroup>().alpha = nAlpha;
     }
 
     // Update is called once per frame

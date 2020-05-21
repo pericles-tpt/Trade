@@ -48,6 +48,8 @@ public class PlanetBehaviour : MonoBehaviour
             GameObject.Find("Camera").GetComponent<GameDirector>().SetPlanetPositionBeforeZoom(this.gameObject.transform.position);
             GameObject.Find("b_toggle_planet_view").GetComponent<TogglePlanetViewBehaviour>().TogglePlanetView();
             trackCursorPosition = true;
+
+            GameObject.Find("Camera").GetComponent<GameDirector>().ToggleSectorTooltipVisible(true);
         }
 
     }
@@ -57,79 +59,74 @@ public class PlanetBehaviour : MonoBehaviour
         frameCount++;
 
         // Do stuff - Improves performance by doing this operation every 12 frames (or every 0.2s if running at 60fps)
-        if (frameCount % 12 == 0)
+        if (frameCount % 2 == 0)
         {
             if (trackCursorPosition)
             {
-                // 0. Get the appropriate PlanetSectors array for the size of this mesh, will be used later to pinpoint sector
-                // that cursor is in once the correct coordinates for the PlanetSectors array are found
-                Sector[,] PlanetSectors = GameObject.Find("Camera").GetComponent<GameDirector>().FindPlanet(this.gameObject)._PlanetSectors;
-                Planet p = GameObject.Find("Camera").GetComponent<GameDirector>().FindPlanet(this.gameObject);
-                float sphereScale = GameObject.Find("Camera").GetComponent<GameDirector>().FindPlanet(this.gameObject)._SphereSize;
+                // 0. Use the vector index data from the PlanetSectors array from this Planet, to pinpoint hovered sector
+                Planet p                = GameObject.Find("Camera").GetComponent<GameDirector>().FindPlanet(this.gameObject);
+                Sector[,] PlanetSectors = p._PlanetSectors;
+                float radius            = p._SphereSize;
 
+                //1. Get the point on the mesh that wil be hit by a ray cast from the cursor
                 Camera cam = GameObject.Find("Camera").GetComponent<Camera>();
-
-                //2. Get the point on the mesh that wil be hit by a ray cast from the cursor
                 Ray ray = cam.ScreenPointToRay(Input.mousePosition);
                 RaycastHit rHit;
                 Physics.Raycast(ray, out rHit, Mathf.Infinity);
 
-                Debug.Log("Raycast position " + rHit.point);
-
-                int maxCoord = (int)(Planet._SectorSize * sphereScale);
-                float radius = sphereScale / 2;
-
+                // maxCoord: number of increments along long + lat, verts: list of vertices in the mesh to be indexed by PlanetSectors
+                int maxCoord = (int)(Planet._SectorSize * p._SphereSize);
                 Vector3[] verts = this.GetComponent<MeshFilter>().mesh.vertices;
 
+                // 2. Find the z-value in verts that corresponds with the sector that is being hovered over
                 int zi = -1;
+                float z;
                 for (int i = 0; i < maxCoord; i++)
                 {
-                    Debug.Log("Index is " + i);
-
-                    float z = -1000000;
                     if (i < (maxCoord - 1))
-                        z = (verts[PlanetSectors[0, i]._CoordIndex].z * sphereScale) + (this.gameObject.transform.position.z);
-                    if (i == (maxCoord - 1))
-                        z = (verts[PlanetSectors[0, maxCoord - 2]._CoordIndex].z * sphereScale) + (this.gameObject.transform.position.z);
-
-                    Debug.Log("z is " + z);
-                    if (i == (maxCoord - 1))
                     {
-                        if (rHit.point.z < z)
+                        z = (verts[PlanetSectors[0, i]._CoordIndex].z * p._SphereSize) + (this.gameObject.transform.position.z);
+                        
+                        if (rHit.point.z >= z)
                         {
-                            Debug.Log("I found u your index is " + i + "and the z coord that is < this is " + z);
                             zi = i;
                             break;
                         }
                     }
-                    else
+                    else if (i == (maxCoord - 1))
                     {
-                        if (rHit.point.z >= z)
+                        z = (verts[PlanetSectors[0, maxCoord - 2]._CoordIndex].z * p._SphereSize) + (this.gameObject.transform.position.z);
+
+                        if (rHit.point.z < z)
                         {
-                            Debug.Log("I found u your index is " + i + "and the z coord that is < this is " + z);
                             zi = i;
                             break;
                         }
                     }
                 }
 
-                if (zi == -1)
-                    throw new System.Exception("y coord for Sector not found");
+                Debug.Log("zi, rHit is " + rHit.point);
+                Debug.Log("zi is " + zi);
 
+                if (zi == -1)
+                    throw new System.Exception("z coord for Sector not found");
+
+                // START LOOKING AT THIS FROM HERE
                 int hi = -1;
                 for (int i = 0; i < (maxCoord); i++)
                 {
                     Debug.Log("i: " + i + ", zi: " + zi);
-                    float x = (verts[PlanetSectors[i, zi]._CoordIndex].x * sphereScale) + (this.gameObject.transform.position.x);
-                    float y = (verts[PlanetSectors[i, zi]._CoordIndex].y * sphereScale) + (this.gameObject.transform.position.y);
+                    float x = (verts[PlanetSectors[i, zi]._CoordIndex].x * p._SphereSize) + (this.gameObject.transform.position.x);
+                    float y = (verts[PlanetSectors[i, zi]._CoordIndex].y * p._SphereSize) + (this.gameObject.transform.position.y);
+                    float diff = 0.01f * Mathf.Abs(zi) * p._SphereSize;
 
                     Debug.Log("Index is " + i + "level is " + zi);
 
                     float yp;
                     if (i < (maxCoord - 1))
-                        yp = (verts[PlanetSectors[i + 1, zi]._CoordIndex].y * sphereScale) + (this.gameObject.transform.position.y);
+                        yp = (verts[PlanetSectors[i + 1, zi]._CoordIndex].y * p._SphereSize) + (this.gameObject.transform.position.y);
                     else
-                        yp = (verts[PlanetSectors[0, zi]._CoordIndex].y * sphereScale) + (this.gameObject.transform.position.y);
+                        yp = (verts[PlanetSectors[0, zi]._CoordIndex].y * p._SphereSize) + (this.gameObject.transform.position.y);
 
                     Debug.Log("y is " + y + ", x is " + x);
 
@@ -155,11 +152,75 @@ public class PlanetBehaviour : MonoBehaviour
                             break;
 
                         }
+                    // Handles crossover to new quadrant, i.e. 0.95 -> 1 -> 0.95 and 0.05 -> 0 -> 0.05
+
+                    } else if (((Mathf.Abs(rHit.point.y) <= radius) && (Mathf.Abs(rHit.point.y) >= (radius - diff))) || ((Mathf.Abs(rHit.point.y) <= diff) && (Mathf.Abs(rHit.point.y) >= 0f)))
+                    {
+                        if (rHit.point.y <= 0)
+                        {
+                            if (rHit.point.y > -radius)
+                            {
+                                if (rHit.point.y >= -diff)
+                                {
+                                    if (rHit.point.x > 0)
+                                    {
+                                        // Should be sector (1/4 * maxCoord)
+                                        hi = (int)((1f / 4f) * maxCoord);
+                                    }
+                                    else
+                                    {
+                                        // Should be sector (3/4 * maxCoord) - 1
+                                        hi = (int)((3f / 4f) * maxCoord) - 1;
+                                    }
+                                } else
+                                {
+                                    if (rHit.point.x > 0)
+                                    {
+                                        // Should be sector (2/4 * maxCoord) - 1
+                                        hi = (int)((2f / 4f) * maxCoord) - 1;
+                                    }
+                                    else
+                                    {
+                                        // Should be sector (2/4 * maxCoord)
+                                        hi = (int)((3f / 4f) * maxCoord);
+                                    }
+                                }
+                            }
+                        } else if (rHit.point.y >= 0)
+                        {
+                            if (rHit.point.y >= diff)
+                            {
+                                if (rHit.point.x > 0)
+                                {
+                                    // Should be sector (0)
+                                    hi = 0;
+                                }
+                                else
+                                {
+                                    // Should be sector (1/4 * maxCoord)
+                                    hi = (int)((1f / 4f) * maxCoord);
+                                }
+                            }
+                            else
+                            {
+                                if (rHit.point.x > 0)
+                                {
+                                    // Should be sector (1/4 * maxCoord) - 1
+                                    hi = (int)((1f / 4f) * maxCoord) - 1;
+                                }
+                                else
+                                {
+                                    // Should be sector (3/4 * maxCoord)
+                                    hi = (int)((3f / 4f) * maxCoord);
+                                }
+                            }
+                        }
                     }
                     else if (((rHit.point.x > this.gameObject.transform.position.x) && (x < this.gameObject.transform.position.x)) || ((rHit.point.x <= this.gameObject.transform.position.x) && (x <= this.gameObject.transform.position.x)))
                     {
                         Debug.Log("aha we got ya");
                     }
+                    
 
                 }
 
@@ -182,8 +243,7 @@ public class PlanetBehaviour : MonoBehaviour
 
                 Debug.Log("rHit is " + rHit.point.y);
 
-                GameObject highlighted = new GameObject();
-                highlighted.name = "highlighted";
+                Vector3[] meshVertices = p._GameObject.GetComponent<MeshFilter>().mesh.vertices;
 
                 if (hi == -1)
                     throw new System.Exception("y coord for Sector not found");
@@ -193,7 +253,7 @@ public class PlanetBehaviour : MonoBehaviour
                     {
                         p._SectorLines.DestroyAllLines();
 
-                        float lineWidth = 0.02f;
+                        float lineWidth = 0.01f;
                         if (p._SphereSize == 2)
                             lineWidth *= 2;
                         else if (p._SphereSize == 1.5f)
@@ -201,53 +261,40 @@ public class PlanetBehaviour : MonoBehaviour
 
                         if (PlanetSectors[hi, zi]._Shape == Sector.Shape.square)
                         {
-                            p.DrawQuadSectorBoundaries(verts[PlanetSectors[hi, zi]._CoordIndex], verts[PlanetSectors[(int)(hi + sphereScale), zi]._CoordIndex], verts[PlanetSectors[hi, (int)(zi - sphereScale)]._CoordIndex], verts[PlanetSectors[(int)(hi + sphereScale), (int)(zi - sphereScale)]._CoordIndex], lineWidth);
+                            Debug.Log("INDEX OUT OF BOUND hi: " + hi + "zi: " + zi);
+                            int nexthi = hi + 1;
+                            if (hi == (maxCoord - 1))
+                                nexthi = 0;
+                            p.DrawQuadSectorBoundaries(verts[PlanetSectors[hi, zi]._CoordIndex], verts[PlanetSectors[nexthi, zi]._CoordIndex], verts[PlanetSectors[hi, zi - 1]._CoordIndex], verts[PlanetSectors[nexthi, zi - 1]._CoordIndex], lineWidth);
 
                         }
-                        else if (PlanetSectors[hi, zi]._Shape == Sector.Shape.triangleDown)
+                        else if (PlanetSectors[hi, zi]._Shape == Sector.Shape.triangleUp)
                         {
-                            p.DrawTriangleSectorBoundaries(verts[PlanetSectors[hi, zi]._CoordIndex], verts[PlanetSectors[(int)(hi + sphereScale), zi]._CoordIndex], new Vector3(this.gameObject.transform.position.x, this.gameObject.transform.position.y, this.gameObject.transform.position.z - radius), lineWidth);
+                            Vector3 top = meshVertices[0];
+                            Debug.Log("The top vertex is " + top);
+                            int nexthi = hi + 1;
+                            if (hi == (maxCoord - 1))
+                                nexthi = 1;
+                            p.DrawTriangleSectorBoundaries(verts[PlanetSectors[hi, zi]._CoordIndex], verts[PlanetSectors[nexthi, zi]._CoordIndex], top, lineWidth);
                         }
                         else
                         {
-                            p.DrawTriangleSectorBoundaries(verts[PlanetSectors[hi, zi]._CoordIndex], verts[PlanetSectors[(int)(hi + sphereScale), zi]._CoordIndex], new Vector3(this.gameObject.transform.position.x, this.gameObject.transform.position.y, this.gameObject.transform.position.z + radius), lineWidth);
+                            Vector3 bottom = meshVertices[meshVertices.Length - 1];
+                            Debug.Log("The bottom vertex is " + bottom);
+                            int nexthi = hi + 1;
+                            if (hi == (maxCoord - 1))
+                                nexthi = 1;
+                            p.DrawTriangleSectorBoundaries(verts[PlanetSectors[hi, zi]._CoordIndex], verts[PlanetSectors[nexthi, zi]._CoordIndex], bottom, lineWidth);
+
                         }
+
+                        GameObject.Find("sector_tooltip").transform.position = new Vector3(this.gameObject.transform.position.x + verts[PlanetSectors[hi, zi]._CoordIndex].x, this.gameObject.transform.position.y + verts[PlanetSectors[hi, zi]._CoordIndex].y, this.gameObject.transform.position.z + verts[PlanetSectors[hi, zi]._CoordIndex].z);
+
                     }
                 }
 
-
-                /*Vector3 start = PolarToVector(this.gameObject.GetComponent<SphereCollider>().radius * this.gameObject.transform.localScale.x, Inc * Mathf.Deg2Rad, 0);
-                Vector3 relativePoint = new Vector3(info.point.x - this.gameObject.transform.position.x, info.point.y - this.gameObject.transform.position.y, info.point.z - this.gameObject.transform.position.z);
-
-
-
-                Debug.Log("Distance from origin point " + Mathf.Sqrt(Mathf.Sqrt(Mathf.Pow(relativePoint.x, 2) + Mathf.Pow(relativePoint.y, 2)) + Mathf.Pow(relativePoint.z, 2)));
-                Debug.Log("Relative point is: " + relativePoint.z);
-                Debug.Log("Start z point is: " + start.z);
-                Debug.Log("Info point is " + info.point);
-                Debug.Log("Origin point is " + this.gameObject.transform.position);
-
-                int zSign;
-                if (start.z <= relativePoint.z)
-                    zSign = 1;
-                else
-                    zSign = -1;
-
-                int ySign;
-                if (relativePoint.y < start.y)
-                    ySign = -1;
-                else if (relativePoint.y > start.y)
-                    ySign = 1;
-                else if (start.y == relativePoint.y && start.x < 0)
-                    ySign = 1; // NOTE: Doesn't really matter either way as long as it traverses the sphere in some direction to reach the other side
-                else
-                    ySign = 0; // In other words it's at its destination
-
-                Debug.Log("ySign: " + ySign + ", zSign: " + zSign + "start z: " + start.z);
-                */
-
-
             }
+
         } else if (frameCount == 59)
         {
             frameCount = 0;
