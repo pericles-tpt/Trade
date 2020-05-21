@@ -25,6 +25,10 @@ public class GameDirector : MonoBehaviour
         current.GeneratePlanets(current._Planets.Length);
         oldPlanetPos = new Vector3[current._Planets.Length];
 
+        // Testing perlin noise function
+        PerlinNoise pn = new PerlinNoise();
+        pn.Generate2dPerlin(192, 108, true);
+
     }
 
     public void IncrementOrbits()
