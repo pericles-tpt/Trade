@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using TreeEditor;
 using UnityEngine;
@@ -35,9 +36,7 @@ public class PerlinNoise : MonoBehaviour
         // function
         float[,] dotProductGrid = GenerateDotProductGrid(gradientVectorGrid, subGridSize);
 
-        if (outputToFile)
-            WriteToFile(dotProductGrid);
-
+        WriteToFile(dotProductGrid);
 
         return dotProductGrid;
 
@@ -108,6 +107,7 @@ public class PerlinNoise : MonoBehaviour
 
                 }
             }
+
         }
 
         return ret;
@@ -129,82 +129,92 @@ public class PerlinNoise : MonoBehaviour
             for (int j = 0; j < perlinValues.GetLength(0); j++)
             {
                 Debug.Log("i: " + i + ", j: " + j + "value: " + perlinValues[j, i]);
-                if (perlinValues[j, i] <= 0f)
-                {
-                    text += "WW";
-                } else
-                {
-                    if (perlinValues[j, i] < 10f)
-                        text += "00";
-                    else if (perlinValues[j, i] < 20f)
-                        text += "01";
-                    else if (perlinValues[j, i] < 30f)
-                        text += "02";
-                    else if (perlinValues[j, i] < 40f)
-                        text += "03";
-                    else if (perlinValues[j, i] < 50f)
-                        text += "04";
-                    else if (perlinValues[j, i] < 60f)
-                        text += "05";
-                    else if (perlinValues[j, i] < 70f)
-                        text += "06";
-                    else if (perlinValues[j, i] < 80f)
-                        text += "07";
-                    else if (perlinValues[j, i] < 90f)
-                        text += "08";
-                    else if (perlinValues[j, i] < 100f)
-                        text += "09";
-                    else if (perlinValues[j, i] < 110f)
-                        text += "10";
-                    else if (perlinValues[j, i] < 120f)
-                        text += "11";
-                    else if (perlinValues[j, i] < 130f)
-                        text += "12";
-                    else if (perlinValues[j, i] < 140f)
-                        text += "13";
-                    else if (perlinValues[j, i] < 150f)
-                        text += "14";
-                    else if (perlinValues[j, i] < 160f)
-                        text += "15";
-                    else if (perlinValues[j, i] < 170f)
-                        text += "16";
-                    else if (perlinValues[j, i] < 180f)
-                        text += "17";
-                    else if (perlinValues[j, i] < 190f)
-                        text += "18";
-                    else if (perlinValues[j, i] < 200f)
-                        text += "19";
-                    else if (perlinValues[j, i] < 210f)
-                        text += "20";
-                    else if (perlinValues[j, i] < 220f)
-                        text += "21";
-                    else if (perlinValues[j, i] < 230f)
-                        text += "22";
-                    else if (perlinValues[j, i] < 240f)
-                        text += "23";
-                    else if (perlinValues[j, i] < 250f)
-                        text += "24";
-                    else if (perlinValues[j, i] < 260f)
-                        text += "25";
-                    else if (perlinValues[j, i] < 270f)
-                        text += "26";
-                    else if (perlinValues[j, i] < 280f)
-                        text += "27";
-                    else if (perlinValues[j, i] < 290f)
-                        text += "28";
-                    else if (perlinValues[j, i] < 300f)
-                        text += "29";
-                    else if (perlinValues[j, i] < 310f)
-                        text += "30";
-                    else
-                        text += "31";
-                }
-                //text += perlinValues[j, i] + "|";
+                text += FormatForWrite(perlinValues[j, i]);
             }
 
             text += '\n';
         }
 
-        System.IO.File.WriteAllText(@"C:\Users\peric\Desktop\perlin.txt", text);
+        System.IO.File.WriteAllText(@"C:\Users\peric\Desktop\perlin1.txt", text);
+    }
+
+    private string FormatForWrite(float value)
+    {
+        string text;
+
+        if (value <= 0f)
+        {
+            text = "WW";
+        }
+        else
+        {
+            if (value < 10f)
+                text = "00";
+            else if (value < 20f)
+                text = "01";
+            else if (value < 30f)
+                text = "02";
+            else if (value < 40f)
+                text = "03";
+            else if (value < 50f)
+                text = "04";
+            else if (value < 60f)
+                text = "05";
+            else if (value < 70f)
+                text = "06";
+            else if (value < 80f)
+                text = "07";
+            else if (value < 90f)
+                text = "08";
+            else if (value < 100f)
+                text = "09";
+            else if (value < 110f)
+                text = "10";
+            else if (value < 120f)
+                text = "11";
+            else if (value < 130f)
+                text = "12";
+            else if (value < 140f)
+                text = "13";
+            else if (value < 150f)
+                text = "14";
+            else if (value < 160f)
+                text = "15";
+            else if (value < 170f)
+                text = "16";
+            else if (value < 180f)
+                text = "17";
+            else if (value < 190f)
+                text = "18";
+            else if (value < 200f)
+                text = "19";
+            else if (value < 210f)
+                text = "20";
+            else if (value < 220f)
+                text = "21";
+            else if (value < 230f)
+                text = "22";
+            else if (value < 240f)
+                text = "23";
+            else if (value < 250f)
+                text = "24";
+            else if (value < 260f)
+                text = "25";
+            else if (value < 270f)
+                text = "26";
+            else if (value < 280f)
+                text = "27";
+            else if (value < 290f)
+                text = "28";
+            else if (value < 300f)
+                text = "29";
+            else if (value < 310f)
+                text = "30";
+            else
+                text = "31";
+        }
+
+        return text;
+
     }
 }
