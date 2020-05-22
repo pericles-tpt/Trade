@@ -3,7 +3,19 @@ guid: e848969f337d65c4c9d3a96b1b34b7a8
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - sandTile: {fileID: 5745048196366368580, guid: 969f3c5de366cc545a44f0066e29c3da,
+      type: 3}
+  - waterTile: {fileID: 5745048196366368580, guid: 713628c5f42f2014fb9949fe16f5ce7e,
+      type: 3}
+  - shadowAbove: {fileID: 357258434930873876, guid: 1b258534c430480409f1bdbfc4bb7d33,
+      type: 3}
+  - shadowBelow: {fileID: 7683546970479841687, guid: e9241255e1f4cfd43a62a2be0b647bb5,
+      type: 3}
+  - shadowLeft: {fileID: 4703314701166398287, guid: 42672983fbf945e4f9e7d6449032e54e,
+      type: 3}
+  - shadowRight: {fileID: 8556486730469324852, guid: 422b887552f31ca4dafaea12f5a91fb4,
+      type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

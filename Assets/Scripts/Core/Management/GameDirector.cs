@@ -26,8 +26,10 @@ public class GameDirector : MonoBehaviour
         oldPlanetPos = new Vector3[current._Planets.Length];
 
         // Testing perlin noise function
-        PerlinNoise pn = new PerlinNoise();
-        pn.Generate2dPerlin(640, 320, true, 16);
+        int seed = UnityEngine.Random.Range(int.MinValue, int.MaxValue);
+
+        PerlinNoise pn = new PerlinNoise(seed);
+        pn.Generate2dPerlin(640, 320, true, 1.25f);
 
     }
 
