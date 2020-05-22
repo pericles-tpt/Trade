@@ -121,7 +121,7 @@ public class Galaxy
     // DELETEME
     private string GimmeAName(ref int pno)
     {
-        string[] names = { "Yelmeree", "Zvaat", "Frotuus", "Kaxias", "Bireen", "Meldys", "Santoon", "Aorfun", "Codruis", "Dexlaa", "Epveen", "Gweroon", "Hexctus", "Inir", "Jkor", "Lqi", "Nexeneetf", "Onzii", "Plecsire", "Qaatni", "Riredun", "Tevelis", "Unbarekh", "Vol", "Wvalo", "Xeveles"};
+        string[] names = { "Yelmeree", "Zvaat", "Frotuus", "Kaxias", "Bireen", "Meldys", "Santoon", "Aorfun", "Codruis", "Dexlaa", "Epveen", "Gweroon", "Hexctus", "Inir", "Jkor", "Lqi", "Nexeneetf", "Onzii", "Plecsis", "Qaatni", "Riredun", "Tevelis", "Unbarekh", "Vol", "Wvalo", "Xeveles"};
         string[] numbers = { "I", "II", "III", "IV", "V", "VI", "VII", "IX", "X" };
 
         int chosen = UnityEngine.Random.Range(0, names.Length);

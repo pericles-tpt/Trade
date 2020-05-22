@@ -27,7 +27,7 @@ public class GameDirector : MonoBehaviour
 
         // Testing perlin noise function
         PerlinNoise pn = new PerlinNoise();
-        pn.Generate2dPerlin(192, 108, true);
+        pn.Generate2dPerlin(640, 320, true, 16);
 
     }
 

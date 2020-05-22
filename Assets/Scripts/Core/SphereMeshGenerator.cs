@@ -281,7 +281,6 @@ public class SphereMeshGenerator
 
             float u, v;
 
-
             u = 0.5f + ((Mathf.Atan2(c.x, c.y)) / (2 * Mathf.PI));
             v = 0.5f - ((Mathf.Asin(c.z)) / (1 * Mathf.PI));
 
