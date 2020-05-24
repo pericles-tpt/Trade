@@ -67,6 +67,9 @@ public class PerlinNoise
         int x0 = (int)x;
         int y0 = (int)y;
 
+        Debug.Log("x0 is " + x0);
+        Debug.Log("x is " + x);
+
         int x1;
         if (x0 + 1 < (width - 1))
             x1 = x0 + 1;

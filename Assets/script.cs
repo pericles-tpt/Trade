@@ -15,21 +15,36 @@ public class script : MonoBehaviour
     void Start()
     {
 
+        // Number of sectors = n * n
+        // Chunks per sector, more chunks = more hilliness 
 
+        int chunksPerSector = 2;
         int seed = UnityEngine.Random.Range(0, int.MaxValue);
-        PerlinNoise pn = new PerlinNoise(seed);
-        float[,] tiles = pn.Generate2dPerlin(128, 72, false, 1f);
 
-        for (int i = 0; i < tiles.GetLength(1); i++)
+        int planetSectorMax = 32;
+        int perlinWidthHeight = planetSectorMax * chunksPerSector; 
+
+        PerlinNoise pn = new PerlinNoise(seed);
+        float[,] tiles = pn.Generate2dPerlin(perlinWidthHeight, perlinWidthHeight, false, 1f);
+
+        int sectorWidth = 256;
+        int sectorHeight = 144;
+
+        // 4 / 128
+
+        for (int i = 0; i < sectorHeight; i++)
         {
-            for (int j = 0; j < tiles.GetLength(0); j++)
+            float iPerlinIndex = (float)i / (sectorHeight / chunksPerSector);
+            for (int j = 0; j < sectorWidth; j++)
             {
-                float depth = Mathf.Clamp(pn.GeneratePerlinValue(((float)j * 32f / 100f), ((float)i * 32f / 100f), 128, 64) + 0.5f, 0f, 1f);
+                float jPerlinIndex = (float)j / (sectorWidth / chunksPerSector);
+                float depth = Mathf.Clamp(pn.GeneratePerlinValue(jPerlinIndex, iPerlinIndex, perlinWidthHeight, perlinWidthHeight) + 0.5f, 0f, 1f);
                 GameObject curr, shadow;
 
-                if (depth <= 0.5f)
+                if (depth <= 0.3f)
                 {
                     curr = Instantiate(waterTile);
+                    //curr = Instantiate(sandTile);
                 }
                 else
                 {
@@ -47,7 +62,7 @@ public class script : MonoBehaviour
 
                     if ((i - 1) >= 0)
                     {
-                        depthAbove = Mathf.Clamp(pn.GeneratePerlinValue(((float)j * 32f / 100f), ((float)(i - 1) * 32f / 100f), 128, 64) + 0.5f, 0f, 1f);
+                        depthAbove = Mathf.Clamp(pn.GeneratePerlinValue(jPerlinIndex, iPerlinIndex, perlinWidthHeight, perlinWidthHeight) + 0.5f, 0f, 1f);
                         if (depthAbove > depth)
                         {
                             shadow = Instantiate(shadowAbove);
@@ -56,7 +71,7 @@ public class script : MonoBehaviour
                     }
                     if ((i + 1) < tiles.GetLength(1))
                     {
-                        depthBelow = Mathf.Clamp(pn.GeneratePerlinValue(((float)j * 32f / 100f), ((float)(i + 1) * 32f / 100f), 128, 64) + 0.5f, 0f, 1f);
+                        depthBelow = Mathf.Clamp(pn.GeneratePerlinValue(jPerlinIndex, iPerlinIndex, perlinWidthHeight, perlinWidthHeight) + 0.5f, 0f, 1f);
                         if (depthBelow > depth)
                         {
                             shadow = Instantiate(shadowBelow);
@@ -65,7 +80,7 @@ public class script : MonoBehaviour
                     }
                     if ((j - 1) >= 0)
                     {
-                        depthLeft = Mathf.Clamp(pn.GeneratePerlinValue(((float)(j - 1) * 32f / 100f), ((float)i * 32f / 100f), 128, 64) + 0.5f, 0f, 1f);
+                        depthLeft = Mathf.Clamp(pn.GeneratePerlinValue(jPerlinIndex, iPerlinIndex, perlinWidthHeight, perlinWidthHeight) + 0.5f, 0f, 1f);
                         if (depthLeft > depth)
                         {
                             shadow = Instantiate(shadowLeft);
@@ -74,7 +89,7 @@ public class script : MonoBehaviour
                     }
                     if ((j + 1) < tiles.GetLength(0))
                     {
-                        depthRight = Mathf.Clamp(pn.GeneratePerlinValue(((float)(j + 1) * 32f / 100f), ((float)i * 32f / 100f), 128, 64) + 0.5f, 0f, 1f);
+                        depthRight = Mathf.Clamp(pn.GeneratePerlinValue(jPerlinIndex, iPerlinIndex, perlinWidthHeight, perlinWidthHeight) + 0.5f, 0f, 1f);
                         if (depthRight > depth)
                         {
                             shadow = Instantiate(shadowRight);
