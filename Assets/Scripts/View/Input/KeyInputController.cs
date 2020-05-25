@@ -17,15 +17,15 @@ public class KeyInputController : MonoBehaviour
     void Update()
     {
         Camera cam = GameObject.Find("Camera").GetComponent<Camera>();
-        //float scale = GameObject.Find("Camera").GetComponent<GameDirector>().FindPlanet(GameObject.Find("Camera").GetComponent<GameDirector>().GetSelectedPlanet())._SphereSize;
+        //float scale = GameObject.Find("Camera").GetComponent<GalaxyManager>().FindPlanet(GameObject.Find("Camera").GetComponent<GalaxyManager>().GetSelectedPlanet())._SphereSize;
         if (Input.GetKey("left"))
         {
-            GameObject.Find("Camera").transform.RotateAround(GameObject.Find("Camera").GetComponent<GameDirector>().GetSelectedPlanet().transform.position, new Vector3(0, 0, 1), -1f);
+            GameObject.Find("Camera").transform.RotateAround(GameObject.Find("Camera").GetComponent<GalaxyManager>().GetSelectedPlanet().transform.position, new Vector3(0, 0, 1), -1f);
         }
 
         if (Input.GetKey("right"))
         {
-            GameObject.Find("Camera").transform.RotateAround(GameObject.Find("Camera").GetComponent<GameDirector>().GetSelectedPlanet().transform.position, new Vector3(0, 0, 1), 1f);
+            GameObject.Find("Camera").transform.RotateAround(GameObject.Find("Camera").GetComponent<GalaxyManager>().GetSelectedPlanet().transform.position, new Vector3(0, 0, 1), 1f);
 
         }
 
@@ -35,7 +35,7 @@ public class KeyInputController : MonoBehaviour
         {
             if (incline < 2)
             {
-                GameObject.Find("Camera").transform.RotateAround(GameObject.Find("Camera").GetComponent<GameDirector>().GetSelectedPlanet().transform.position, new Vector3(0, 1, 0), -20f);
+                GameObject.Find("Camera").transform.RotateAround(GameObject.Find("Camera").GetComponent<GalaxyManager>().GetSelectedPlanet().transform.position, new Vector3(0, 1, 0), -20f);
                 incline++;
             }
 
@@ -45,7 +45,7 @@ public class KeyInputController : MonoBehaviour
         {
             if (incline > -2)
             {
-                GameObject.Find("Camera").transform.RotateAround(GameObject.Find("Camera").GetComponent<GameDirector>().GetSelectedPlanet().transform.position, new Vector3(0, 1, 0), 20f);
+                GameObject.Find("Camera").transform.RotateAround(GameObject.Find("Camera").GetComponent<GalaxyManager>().GetSelectedPlanet().transform.position, new Vector3(0, 1, 0), 20f);
                 incline--;
             }
 

@@ -11,9 +11,9 @@ public class TogglePlanetViewBehaviour : MonoBehaviour
     public void TogglePlanetView()
     {
         Camera cam = GameObject.Find("Camera").GetComponent<Camera>();
-        GameDirector GD = GameObject.Find("Camera").GetComponent<GameDirector>();
-        GameObject planetGO = GameObject.Find("Camera").GetComponent<GameDirector>().GetSelectedPlanet();
-        Planet planet = GameObject.Find("Camera").GetComponent<GameDirector>().FindPlanet(GameObject.Find("Camera").GetComponent<GameDirector>().GetSelectedPlanet());
+        GalaxyManager GD = GameObject.Find("Camera").GetComponent<GalaxyManager>();
+        GameObject planetGO = GameObject.Find("Camera").GetComponent<GalaxyManager>().GetSelectedPlanet();
+        Planet planet = GameObject.Find("Camera").GetComponent<GalaxyManager>().FindPlanet(GameObject.Find("Camera").GetComponent<GalaxyManager>().GetSelectedPlanet());
 
         bool planetView;
         if (cam.orthographicSize == 15)

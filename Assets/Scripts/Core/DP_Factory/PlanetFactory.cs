@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEditor;
 
 public class PlanetFactory : MonoBehaviour
 {
@@ -13,18 +14,40 @@ public class PlanetFactory : MonoBehaviour
     public GameObject WaterPlanet;
 
     private SphereMeshGenerator SMG = new SphereMeshGenerator();
+
     public Sector[,] storedSectorsSmall;    
     public Sector[,] storedSectorsMedium;    
     public Sector[,] storedSectorsLarge;
-    private Mesh SmallMesh;
-    private Mesh MediumMesh;
-    private Mesh LargeMesh;
+
+    public Mesh SmallMesh;
+    public Mesh MediumMesh;
+    public Mesh LargeMesh;
 
     void Awake()
     {
-         SmallMesh = SMG.GenerateMesh(1, Planet._SectorSize * 1, ref storedSectorsSmall);
-         MediumMesh = SMG.GenerateMesh(1.5f, (int)(Planet._SectorSize * 1.5f), ref storedSectorsMedium);
-         LargeMesh = SMG.GenerateMesh(2, Planet._SectorSize * 2, ref storedSectorsLarge);
+
+        // Make small, medium and large planets
+        float scale = 1;
+        int divisions = (int)(Planet._SectorSize * scale);
+
+
+        // Below will generate new meshes with n divisions, small = 1n, medium = 1.5n, large = 2n
+        //SaveNewPlanetMesh(n);
+
+        storedSectorsSmall = new Sector[divisions, divisions];
+        SMG.CalculateVertices(scale, divisions, ref storedSectorsSmall);
+
+        scale = 1.5f;
+        divisions = (int)(Planet._SectorSize * scale);
+
+        storedSectorsMedium = new Sector[divisions, divisions];
+        SMG.CalculateVertices(scale, divisions, ref storedSectorsMedium);
+
+        scale = 2f;
+        divisions = (int)(Planet._SectorSize * scale);
+
+        storedSectorsLarge = new Sector[divisions, divisions];
+        SMG.CalculateVertices(scale, divisions, ref storedSectorsLarge);
     }
 
     public Planet CreateMoltenPlanet(Vector3 v, string planetName, int index, float ssize, int pno)
@@ -128,6 +151,25 @@ public class PlanetFactory : MonoBehaviour
             return MediumMesh;
         else
             return LargeMesh;
+    }
+
+    private void SaveNewPlanetMesh(int divisions)
+    {
+        if (!((1.5f * (float)divisions) % 1 == 0))
+            throw new System.Exception("Provided number of 'division' in the sphere mesh must be an integer when multiplied by 1.5");
+
+        float smallScale = 1f;
+        float mediumScale = 1.5f;
+        float largeScale = 2f;
+
+        Mesh small  = SMG.GenerateMesh(smallScale, divisions);
+        Mesh medium = SMG.GenerateMesh(mediumScale, divisions);
+        Mesh large  = SMG.GenerateMesh(largeScale, divisions);
+
+        MeshSaverEditor.SaveMesh(small, "SmallPlanet" + (int)((float)divisions * smallScale), false, false);
+        MeshSaverEditor.SaveMesh(medium, "MediumPlanet" + (int)((float)divisions * mediumScale), false, false);
+        MeshSaverEditor.SaveMesh(large, "LargePlanet" + (int)((float)divisions * largeScale), false, false);
+
     }
 }
  

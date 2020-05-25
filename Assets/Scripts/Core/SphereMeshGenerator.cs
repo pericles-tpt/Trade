@@ -12,15 +12,12 @@ public class SphereMeshGenerator
 
     // mesh = CreateSectors(scale, scale * sectorsize, ref Sector[,] Sectors = null
 
-    public Mesh GenerateMesh(float scale, int divisions, ref Sector[,] storedSectors)    {
-        // NOTE: This is separate, used for storing vertices of mesh in Planet class
-        storedSectors = new Sector[divisions, divisions];
-
+    public Mesh GenerateMesh(float scale, int divisions)    {
         // Mesh:
         Mesh m1 = new Mesh();
 
         // Vertices:
-        Vector3[] Vertices = CalculateVertices(scale, divisions, ref storedSectors);
+        Vector3[] Vertices = CalculateVertices(scale, divisions);
 
         // Triangles:
         // Counts = timesPointUsed * noOfPoints *  noOfRows
@@ -38,7 +35,6 @@ public class SphereMeshGenerator
 
         // Normals:
         Vector3[] Normals1 = CalculateNormals(Vertices, 1);
-        Vector3[] Normals2 = CalculateNormals(Vertices, -1);            
 
         // Finally assign the new mesh to the gameobject
         m1.name = "Test";
@@ -51,7 +47,8 @@ public class SphereMeshGenerator
 
     }
 
-    private Vector3[] CalculateVertices(float scale, float divisions, ref Sector[,] storedSectors)
+    // CalculateVertices function for generating new preset mesh in unity
+    private Vector3[] CalculateVertices(float scale, float divisions)
     {
         Vector3[] ret = new Vector3[(int)(((divisions - 1) * divisions) + 2)];
         int i = 0;
@@ -85,6 +82,60 @@ public class SphereMeshGenerator
 
             ret[i] = lastPoint;
 
+            Debug.Log("Sector Name: " + Sector.NameSector(0, y) + ", Index: " + i + ": " + ret[i].ToString());
+            i++;
+
+            for (int x = 1; x < divisions; x++)
+            {
+                Offset = PolarToVector(r, (latAngInc * (y + 1)) * Mathf.Deg2Rad, (longAngInc * x) * Mathf.Deg2Rad);
+                lastPoint = new Vector3(Origin.x + Offset.x, Origin.y + Offset.y, Origin.z + Offset.z);
+
+                ret[i] = lastPoint;
+
+                Debug.Log("Sector Name: " + Sector.NameSector(x, y) + ", Index: " + i + ": " + ret[i].ToString());
+                i++;
+
+            }
+
+        }
+
+        // Assign the bottom of the sphere to the array last
+        ret[i] = new Vector3(0, 0, 0 - r);
+        Debug.Log("Bottom " + i + ": " + ret[i].ToString());
+        i++;
+
+        return ret;
+
+    }
+
+    // Calculate vertices for storedSectors in Planet - Maybe put in Planet class?
+    public void CalculateVertices(float scale, float divisions, ref Sector[,] storedSectors)
+    {
+        int i = 0;
+        i++;
+
+        // Gets radius of planet in Unity units
+        float d = scale;
+        float r = d / 2;
+
+        Vector3 Origin = new Vector3(0, 0, 0);
+
+        // Angles for incrementing circle along "longitude" and "latitude"
+        float longAngInc = 360 / divisions;
+        float latAngInc = 90 / (divisions / 2);
+
+        // Go from bottom to top of sphere recording blCoords creating a new sector 
+        // at each point like this:
+
+        // A ... Z
+        //  1 ... n
+
+        // Up to and including (maxCoord + 1) because including both the top and bottom point on sphere
+        for (int y = 0; y < (divisions - 1); y++)
+        {
+            Vector3 Offset = PolarToVector(r, (latAngInc * (y + 1)) * Mathf.Deg2Rad, 0);
+            Vector3 lastPoint = new Vector3(Origin.x + Offset.x, Origin.y + Offset.y, Origin.z + Offset.z);
+
             // Create a new sector for each vertex on the sphere including the sector's index (for the vertices array),
             // whether the sector is an up-triangle, square or down-triangle and give the sector a name using planet
             // and position
@@ -99,15 +150,13 @@ public class SphereMeshGenerator
             else
                 storedSectors[0, y] = new Sector(Sector.NameSector(0, y), Sector.Shape.square, i);
 
-            Debug.Log("Sector Name: " + Sector.NameSector(0, y) + ", Index: " + i + ": " + ret[i].ToString());
+            Debug.Log("Sector Name: " + Sector.NameSector(0, y) + ", Index: " + i + ": " + +i); // i was ret[i].ToString()
             i++;
 
             for (int x = 1; x < divisions; x++)
             {
                 Offset = PolarToVector(r, (latAngInc * (y + 1)) * Mathf.Deg2Rad, (longAngInc * x) * Mathf.Deg2Rad);
                 lastPoint = new Vector3(Origin.x + Offset.x, Origin.y + Offset.y, Origin.z + Offset.z);
-
-                ret[i] = lastPoint;
 
                 // Create a new sector for each vertex on the sphere including the sector's index (for the vertices array),
                 // whether the sector is an up-triangle, square or down-triangle and give the sector a name using planet
@@ -123,19 +172,12 @@ public class SphereMeshGenerator
                 else
                     storedSectors[x, y] = new Sector(Sector.NameSector(x, y), Sector.Shape.square, i);
 
-                Debug.Log("Sector Name: " + Sector.NameSector(x, y) + ", Index: " + i + ": " + ret[i].ToString());
+                Debug.Log("Sector Name: " + Sector.NameSector(x, y) + ", Index: " + i + ": " + i); // i was ret[i].ToString()
                 i++;
 
             }
 
         }
-
-        // Assign the bottom of the sphere to the array last
-        ret[i] = new Vector3(0, 0, 0 - r);
-        Debug.Log("Bottom " + i + ": " + ret[i].ToString());
-        i++;
-
-        return ret;
 
     }
 

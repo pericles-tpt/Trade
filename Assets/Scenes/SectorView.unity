@@ -233,7 +233,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e848969f337d65c4c9d3a96b1b34b7a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sandTile: {fileID: 5745048196366368580, guid: 969f3c5de366cc545a44f0066e29c3da,
+  SandMiddle: {fileID: 6149464186865068179, guid: a9d0f5bb6366abd4cabd0ec965b3e82e,
+    type: 3}
+  SandBottomEdge: {fileID: 9137733209905873956, guid: cb0a35480cdc2d64e8011f7a72fab4f2,
+    type: 3}
+  SandTopEdge: {fileID: 2358656476721040463, guid: 1e0ae60c4da98d342a2f7cc3ddb74d82,
+    type: 3}
+  SandLeftEdge: {fileID: 1714064942753787740, guid: 811798e25c81cdf4c909e2365c9ae83b,
+    type: 3}
+  SandRightEdge: {fileID: 6689156300624121095, guid: f0518951e81f6a540b035f9c356627bc,
+    type: 3}
+  SandBottomLeft: {fileID: 408497246259185919, guid: 2f1070e923e81d948b1798207479d8a6,
+    type: 3}
+  SandBottomRight: {fileID: 5329595981622127031, guid: 26982b33dd6cf95429d3bc3259b394be,
+    type: 3}
+  SandTopLeft: {fileID: 8152651630130925413, guid: fc67778ea8e177147ae3f38c9ec2b948,
+    type: 3}
+  SandTopRight: {fileID: 3828208905554523841, guid: 8cf185ab17436a74d82ad1f8bef39eac,
+    type: 3}
+  SandOneAbove: {fileID: 9167010554749479767, guid: d548dd95e78e4014c965fed95f1ff07d,
+    type: 3}
+  SandOneBelow: {fileID: 7851647594071818206, guid: e7be6479ec25e5e4a9e6bb64d627f71d,
+    type: 3}
+  SandOneRight: {fileID: 510283054874360284, guid: 961edad2f96cdaa4fb89245c413608f2,
+    type: 3}
+  SandOneLeft: {fileID: 1787932693617102271, guid: dbbfaab154380c040b45f136b70312bb,
+    type: 3}
+  sandTile: {fileID: 6149464186865068179, guid: a9d0f5bb6366abd4cabd0ec965b3e82e,
     type: 3}
   waterTile: {fileID: 5745048196366368580, guid: 713628c5f42f2014fb9949fe16f5ce7e,
     type: 3}

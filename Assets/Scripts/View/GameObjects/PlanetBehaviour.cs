@@ -22,7 +22,7 @@ public class PlanetBehaviour : MonoBehaviour
     private void OnMouseOver()
     {
         if (GameObject.Find("Camera").GetComponent<Camera>().orthographicSize == 15)
-            GameObject.Find("Camera").GetComponent<GameDirector>().DrawOnePlanetToAll(this.gameObject);
+            GameObject.Find("Camera").GetComponent<GalaxyManager>().DrawOnePlanetToAll(this.gameObject);
         else
         {
             trackCursorPosition = true;
@@ -35,7 +35,7 @@ public class PlanetBehaviour : MonoBehaviour
     private void OnMouseExit()
     {
         if (GameObject.Find("Camera").GetComponent<Camera>().orthographicSize == 15)
-            GameObject.Find("Camera").GetComponent<GameDirector>().DestroyAllLines(); 
+            GameObject.Find("Camera").GetComponent<GalaxyManager>().DestroyAllLines(); 
         trackCursorPosition = false;
     }
 
@@ -44,12 +44,12 @@ public class PlanetBehaviour : MonoBehaviour
         if (GameObject.Find("Camera").GetComponent<Camera>().orthographicSize == 15)
         {
             GameObject.Find("pg_planet").GetComponent<PlanetPanelBehaviour>().ShowPanel(this.gameObject);
-            GameObject.Find("Camera").GetComponent<GameDirector>().SetSelectedPlanet(this.gameObject);
-            GameObject.Find("Camera").GetComponent<GameDirector>().SetPlanetPositionBeforeZoom(this.gameObject.transform.position);
+            GameObject.Find("Camera").GetComponent<GalaxyManager>().SetSelectedPlanet(this.gameObject);
+            GameObject.Find("Camera").GetComponent<GalaxyManager>().SetPlanetPositionBeforeZoom(this.gameObject.transform.position);
             GameObject.Find("b_toggle_planet_view").GetComponent<TogglePlanetViewBehaviour>().TogglePlanetView();
             trackCursorPosition = true;
 
-            GameObject.Find("Camera").GetComponent<GameDirector>().ToggleSectorTooltipVisible(true);
+            GameObject.Find("Camera").GetComponent<GalaxyManager>().ToggleSectorTooltipVisible(true);
         }
 
     }
@@ -64,7 +64,7 @@ public class PlanetBehaviour : MonoBehaviour
             if (trackCursorPosition)
             {
                 // 0. Use the vector index data from the PlanetSectors array from this Planet, to pinpoint hovered sector
-                Planet p                = GameObject.Find("Camera").GetComponent<GameDirector>().FindPlanet(this.gameObject);
+                Planet p                = GameObject.Find("Camera").GetComponent<GalaxyManager>().FindPlanet(this.gameObject);
                 Sector[,] PlanetSectors = p._PlanetSectors;
                 float radius            = p._SphereSize;
 
@@ -77,6 +77,22 @@ public class PlanetBehaviour : MonoBehaviour
                 // maxCoord: number of increments along long + lat, verts: list of vertices in the mesh to be indexed by PlanetSectors
                 int maxCoord = (int)(Planet._SectorSize * p._SphereSize);
                 Vector3[] verts = this.GetComponent<MeshFilter>().mesh.vertices;
+
+                Debug.Log("top vert is " + verts[0]);
+                Debug.Log("bottom vert is " + verts[verts.Length - 1].x);
+
+
+                float longAngInc = 360f / 32f;
+                float latAngInc = 90f / (32f / 2f);
+
+                Debug.Log("Azi, longAngInc: " + longAngInc + ", latAngInc: " + latAngInc);
+
+                Dictionary<string, float> angles = SphereMeshGenerator.VectorToPolar(rHit.point);
+                Debug.Log("r: " + angles["r"] + ", Azi: " + ((angles["Azi"] * Mathf.Rad2Deg) % longAngInc) + ", Inc: " + ((angles["Inc"] * Mathf.Rad2Deg) % latAngInc));
+
+
+
+
 
                 // 2. Find the z-value in verts that corresponds with the sector that is being hovered over
                 int zi = -1;

@@ -2064,6 +2064,9 @@ MonoBehaviour:
     type: 3}
   WaterPlanet: {fileID: 2502290665765389085, guid: 9077804043cc47041afdefe581e5b06b,
     type: 3}
+  SmallMesh: {fileID: 4300000, guid: 443b51942d96bd64a8fd1eec1bef0631, type: 2}
+  MediumMesh: {fileID: 4300000, guid: 7f8fdad8c57b8644d9813780f7d91e68, type: 2}
+  LargeMesh: {fileID: 4300000, guid: 6a0a20d6650fa7146a8c87a1425c9716, type: 2}
 --- !u!1 &1158952511
 GameObject:
   m_ObjectHideFlags: 0
