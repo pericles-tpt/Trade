@@ -1,18 +1,25 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using TreeEditor;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
 public class TerrainGenerator : MonoBehaviour
 {
     // Start is called before the first frame update
-    public GameObject SandMiddle, SandBottomEdge, SandTopEdge, SandLeftEdge, SandRightEdge, SandBottomLeft, SandBottomRight, SandTopLeft, SandTopRight, SandOneAbove, SandOneBelow, SandOneRight, SandOneLeft;
+    /*public GameObject SandMiddle, SandBottomEdge, SandTopEdge, SandLeftEdge, SandRightEdge, SandBottomLeft, SandBottomRight, SandTopLeft, SandTopRight, SandOneAbove, SandOneBelow, SandOneRight, SandOneLeft;
     public GameObject sandTile;
     public GameObject waterTile;
 
     public GameObject shadowAbove, shadowBelow, shadowLeft, shadowRight;
+    */
+    GameObject DELETEME;
+
+    private void Awake()
+    {
+         DELETEME = new GameObject();
+    }
 
     void Start()
     {
@@ -24,73 +31,82 @@ public class TerrainGenerator : MonoBehaviour
         // in one sector, and less in another, as long as it averages out to n chunks per sector
 
         // chunksPerSector: the number of chunks in this generated sector
-        int chunksPerSectorMax = 8; // Can do 2 -> 256
-        int chunksPerSector = 4;
+
+        int chunksPerSectorMax = 2; // Can do 2 -> 256
+        int chunksPerSector = 2;
         int seed = UnityEngine.Random.Range(0, int.MaxValue);
 
         int planetSectorMax = 32;
         int chunksLeft = chunksPerSectorMax * planetSectorMax;
         int perlinWidthHeight = planetSectorMax * chunksPerSectorMax;
 
-        float clampMax = 5f;
-
         PerlinNoise pn = new PerlinNoise(seed);
-        float[,] tiles = pn.Generate2dPerlin(perlinWidthHeight, perlinWidthHeight, false, 2f);
+        pn.Generate2dPerlin(perlinWidthHeight, perlinWidthHeight, false);
 
-        // Was 384 x 216
-        int sectorWidth = 128;
-        int sectorHeight = 128;
+        int sectorWidth = 1024;
+        int sectorHeight = 32;
+
+        Vector3 currLand, currWater;
+
+        Vector3[] landTiles = new Vector3[sectorWidth];
+        List<Vector3> waterTiles = new List<Vector3>();
 
         // 4 / 128
+        float jPerlinIndex, iPerlinIndex;
+        float depth, depthAbove, depthBelow, depthLeft, depthRight;
 
         for (int i = 0; i < sectorHeight; i++)
         {
-            float iPerlinIndex = (float)i / (sectorHeight / chunksPerSector);
+            iPerlinIndex = (float)i / (sectorHeight / chunksPerSector);
+            landTiles  = new Vector3[sectorWidth];
+            waterTiles = new List<Vector3>();
             for (int j = 0; j < sectorWidth; j++)
             {
-                float jPerlinIndex = (float)j / (sectorWidth / chunksPerSector);
-                float depth = Mathf.Clamp(pn.GeneratePerlinValue(jPerlinIndex, iPerlinIndex, perlinWidthHeight, perlinWidthHeight) + 0.5f, 0f, clampMax);
-                GameObject curr, shadow;
-
-                float depthAbove, depthBelow, depthLeft, depthRight;
+                jPerlinIndex = (float)j / (sectorWidth / chunksPerSector);
+                depth = pn.GeneratePerlinValue(jPerlinIndex, iPerlinIndex, perlinWidthHeight, perlinWidthHeight);
 
                 jPerlinIndex = (float)j / (sectorWidth / chunksPerSector);
                 iPerlinIndex = (float)(i - 1) / (sectorHeight / chunksPerSector);
-                depthAbove = Mathf.Clamp(pn.GeneratePerlinValue(jPerlinIndex, iPerlinIndex, perlinWidthHeight, perlinWidthHeight) + 0.5f, 0f, clampMax);
+                depthAbove = pn.GeneratePerlinValue(jPerlinIndex, iPerlinIndex, perlinWidthHeight, perlinWidthHeight);
 
                 jPerlinIndex = (float)j / (sectorWidth / chunksPerSector);
                 iPerlinIndex = (float)(i + 1) / (sectorHeight / chunksPerSector);
-                depthBelow = Mathf.Clamp(pn.GeneratePerlinValue(jPerlinIndex, iPerlinIndex, perlinWidthHeight, perlinWidthHeight) + 0.5f, 0f, clampMax);
+                depthBelow = pn.GeneratePerlinValue(jPerlinIndex, iPerlinIndex, perlinWidthHeight, perlinWidthHeight);
 
                 jPerlinIndex = (float)(j - 1) / (sectorWidth / chunksPerSector);
                 iPerlinIndex = (float)i / (sectorHeight / chunksPerSector);
-                depthLeft = Mathf.Clamp(pn.GeneratePerlinValue(jPerlinIndex, iPerlinIndex, perlinWidthHeight, perlinWidthHeight) + 0.5f, 0f, clampMax);
+                depthLeft = pn.GeneratePerlinValue(jPerlinIndex, iPerlinIndex, perlinWidthHeight, perlinWidthHeight);
 
                 jPerlinIndex = (float)(j + 1) / (sectorWidth / chunksPerSector);
                 iPerlinIndex = (float)i / (sectorHeight / chunksPerSector);
-                depthRight = Mathf.Clamp(pn.GeneratePerlinValue(jPerlinIndex, iPerlinIndex, perlinWidthHeight, perlinWidthHeight) + 0.5f, 0f, clampMax);
+                depthRight = pn.GeneratePerlinValue(jPerlinIndex, iPerlinIndex, perlinWidthHeight, perlinWidthHeight);
 
-                if (depth <= 0.3f)
+                if (depth <= 0)
                 {
-                    curr = Instantiate(waterTile);
-                    //curr = Instantiate(sandTile);
+                    //curr = Instantiate(waterTile);
+                    currWater = new Vector3(((float)j * 32f / 100f), ((float)i * 32f / 100f), 0);
+                    waterTiles.Add(currWater);
+                    //seaBed = Instantiate(sandTile);
+                    currLand = new Vector3(currWater.x, currWater.y, depth);
+                    landTiles[j] = currLand;
                 }
                 else
                 {
-                    curr = Instantiate(DecideTileToInstantiate(depth, depthAbove, depthBelow, depthLeft, depthRight));
+                    //curr = Instantiate(DecideTileToInstantiate(depth, depthAbove, depthBelow, depthLeft, depthRight));
+                    currLand = new Vector3(((float)j * 32f / 100f), ((float)i * 32f / 100f), depth);
+                    landTiles[j] = currLand;
                 }
 
+                //Vector3 aboveCurr = new Vector3(curr.transform.position.x, curr.transform.position.y, curr.transform.position.z + 0.1f);
 
-                curr.transform.position = new Vector3(((float)j * 32f / 100f), ((float)i * 32f / 100f), depth);
-                Vector3 aboveCurr = new Vector3(curr.transform.position.x, curr.transform.position.y, curr.transform.position.z + 0.1f);
-
-                if (depth > 0.5f)
+                // Shadow tile instantiation removed temporarily
+                /*if (depth > 0.5f)
                 {
 
 
                     if ((i - 1) >= 0)
                     {
-                        
+
                         if (depthAbove > depth)
                         {
                             shadow = Instantiate(shadowAbove);
@@ -99,7 +115,7 @@ public class TerrainGenerator : MonoBehaviour
                     }
                     if ((i + 1) < tiles.GetLength(1))
                     {
-                        
+
                         if (depthBelow > depth)
                         {
                             shadow = Instantiate(shadowBelow);
@@ -108,7 +124,7 @@ public class TerrainGenerator : MonoBehaviour
                     }
                     if ((j - 1) >= 0)
                     {
-                        
+
                         if (depthLeft > depth)
                         {
                             shadow = Instantiate(shadowLeft);
@@ -117,21 +133,27 @@ public class TerrainGenerator : MonoBehaviour
                     }
                     if ((j + 1) < tiles.GetLength(0))
                     {
-                        
+
                         if (depthRight > depth)
                         {
                             shadow = Instantiate(shadowRight);
                             shadow.transform.position = aboveCurr;
                         }
                     }
-                }
+                }*/
 
 
 
-                Debug.Log("Position of perlin point is " + curr.transform.position);
+                //Debug.Log("Position of perlin point is " + currPos);
             }
+            Vector3[] waterTilesArray = waterTiles.ToArray();
         }
 
+        //TileSpawnerSand TSS = new TileSpawnerSand(SandTilePositions, sandTile);
+        //TileSpawnerSand TSW = new TileSpawnerSand(WaterTilePositions, waterTile);
+
+        //TSS.SpawnEntities();
+        //TSW.SpawnEntities();
 
     }
 
@@ -153,7 +175,83 @@ public class TerrainGenerator : MonoBehaviour
                 // SandOneRight    - top: less , left: less, right: greater/equal, bottom: less
         GameObject ret;
 
-        if (top == depth && left == depth && right == depth && bottom < depth)
+        if (top >= depth)
+        {
+            if (left >= depth)
+            {
+                if (right == depth)
+                {
+                    if (bottom < depth)
+                    {
+                        //ret = SandBottomEdge;
+                    } 
+                    else 
+                    {
+                        //ret = SandMiddle;
+                    }
+                } else
+                {
+                    if (bottom < depth)
+                    {
+                        //ret = SandBottomRight;
+                    }
+                    else
+                    {
+                        //ret = SandRightEdge;
+                    }
+                }
+            } else
+            {
+                if (right >= depth)
+                {
+                    if (bottom == depth)
+                    {
+                        //ret = SandLeftEdge;
+                    } else
+                    {
+                        //ret = SandBottomLeft;
+                    }
+                } else
+                {
+                    if (bottom >= depth)
+                    {
+                        //ret = SandOneBelow;
+                    } else
+                    {
+                        //ret = SandOneAbove;
+                    }
+                }
+            }
+        } else
+        {
+            if (left >= depth)
+            {
+                if (right == depth)
+                {
+                    //ret = SandTopEdge;
+                } else
+                {
+                    if (bottom < depth)
+                    {
+                        //ret = SandOneLeft;
+                    } else
+                    {
+                        //ret = SandTopRight;
+                    }
+                }
+            } else
+            {
+                if (bottom < depth)
+                {
+                    //ret = SandOneRight;
+                } else
+                {
+                    //ret = SandTopLeft;
+                }
+            }
+        }
+
+        /*if (top == depth && left == depth && right == depth && bottom < depth)
         {
             ret = SandBottomEdge;
         } else if (top == depth && left == depth && right < depth && bottom == depth)
@@ -196,15 +294,10 @@ public class TerrainGenerator : MonoBehaviour
         } else
         {
             ret = SandMiddle;
-        }
+        }*/
 
-        return ret;
+        return DELETEME;
 
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

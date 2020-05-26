@@ -166,10 +166,12 @@ public class PlanetFactory : MonoBehaviour
         Mesh medium = SMG.GenerateMesh(mediumScale, divisions);
         Mesh large  = SMG.GenerateMesh(largeScale, divisions);
 
-        MeshSaverEditor.SaveMesh(small, "SmallPlanet" + (int)((float)divisions * smallScale), false, false);
-        MeshSaverEditor.SaveMesh(medium, "MediumPlanet" + (int)((float)divisions * mediumScale), false, false);
-        MeshSaverEditor.SaveMesh(large, "LargePlanet" + (int)((float)divisions * largeScale), false, false);
+        // TODO: Come back and get uncommented section below to work
+        //MeshSaverEditor.SaveMesh(small, "SmallPlanet" + (int)((float)divisions * smallScale), false, false);
+        //MeshSaverEditor.SaveMesh(medium, "MediumPlanet" + (int)((float)divisions * mediumScale), false, false);
+        //MeshSaverEditor.SaveMesh(large, "LargePlanet" + (int)((float)divisions * largeScale), false, false);
 
     }
+
 }
  

@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using TreeEditor;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering;
 
@@ -15,12 +14,14 @@ public class PerlinNoise
     float v;
     float w;
 
-    public PerlinNoise(int seed)
+    public PerlinNoise(int seed, float v = 1f, float w = 0.9f)
     {
         UnityEngine.Random.InitState(seed);
+        this.v = v;
+        this.w = w;
     }
 
-    public float[,] Generate2dPerlin(int width, int height, bool outputToFile, float v = 1f, float w = 0.9f)
+    /*public float[,] Generate2dPerlin(int width, int height, bool outputToFile, float v = 1f, float w = 0.9f)
     {
         // 1. Generate 2D array (or grid) of gradient vectors
         gradientVectorGrid = GenerateGradientVectorGrid(width, height);
@@ -41,6 +42,13 @@ public class PerlinNoise
         }
 
         return perlinValues;
+
+    }*/
+
+    public void Generate2dPerlin(int width, int height, bool outputToFile)
+    {
+        // 1. Generate 2D array (or grid) of gradient vectors
+        gradientVectorGrid = GenerateGradientVectorGrid(width, height);
 
     }
 

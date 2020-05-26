@@ -9,6 +9,8 @@
 # Blacklist
 /Library/*
 /Temp/*
+*.meta
+
 
 # Whitelist
 !.git*
