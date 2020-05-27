@@ -1,9 +1,8 @@
 ﻿using UnityEngine;
 
 [CreateAssetMenu(fileName ="New Ground Tiles", menuName = "Ground Tiles")]
-public class SpawnManagerScriptableObject : ScriptableObject
+public class TileScriptableObject : ScriptableObject
 {
     public Sprite[] tiles;
 
-    //public Vector3[] spawnPoints;
 }

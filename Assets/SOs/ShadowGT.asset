@@ -9,7 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: 63fe292d7c11a294682e83685033982b, type: 3}
   m_Name: ShadowGT
   m_EditorClassIdentifier: Assembly-CSharp::SpawnManagerScriptableObject
-  tiles: []
+  tiles:
+  - {fileID: -4885373251318296212, guid: 282eb7f0467f2a440901000ea68b306a, type: 3}
+  - {fileID: -3394916018753255218, guid: 282eb7f0467f2a440901000ea68b306a, type: 3}
+  - {fileID: 3245382184870312957, guid: 282eb7f0467f2a440901000ea68b306a, type: 3}
+  - {fileID: -6458721122411461205, guid: 282eb7f0467f2a440901000ea68b306a, type: 3}

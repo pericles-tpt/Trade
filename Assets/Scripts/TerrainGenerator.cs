@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using Object = UnityEngine.Object;
+using Random = UnityEngine.Random;
 
 public class TerrainGenerator : MonoBehaviour
 {
@@ -14,11 +16,15 @@ public class TerrainGenerator : MonoBehaviour
 
     public GameObject shadowAbove, shadowBelow, shadowLeft, shadowRight;
     */
-    GameObject DELETEME;
+
+    public TileScriptableObject water;
+    public TileScriptableObject sand;
+
+    public GameObject tile;
 
     private void Awake()
     {
-         DELETEME = new GameObject();
+
     }
 
     void Start()
@@ -43,8 +49,9 @@ public class TerrainGenerator : MonoBehaviour
         PerlinNoise pn = new PerlinNoise(seed);
         pn.Generate2dPerlin(perlinWidthHeight, perlinWidthHeight, false);
 
-        int sectorWidth = 1024;
-        int sectorHeight = 32;
+        // Was originally 256 x 144
+        int sectorWidth = 96;
+        int sectorHeight = 48;
 
         Vector3 currLand, currWater;
 
@@ -52,50 +59,46 @@ public class TerrainGenerator : MonoBehaviour
         List<Vector3> waterTiles = new List<Vector3>();
 
         // 4 / 128
-        float jPerlinIndex, iPerlinIndex;
+        float jPerlinIndex, jPerlinIndexM, jPerlinIndexP, iPerlinIndex, iPerlinIndexM, iPerlinIndexP;
         float depth, depthAbove, depthBelow, depthLeft, depthRight;
 
         for (int i = 0; i < sectorHeight; i++)
         {
-            iPerlinIndex = (float)i / (sectorHeight / chunksPerSector);
+            iPerlinIndex  = (float)i / (sectorHeight / chunksPerSector);
+            iPerlinIndexM = (float)(i - 1) / (sectorHeight / chunksPerSector);
+            iPerlinIndexP = (float)(i + 1) / (sectorHeight / chunksPerSector);
+
             landTiles  = new Vector3[sectorWidth];
             waterTiles = new List<Vector3>();
+
             for (int j = 0; j < sectorWidth; j++)
             {
-                jPerlinIndex = (float)j / (sectorWidth / chunksPerSector);
-                depth = pn.GeneratePerlinValue(jPerlinIndex, iPerlinIndex, perlinWidthHeight, perlinWidthHeight);
+                jPerlinIndex  = (float)j / (sectorWidth / chunksPerSector);
+                jPerlinIndexM = (float)(j - 1) / (sectorWidth / chunksPerSector);
+                jPerlinIndexP = (float)(j + 1) / (sectorWidth / chunksPerSector);
 
-                jPerlinIndex = (float)j / (sectorWidth / chunksPerSector);
-                iPerlinIndex = (float)(i - 1) / (sectorHeight / chunksPerSector);
-                depthAbove = pn.GeneratePerlinValue(jPerlinIndex, iPerlinIndex, perlinWidthHeight, perlinWidthHeight);
-
-                jPerlinIndex = (float)j / (sectorWidth / chunksPerSector);
-                iPerlinIndex = (float)(i + 1) / (sectorHeight / chunksPerSector);
-                depthBelow = pn.GeneratePerlinValue(jPerlinIndex, iPerlinIndex, perlinWidthHeight, perlinWidthHeight);
-
-                jPerlinIndex = (float)(j - 1) / (sectorWidth / chunksPerSector);
-                iPerlinIndex = (float)i / (sectorHeight / chunksPerSector);
-                depthLeft = pn.GeneratePerlinValue(jPerlinIndex, iPerlinIndex, perlinWidthHeight, perlinWidthHeight);
-
-                jPerlinIndex = (float)(j + 1) / (sectorWidth / chunksPerSector);
-                iPerlinIndex = (float)i / (sectorHeight / chunksPerSector);
-                depthRight = pn.GeneratePerlinValue(jPerlinIndex, iPerlinIndex, perlinWidthHeight, perlinWidthHeight);
+                depth      = pn.GeneratePerlinValue(jPerlinIndex, iPerlinIndex, perlinWidthHeight, perlinWidthHeight);
+                depthAbove = pn.GeneratePerlinValue(jPerlinIndex, iPerlinIndexM, perlinWidthHeight, perlinWidthHeight);
+                depthBelow = pn.GeneratePerlinValue(jPerlinIndex, iPerlinIndexP, perlinWidthHeight, perlinWidthHeight);
+                depthLeft  = pn.GeneratePerlinValue(jPerlinIndexM, iPerlinIndex, perlinWidthHeight, perlinWidthHeight);
+                depthRight = pn.GeneratePerlinValue(jPerlinIndexP, iPerlinIndex, perlinWidthHeight, perlinWidthHeight);
 
                 if (depth <= 0)
                 {
                     //curr = Instantiate(waterTile);
                     currWater = new Vector3(((float)j * 32f / 100f), ((float)i * 32f / 100f), 0);
                     waterTiles.Add(currWater);
+                    Instantiate(tile, currWater, Quaternion.identity);
+                    tile.GetComponent<SpriteRenderer>().sprite = water.tiles[0];
+
                     //seaBed = Instantiate(sandTile);
-                    currLand = new Vector3(currWater.x, currWater.y, depth);
-                    landTiles[j] = currLand;
                 }
-                else
-                {
-                    //curr = Instantiate(DecideTileToInstantiate(depth, depthAbove, depthBelow, depthLeft, depthRight));
-                    currLand = new Vector3(((float)j * 32f / 100f), ((float)i * 32f / 100f), depth);
-                    landTiles[j] = currLand;
-                }
+                currLand = new Vector3(((float)j * 32f / 100f), ((float)i * 32f / 100f), depth);
+                landTiles[j] = currLand;
+                Instantiate(tile, currLand, Quaternion.identity);
+                tile.GetComponent<SpriteRenderer>().sprite = sand.tiles[DecideTileToInstantiate(depth, depthAbove, depthBelow, depthLeft, depthRight)];
+
+                //tm.SetTile(new Vector3Int(j, i, 0), tile);
 
                 //Vector3 aboveCurr = new Vector3(curr.transform.position.x, curr.transform.position.y, curr.transform.position.z + 0.1f);
 
@@ -157,146 +160,65 @@ public class TerrainGenerator : MonoBehaviour
 
     }
 
-    private GameObject DecideTileToInstantiate(float depth, float top, float bottom, float left, float right)
+    private int DecideTileToInstantiate(float depth, float top, float bottom, float left, float right)
     {
-        // SandMiddle      - top: equal, left: equal, right: equal, bottom: equal
-        // SandBottomEdge  - top: equal, left: equal, right: equal, bottom: less
-        // SandRightEdge   - top: equal, left: equal, right: less, bottom: equal
-        // SandBottomRight - top: greater/equal, left: greater/equal, right: less, bottom: less
-            // SandLeftEdge    - top: equal, left: less, right: equal, bottom: equal
-            // SandBottomLeft  - top: greater/equal, left: less, right: greater/equal, bottom: less
-                // SandOneAbove    - top: greater/equal, left: less, right: less, bottom: less
-                // SandOneBelow    - top: greater/equal, left: less, right: less, bottom: greater/equal
+        // 2. SandLeftEdge
+        // 5. SandTopLeft
+        // 7. SandBottomLeft
+        // 9. SandOneAbove
+        // 10. SandOneBelow
+        // 12. SandOneRight
 
-        // SandTopRight    - top: less, left: greater/equal, right: less, bottom: greater/equal
-        // SandOneLeft     - top: less, left: greater/equal, right: less, bottom: less
-        // SandTopEdge     - top: less, left: equal, right: equal, bottom: equal
-            // SandTopLeft     - top: less, left: less, right: greater/equal, bottom: greater/equal
-                // SandOneRight    - top: less , left: less, right: greater/equal, bottom: less
-        GameObject ret;
+        // 3. SandRightEdge
+        // 6. SandTopRight
+        // 8. SandBottomRight
+        // 11. SandOneLeft
 
-        if (top >= depth)
+        // 0. SandTopEdge
+
+        // 1. SandBottomEdge
+
+        // 4. SandMiddle
+        int ret = 4;
+
+        if (depth > left)
         {
-            if (left >= depth)
-            {
-                if (right == depth)
-                {
-                    if (bottom < depth)
-                    {
-                        //ret = SandBottomEdge;
-                    } 
-                    else 
-                    {
-                        //ret = SandMiddle;
-                    }
-                } else
-                {
-                    if (bottom < depth)
-                    {
-                        //ret = SandBottomRight;
-                    }
-                    else
-                    {
-                        //ret = SandRightEdge;
-                    }
-                }
-            } else
-            {
-                if (right >= depth)
-                {
-                    if (bottom == depth)
-                    {
-                        //ret = SandLeftEdge;
-                    } else
-                    {
-                        //ret = SandBottomLeft;
-                    }
-                } else
-                {
-                    if (bottom >= depth)
-                    {
-                        //ret = SandOneBelow;
-                    } else
-                    {
-                        //ret = SandOneAbove;
-                    }
-                }
-            }
+            if (depth <= right && depth <= top && depth <= bottom)
+                ret = 2;
+            else if (depth <= right && depth > top && depth <= bottom)
+                ret = 5;
+            else if (depth <= right && depth <= top && depth > bottom)
+                ret = 7;
+            else if (depth > right && depth <= top && depth > bottom)
+                ret = 9;
+            else if (depth > right && depth > top && depth <= bottom)
+                ret = 10;
+            else if (depth <= right && depth > top && depth > bottom)
+                ret = 12;
+
+        } else if (depth > right)
+        {
+            if (depth <= left && depth <= top && depth <= bottom)
+                ret = 3;
+            else if (depth <= left && depth > top && depth <= bottom)
+                ret = 6;
+            else if (depth <= left && depth <= top && depth > bottom)
+                ret = 8;
+            else if (depth <= left && depth > top && depth > bottom)
+                ret = 11;
+
+        } else if (depth > top)
+        {
+            ret = 0;
+        } else if (depth > bottom)
+        {
+            ret = 1;
         } else
         {
-            if (left >= depth)
-            {
-                if (right == depth)
-                {
-                    //ret = SandTopEdge;
-                } else
-                {
-                    if (bottom < depth)
-                    {
-                        //ret = SandOneLeft;
-                    } else
-                    {
-                        //ret = SandTopRight;
-                    }
-                }
-            } else
-            {
-                if (bottom < depth)
-                {
-                    //ret = SandOneRight;
-                } else
-                {
-                    //ret = SandTopLeft;
-                }
-            }
+            ret = 4;
         }
 
-        /*if (top == depth && left == depth && right == depth && bottom < depth)
-        {
-            ret = SandBottomEdge;
-        } else if (top == depth && left == depth && right < depth && bottom == depth)
-        {
-            ret = SandRightEdge;
-        }
-        else if (top == depth && left == depth && right == depth && bottom == depth)
-        {
-            ret = SandMiddle;
-        } else if ( top >= depth && left >= depth && right < depth && bottom < depth)
-        {
-            ret = SandBottomRight;
-        } else if (top == depth && left < depth && right == depth && bottom == depth)
-        {
-            ret = SandLeftEdge;
-        } else if (top >= depth && left < depth && right >= depth && bottom < depth)
-        {
-            ret = SandBottomLeft;
-        } else if (top >= depth && left < depth && right < depth && bottom < depth)
-        {
-            ret = SandOneAbove;
-        } else if (top >= depth && left < depth && right < depth && bottom >= depth)
-        {
-            ret = SandOneBelow;
-        } else if (top < depth && left >= depth && right < depth && bottom >= depth)
-        {
-            ret = SandTopRight;
-        } else if (top < depth && left >= depth && right < depth && bottom < depth)
-        {
-            ret = SandOneLeft;
-        } else if (top < depth && left == depth && right == depth && bottom == depth)
-        {
-            ret = SandTopEdge;
-        } else if (top < depth && left < depth && right >= depth && bottom >= depth)
-        {
-            ret = SandTopLeft;
-        } else if (top < depth && left < depth && right >= depth && bottom < depth)
-        {
-            ret = SandOneRight;
-        } else
-        {
-            ret = SandMiddle;
-        }*/
-
-        return DELETEME;
+        return ret;
 
     }
 

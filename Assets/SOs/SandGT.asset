@@ -9,7 +9,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: 63fe292d7c11a294682e83685033982b, type: 3}
   m_Name: SandGT
   m_EditorClassIdentifier: Assembly-CSharp::SpawnManagerScriptableObject
-  tiles: []
+  tiles:
+  - {fileID: -4300644407643738340, guid: e9cf56958bf71b54a9b1765ec96aa723, type: 3}
+  - {fileID: -1912424958255551001, guid: e9cf56958bf71b54a9b1765ec96aa723, type: 3}
+  - {fileID: -8392327671223108054, guid: e9cf56958bf71b54a9b1765ec96aa723, type: 3}
+  - {fileID: -5385690515550872060, guid: e9cf56958bf71b54a9b1765ec96aa723, type: 3}
+  - {fileID: 8854202332120918658, guid: e9cf56958bf71b54a9b1765ec96aa723, type: 3}
+  - {fileID: 6044422960166284259, guid: e9cf56958bf71b54a9b1765ec96aa723, type: 3}
+  - {fileID: -4909081260521960813, guid: e9cf56958bf71b54a9b1765ec96aa723, type: 3}
+  - {fileID: -5593490359408723936, guid: e9cf56958bf71b54a9b1765ec96aa723, type: 3}
+  - {fileID: 6596218583476370291, guid: e9cf56958bf71b54a9b1765ec96aa723, type: 3}
+  - {fileID: -2904953697251782561, guid: e9cf56958bf71b54a9b1765ec96aa723, type: 3}
+  - {fileID: -158876702323024298, guid: e9cf56958bf71b54a9b1765ec96aa723, type: 3}
+  - {fileID: 4683205166559536333, guid: e9cf56958bf71b54a9b1765ec96aa723, type: 3}
+  - {fileID: 4897714084698310894, guid: e9cf56958bf71b54a9b1765ec96aa723, type: 3}
