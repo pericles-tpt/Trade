@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.UI;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 
@@ -21,6 +22,8 @@ public class TerrainGenerator : MonoBehaviour
     public TileScriptableObject sand;
 
     public GameObject tile;
+
+    private Texture2D t2d;
 
     private void Awake()
     {
@@ -50,13 +53,16 @@ public class TerrainGenerator : MonoBehaviour
         pn.Generate2dPerlin(perlinWidthHeight, perlinWidthHeight, false);
 
         // Was originally 256 x 144
-        int sectorWidth = 96;
-        int sectorHeight = 48;
+        int sectorWidth = 64;
+        int sectorHeight = 64;
 
         Vector3 currLand, currWater;
 
         Vector3[] landTiles = new Vector3[sectorWidth];
         List<Vector3> waterTiles = new List<Vector3>();
+
+        t2d = new Texture2D(64, 64);
+        Color pixelColor;
 
         // 4 / 128
         float jPerlinIndex, jPerlinIndexM, jPerlinIndexP, iPerlinIndex, iPerlinIndexM, iPerlinIndexP;
@@ -83,20 +89,25 @@ public class TerrainGenerator : MonoBehaviour
                 depthLeft  = pn.GeneratePerlinValue(jPerlinIndexM, iPerlinIndex, perlinWidthHeight, perlinWidthHeight);
                 depthRight = pn.GeneratePerlinValue(jPerlinIndexP, iPerlinIndex, perlinWidthHeight, perlinWidthHeight);
 
-                if (depth <= 0)
+                pixelColor = Color.yellow;
+
+                if (depth < 0f)
                 {
                     //curr = Instantiate(waterTile);
-                    currWater = new Vector3(((float)j * 32f / 100f), ((float)i * 32f / 100f), 0);
+                    currWater = new Vector3(((float)j * 32f / 100f), ((float)i * 32f / 100f), 0f);
                     waterTiles.Add(currWater);
-                    Instantiate(tile, currWater, Quaternion.identity);
-                    tile.GetComponent<SpriteRenderer>().sprite = water.tiles[0];
+                    GameObject w = Instantiate(tile, currWater, Quaternion.identity);
+                    w.GetComponent<SpriteRenderer>().sprite = water.tiles[0];
+                    pixelColor = Color.blue;
 
                     //seaBed = Instantiate(sandTile);
                 }
                 currLand = new Vector3(((float)j * 32f / 100f), ((float)i * 32f / 100f), depth);
                 landTiles[j] = currLand;
-                Instantiate(tile, currLand, Quaternion.identity);
-                tile.GetComponent<SpriteRenderer>().sprite = sand.tiles[DecideTileToInstantiate(depth, depthAbove, depthBelow, depthLeft, depthRight)];
+                GameObject l = Instantiate(tile, currLand, Quaternion.identity);
+                l.GetComponent<SpriteRenderer>().sprite = sand.tiles[DecideTileToInstantiate(depth, depthAbove, depthBelow, depthLeft, depthRight)];
+
+                t2d.SetPixel(j, i, pixelColor);
 
                 //tm.SetTile(new Vector3Int(j, i, 0), tile);
 
@@ -152,6 +163,11 @@ public class TerrainGenerator : MonoBehaviour
             Vector3[] waterTilesArray = waterTiles.ToArray();
         }
 
+        t2d.Apply();
+        GameObject mm = new GameObject();
+        mm.AddComponent<SpriteRenderer>().sprite = Sprite.Create(t2d, new Rect(0, 0, t2d.width, t2d.height), new Vector2(0f, 0f));
+        Instantiate(t2d, new Vector3(2, 2, 2), Quaternion.identity);
+
         //TileSpawnerSand TSS = new TileSpawnerSand(SandTilePositions, sandTile);
         //TileSpawnerSand TSW = new TileSpawnerSand(WaterTilePositions, waterTile);
 
@@ -180,6 +196,8 @@ public class TerrainGenerator : MonoBehaviour
 
         // 4. SandMiddle
         int ret = 4;
+
+        Debug.Log("DEPTHS, top: " + top + ", bottom: " + bottom + ", left: " + left + ", right: " + right);
 
         if (depth > left)
         {
@@ -217,6 +235,8 @@ public class TerrainGenerator : MonoBehaviour
         {
             ret = 4;
         }
+
+        Debug.Log("DEPTHS tile chosen was " + ret);
 
         return ret;
 
