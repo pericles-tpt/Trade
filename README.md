@@ -30,6 +30,3 @@ Having spent about 30 days on the 3D prototype I've come to the realisation that
 
 From here I plan to revert the planets to 2D representations again, make a 2D representation of the 3-dimensionality of planets, place markers of cities on planets, represent markets, allow the player to set a "home base" (either a property or a ship), 
 GET THE BASIC MARKET SYSTEMS WORKING BUYING, SELLING, ANALYSING PROSPECTIVE BUSINESSES ETC
-
-
-
