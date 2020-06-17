@@ -203,25 +203,25 @@ public class TerrainGenerator : MonoBehaviour
         {
             if (depth <= right && depth <= top && depth <= bottom)
                 ret = 2;
-            else if (depth <= right && depth > top && depth <= bottom)
-                ret = 5;
             else if (depth <= right && depth <= top && depth > bottom)
                 ret = 7;
+            else if (depth <= right && depth > top && depth <= bottom)
+                ret = 5;
+            else if (depth <= right && depth > top && depth > bottom)
+                ret = 12;
             else if (depth > right && depth <= top && depth > bottom)
                 ret = 9;
             else if (depth > right && depth > top && depth <= bottom)
                 ret = 10;
-            else if (depth <= right && depth > top && depth > bottom)
-                ret = 12;
 
         } else if (depth > right)
         {
             if (depth <= left && depth <= top && depth <= bottom)
                 ret = 3;
-            else if (depth <= left && depth > top && depth <= bottom)
-                ret = 6;
             else if (depth <= left && depth <= top && depth > bottom)
                 ret = 8;
+            else if (depth <= left && depth > top && depth <= bottom)
+                ret = 6;
             else if (depth <= left && depth > top && depth > bottom)
                 ret = 11;
 

@@ -12,8 +12,6 @@ public class LineManager
     public void DrawAllLines(GameObject selectedPlanet, Vector3[] positions)
     {
         Vector3 s;
-        Color c = new Color(0, 0, 0);
-        int dl = 0;
 
         DestroyAllLines();
 
@@ -30,20 +28,13 @@ public class LineManager
 
             if (selectedIndex != k)
             {
-                //Debug.Log("Drawn line from: " + s.ToString() + "to: " + e.ToString());
                 if (!LineHitsSunCollider(s, e))
                     DrawLine(s, e, ref Lines, 0);
-
-            }
-            else
-            {
-                //Debug.Log("Prevented node line to self");
 
             }
 
         }
 
-        //Debug.Log("Drew " + dl + " lines");
     }
 
     public void DestroyAllLines()
@@ -79,14 +70,8 @@ public class LineManager
             }
     }
 
-    // CREDIT (paranoidray): https://answers.unity.com/questions/8338/how-to-draw-a-line-using-script.html
-    // TODO: Come up with own DrawLine function
     public void DrawLine(Vector3 start, Vector3 end, ref Dictionary<Tuple<Vector3, Vector3>, GameObject> planetLines, float duration = 0.2f)
     {
-        // Return if line would cross the origin (a.k.a the sun)
-        //if (LineIntersectsSun(start, end))
-        //    return;
-
         GameObject myLine = new GameObject();
         myLine.transform.position = start;
         myLine.AddComponent<LineRenderer>();
@@ -103,10 +88,6 @@ public class LineManager
 
     public void DrawLine(Vector3 start, Vector3 end, float width = 0.01f, float duration = 0.2f)
     {
-        // Return if line would cross the origin (a.k.a the sun)
-        //if (LineIntersectsSun(start, end))
-        //    return;
-
         GameObject myLine = new GameObject();
         myLine.transform.position = start;
         myLine.AddComponent<LineRenderer>();
