@@ -19,7 +19,3 @@ Story: Relationships with other traders (nemesis system like Shadow of Mordor?),
 Workers: Like party members in an rpg, can accompany you on a journey and can develop a relationship with them, giving you better access to people they know, language translation, etc.
 
 Relationships: Maybe be able to develop a relationship with every character in the game? Perhaps have a list of relationships with characters for every planet and sector (could be abstracted to say, a scale from 1 to 10?)
-
-## Prototype 1: 3D
-
-![alt text](https://github.com/pericles-tpt/Trade/blob/master/screenshot.png?raw=true)
