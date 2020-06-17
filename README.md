@@ -19,14 +19,3 @@ Story: Relationships with other traders (nemesis system like Shadow of Mordor?),
 Workers: Like party members in an rpg, can accompany you on a journey and can develop a relationship with them, giving you better access to people they know, language translation, etc.
 
 Relationships: Maybe be able to develop a relationship with every character in the game? Perhaps have a list of relationships with characters for every planet and sector (could be abstracted to say, a scale from 1 to 10?)
-
-## Protype 2: 2D
-
-Having spent about 30 days on the 3D prototype I've come to the realisation that the scope of a 3D prototype for this game is too large and will likely be a waste of time. Some concept that can be taken over:
-
-* Sectors: are a good way to split up different markets and should make implementing the different markets easier
-* Polar Coordinates: Could be used to represent a 3D planet in a 2D video and put a market on city location
-* All the 2D elements (i.e. tradelines, UI, etc) and systems can be carried over
-
-From here I plan to revert the planets to 2D representations again, make a 2D representation of the 3-dimensionality of planets, place markers of cities on planets, represent markets, allow the player to set a "home base" (either a property or a ship), 
-GET THE BASIC MARKET SYSTEMS WORKING BUYING, SELLING, ANALYSING PROSPECTIVE BUSINESSES ETC
