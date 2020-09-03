@@ -11,12 +11,12 @@ public class TerminalActivateButton : MonoBehaviour
         Vector2 newPos;
         if (terminalTransform.position.y < -17)
         {
-            newPos = new Vector2(terminalTransform.position.x, -9.6f);
+            newPos = new Vector2(terminalTransform.position.x, -10f);
             terminalTransform.position = newPos;
         }
         else
         {
-            newPos = new Vector2(terminalTransform.position.x, -19.5f);
+            newPos = new Vector2(terminalTransform.position.x, -19.4f);
             terminalTransform.position = newPos;
         }
 
