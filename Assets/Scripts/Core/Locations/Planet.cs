@@ -155,44 +155,6 @@ public class Planet
         }
     }
 
-    public void DrawQuadSectorBoundaries(Vector3 bl, Vector3 br, Vector3 tl, Vector3 tr, float lineWidth)
-    {
-        bl = MakeRelativeToGO(bl);
-        br = MakeRelativeToGO(br);
-        tl = MakeRelativeToGO(tl);
-        tr = MakeRelativeToGO(tr);
-
-        bl.x += 0.000001f;
-        bl.y += 0.000001f;
-
-        br.x += 0.000001f;
-        br.y += 0.000001f;
-
-        tl.x += 0.000001f;
-        tl.y += 0.000001f;
-
-        tr.x += 0.000001f;
-        tr.y += 0.000001f;
-
-        this._SectorLines.DrawLine(bl, br, lineWidth);
-        this._SectorLines.DrawLine(br, tr, lineWidth);
-        this._SectorLines.DrawLine(tr, tl, lineWidth);
-        this._SectorLines.DrawLine(tl, bl, lineWidth);
-
-    }
-
-    public void DrawTriangleSectorBoundaries(Vector3 bl, Vector3 br, Vector3 tb, float lineWidth)
-    {
-        bl = MakeRelativeToGO(bl);
-        br = MakeRelativeToGO(br);
-        tb = MakeRelativeToGO(tb);
-
-        this._SectorLines.DrawLine(bl, br, lineWidth);
-        this._SectorLines.DrawLine(br, tb, lineWidth);
-        this._SectorLines.DrawLine(tb, bl, lineWidth);
-
-    }
-
 
     private Vector3 MakeRelativeToGO(Vector3 relativeOffset)
     {
