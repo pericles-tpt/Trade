@@ -37,10 +37,7 @@ public class TogglePlanetViewBehaviour : MonoBehaviour
             cam.transform.position = new Vector3 (0, 0, -20);
             cam.orthographicSize = 15;
 
-            GD.ToggleSectorTooltipVisible(false);
-
             // Also when zoomed into planet disable tradelines showing up
-            GD.ToggleSectorLines(false, planet);
             GD.ToggleTradeLines(true);
 
         } else
@@ -51,14 +48,11 @@ public class TogglePlanetViewBehaviour : MonoBehaviour
 
             planetGO.transform.position = new Vector3(-4, 0, -10);
 
-            GD.ToggleSectorTooltipVisible(true);
-
             cam.transform.LookAt(planetGO.transform.position, new Vector3(planetGO.transform.position.x,planetGO.transform.position.y,planetGO.transform.position.z + 1));
             cam.orthographicSize = 0.55f * Mathf.Pow(planet._SphereSize, 2);
             cam.transform.RotateAround(planetGO.transform.position, new Vector3(0, -1, 0), 68f);
 
             // Enable sector lines on planet showing up and disable trade lines showing up
-            GD.ToggleSectorLines(false, planet);
             GD.ToggleTradeLines(false);
 
         }

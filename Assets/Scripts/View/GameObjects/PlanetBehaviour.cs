@@ -36,7 +36,6 @@ public class PlanetBehaviour : MonoBehaviour
             GameObject.Find("Camera").GetComponent<GalaxyManager>().SetSelectedPlanet(this.gameObject);
             GameObject.Find("Camera").GetComponent<GalaxyManager>().SetPlanetPositionBeforeZoom(this.gameObject.transform.position);
             GameObject.Find("b_toggle_planet_view").GetComponent<TogglePlanetViewBehaviour>().TogglePlanetView();
-            GameObject.Find("Camera").GetComponent<GalaxyManager>().ToggleSectorTooltipVisible(false);
         }
 
     }

@@ -74,18 +74,6 @@ public class GalaxyManager : MonoBehaviour
         TradeLinesOn = setting;
     }
 
-    public void ToggleSectorLines(bool setting, Planet p)
-    {
-        if (setting == false)
-            p._SectorLines.DestroyAllLines();
-        else
-        {
-            p._SectorLines.DestroyAllLines();
-            p.DrawSectorLines((int)p._ThisSectorSize);
-        }
-        SectorLinesOn = setting;
-    }
-
     public void ToggleMovePlanetsNotSelected(bool moveOut)
     {
         if (moveOut)
@@ -154,17 +142,6 @@ public class GalaxyManager : MonoBehaviour
     public PlanetFactory GetPlanetFactory()
     {
         return current.GetPlanetFactory();
-    }
-
-    public void ToggleSectorTooltipVisible(bool isVisible)
-    {
-        int nAlpha;
-        if (isVisible)
-            nAlpha = 1;
-        else
-            nAlpha = 0;
-
-        GameObject.Find("sector_tooltip").GetComponent<CanvasGroup>().alpha = nAlpha;
     }
 
     // Update is called once per frame
