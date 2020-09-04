@@ -1,0 +1,2 @@
+C:\Users\peric\Documents\GitHub\Trade\obj\Debug\Assembly-CSharp.csprojAssemblyReference.cache
+C:\Users\peric\Documents\GitHub\Trade\obj\Debug\Assembly-CSharp.csproj.CoreCompileInputs.cache
