@@ -108,53 +108,6 @@ public class Planet
 
     }
 
-    public void DrawSectorLines(int maxCoord)
-    {
-        _SectorLines = new LineManager();
-
-        Debug.Log("This planet is size: " + (maxCoord / _SectorSize));
-
-        Vector3[] meshVertices = this._GameObject.GetComponent<MeshFilter>().mesh.vertices;
-
-        Vector3 top    = MakeRelativeToGO(meshVertices[0]);
-        Vector3 bottom = MakeRelativeToGO(meshVertices[meshVertices.Length - 1]);
-        for (int y = 0; y < (maxCoord - 1) ; y++)
-        {
-            for (int x = 0; x < maxCoord; x++)
-            {
-                Vector3 curr, above, neighbour;
-                curr = MakeRelativeToGO(meshVertices[_PlanetSectors[x, y]._CoordIndex]);
-                Debug.Log("Drawing from current point: " + curr.ToString());
-                if (y == 0)
-                {
-                    _SectorLines.DrawLine(top, curr);
-
-                } else if (y == (maxCoord - 2))
-                {
-                    above = MakeRelativeToGO(meshVertices[_PlanetSectors[x, y - 1]._CoordIndex]);
-                    _SectorLines.DrawLine(curr, above);
-                    _SectorLines.DrawLine(bottom, curr);
-
-                } else
-                {
-                    above = MakeRelativeToGO(meshVertices[_PlanetSectors[x, y - 1]._CoordIndex]);
-                    _SectorLines.DrawLine(curr, above);
-
-                }
-
-                int neighbourIndex;
-                if (x == (maxCoord - 1))
-                    neighbourIndex = 0;
-                else
-                    neighbourIndex = x + 1;
-
-                neighbour = MakeRelativeToGO(meshVertices[_PlanetSectors[neighbourIndex, y]._CoordIndex]);
-
-                _SectorLines.DrawLine(curr, neighbour);
-            }
-        }
-    }
-
 
     private Vector3 MakeRelativeToGO(Vector3 relativeOffset)
     {

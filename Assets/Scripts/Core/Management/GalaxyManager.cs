@@ -16,9 +16,12 @@ public class GalaxyManager : MonoBehaviour
     private bool TradeLinesOn = true;
     private bool SectorLinesOn = false;
 
+    int fCount;
+
     // Use this for initialization
     void Start()
     {
+        fCount = 0;
         lm = new LineManager();
         GalaxyFactory gf = new GalaxyFactory();
         current = gf.CreateGalaxy();
@@ -147,6 +150,11 @@ public class GalaxyManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        fCount++;
+        if (fCount % 120 == 0)
+        {
+            GameObject.Find("Camera").GetComponent<GalaxyManager>().IncrementOrbits();
+            GameObject.Find("Canvas").GetComponent<DayTextBehaviour>().UpdateDayText();
+        }
     }
 }

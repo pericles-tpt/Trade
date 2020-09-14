@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 using Vector3 = UnityEngine.Vector3;
+using Vector2 = UnityEngine.Vector2;
 
 public class LineManager
 {
@@ -108,11 +109,13 @@ public class LineManager
 
     private bool LineHitsSunCollider(Vector3 start, Vector3 end)
     {
-        Vector3 direction = new Vector3(end.x - start.x, end.y - start.y, end.z - start.z);
-        float maxLength = Vector3.Distance(start, end);
-        Ray ray = new Ray(start, direction);
-        RaycastHit info = new RaycastHit();
-        return(GameObject.Find("sun").GetComponent<SphereCollider>().Raycast(ray, out info, maxLength));
+        Vector2 direction = new Vector2(end.x - start.x, end.y - start.y);
+        RaycastHit2D[] rch = new RaycastHit2D[1000];
+        if (GameObject.Find("sun").GetComponent<CircleCollider2D>().Raycast(direction, rch) == 0)
+        {
+            return false;
+        } 
+        return true;
 
     }
 

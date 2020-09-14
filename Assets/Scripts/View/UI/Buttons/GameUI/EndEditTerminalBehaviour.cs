@@ -34,7 +34,7 @@ namespace Assets.Scripts.View.UI.Buttons.GameUI
                         term.transform.Find("Text" + j).GetComponent<Text>().text = term.transform.Find("Text" + (j - 1)).GetComponent<Text>().text;
 
                 }
-                Debug.Log(i);
+
             }
 
             // 4. Clear input field
