@@ -13,6 +13,9 @@ public class GalaxyManager : MonoBehaviour
     public GameObject tooltip;
     GameObject activeTooltip;
 
+    public GameObject smallStar;
+    public GameObject mediumStar;
+
     private bool TradeLinesOn = true;
     private bool SectorLinesOn = false;
 
@@ -45,7 +48,32 @@ public class GalaxyManager : MonoBehaviour
         // Finally determine number of businesses, companies and unemployment rate for each sector and distribute employees accordingly across the planet
 
         // Maybe entities have a food/water/other meter which goes down each day, once below a certain threshold they visit a shop, entities commute from home to work to home (most time is spent at home/work, small amount of time is spent shopping)
+        GenerateStars(500);
 
+
+    }
+
+    private void GenerateStars(int noStars)
+    {
+        float xMin = -15f;
+        float xMax = 26.5f;
+        float yMin = -15f;
+        float yMax = 15f;
+
+        int i = 0;
+        Vector3 sPos;
+        while (i < noStars)
+        {
+            sPos = new Vector3(UnityEngine.Random.Range(xMin, xMax), UnityEngine.Random.Range(yMin, yMax), -9);
+            if (UnityEngine.Random.Range(1, 10) == 1)
+            {
+                Instantiate(mediumStar, sPos, Quaternion.identity);
+            } else
+            {
+                Instantiate(smallStar, sPos, Quaternion.identity);
+            }
+            i++;
+        }
     }
 
     public void IncrementOrbits()
@@ -151,10 +179,11 @@ public class GalaxyManager : MonoBehaviour
     void Update()
     {
         fCount++;
-        if (fCount % 1 == 0)
+        if (fCount % 12 == 0)
         {
             GameObject.Find("Camera").GetComponent<GalaxyManager>().IncrementOrbits();
             //GameObject.Find("Canvas").GetComponent<DayTextBehaviour>().UpdateDayText();
+            fCount = 0;
         }
     }
 }
