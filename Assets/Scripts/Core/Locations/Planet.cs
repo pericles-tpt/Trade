@@ -58,32 +58,14 @@ public class Planet
     public void IncOrbit()
     {
             // Just calculate distance from origin (or radius of orbit)
-            Vector2 vt = new Vector3(_GameObject.transform.position.x - 6, _GameObject.transform.position.y, _GameObject.transform.position.z);
-            Vector2 v = _GameObject.transform.position;
+            Vector3 sunPos = GameObject.Find("sun").transform.position;
+            Vector2 vt = new Vector3(_GameObject.transform.position.x - sunPos.x, _GameObject.transform.position.y, _GameObject.transform.position.z);
 
             float radius;
             float orbitInc;
             float orbitCirc;
 
-            if (vt.x == 0)
-            {
-                radius = vt.y;
-
-            }
-
-            else if (vt.y == 0)
-            {
-                radius = vt.x;
-
-            }
-
-            else
-            {
-                radius = Mathf.Sqrt(Mathf.Pow(vt.x, 2) + Mathf.Pow(vt.y, 2));
-                //Debug.Log("Radius is: " + radius);
-
-            }
-
+            radius = Mathf.Sqrt(Mathf.Pow(vt.x, 2) + Mathf.Pow(vt.y, 2));
             orbitInc = radius * 100;
 
             float orbitSectorAngle = (360 / orbitInc);
@@ -92,14 +74,14 @@ public class Planet
 
             if (_Index == 2)
             {
-                nextX = (v.x * Mathf.Cos(-orbitSectorAngleRadians)) + (v.y * Mathf.Sin(-orbitSectorAngleRadians));
-                nextY = (-v.x * Mathf.Sin(-orbitSectorAngleRadians)) + (v.y * Mathf.Cos(-orbitSectorAngleRadians));
+                nextX = sunPos.x + (vt.x * Mathf.Cos(-orbitSectorAngleRadians)) + (vt.y * Mathf.Sin(-orbitSectorAngleRadians));
+                nextY = (-vt.x * Mathf.Sin(-orbitSectorAngleRadians)) + (vt.y * Mathf.Cos(-orbitSectorAngleRadians));
 
             }
             else
             {
-                nextX = (v.x * Mathf.Cos(orbitSectorAngleRadians)) + (v.y * Mathf.Sin(orbitSectorAngleRadians));
-                nextY = (-v.x * Mathf.Sin(orbitSectorAngleRadians)) + (v.y * Mathf.Cos(orbitSectorAngleRadians));
+                nextX = sunPos.x + (vt.x * Mathf.Cos(orbitSectorAngleRadians)) + (vt.y * Mathf.Sin(orbitSectorAngleRadians));
+                nextY = (-vt.x * Mathf.Sin(orbitSectorAngleRadians)) + (vt.y * Mathf.Cos(orbitSectorAngleRadians));
 
             }
 

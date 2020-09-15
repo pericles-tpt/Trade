@@ -68,7 +68,7 @@ public class Galaxy
                 ySign = UnityEngine.Random.Range(-1, 2);
 
             // Stores new planet position in v from previous section
-            v = new Vector3(6 + ((originDist * 100 * xSign) / _DistScale), sunPos.y + ((originDist * 100 * ySign) / _DistScale), _PlanetDepth);
+            v = new Vector3(sunPos.x + ((originDist * 100 * xSign) / _DistScale), sunPos.y + ((originDist * 100 * ySign) / _DistScale), _PlanetDepth);
             Debug.Log(v);
 
             if (i == 0 || i == 1)
