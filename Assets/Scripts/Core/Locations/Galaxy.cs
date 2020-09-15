@@ -20,6 +20,7 @@ public class Galaxy
     public void GeneratePlanets(int planetNum)
     {
         pf = GameObject.Find("Camera").GetComponent<PlanetFactory>();
+        Vector3 sunPos = GameObject.Find("sun").transform.position;
 
         // Planet are all on the same depth level, addHun and addFif try to 
         // vary the relative distances of planets compared to their previous planets
@@ -67,7 +68,8 @@ public class Galaxy
                 ySign = UnityEngine.Random.Range(-1, 2);
 
             // Stores new planet position in v from previous section
-            v = new Vector3((originDist * 100 * xSign) / _DistScale, (originDist * 100 * ySign) / _DistScale, _PlanetDepth);
+            v = new Vector3(6 + ((originDist * 100 * xSign) / _DistScale), sunPos.y + ((originDist * 100 * ySign) / _DistScale), _PlanetDepth);
+            Debug.Log(v);
 
             if (i == 0 || i == 1)
                 size = 1;

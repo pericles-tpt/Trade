@@ -151,10 +151,10 @@ public class GalaxyManager : MonoBehaviour
     void Update()
     {
         fCount++;
-        if (fCount % 120 == 0)
+        if (fCount % 1 == 0)
         {
             GameObject.Find("Camera").GetComponent<GalaxyManager>().IncrementOrbits();
-            GameObject.Find("Canvas").GetComponent<DayTextBehaviour>().UpdateDayText();
+            //GameObject.Find("Canvas").GetComponent<DayTextBehaviour>().UpdateDayText();
         }
     }
 }

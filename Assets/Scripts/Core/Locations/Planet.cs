@@ -58,27 +58,28 @@ public class Planet
     public void IncOrbit()
     {
             // Just calculate distance from origin (or radius of orbit)
-            Vector3 v = _GameObject.transform.position;
+            Vector2 vt = new Vector3(_GameObject.transform.position.x - 6, _GameObject.transform.position.y, _GameObject.transform.position.z);
+            Vector2 v = _GameObject.transform.position;
 
             float radius;
             float orbitInc;
             float orbitCirc;
 
-            if (v.x == 0)
+            if (vt.x == 0)
             {
-                radius = v.y;
+                radius = vt.y;
 
             }
 
-            else if (v.y == 0)
+            else if (vt.y == 0)
             {
-                radius = v.x;
+                radius = vt.x;
 
             }
 
             else
             {
-                radius = Mathf.Sqrt(Mathf.Pow(v.x, 2) + Mathf.Pow(v.y, 2));
+                radius = Mathf.Sqrt(Mathf.Pow(vt.x, 2) + Mathf.Pow(vt.y, 2));
                 //Debug.Log("Radius is: " + radius);
 
             }
