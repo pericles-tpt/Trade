@@ -89,7 +89,24 @@ public class GalaxyManager : MonoBehaviour
             for (int i = 0; i < current._PlanetNum; i++)
                 positions[i] = current._Planets[i]._GameObject.transform.position;
             //Debug.Log("POSITIONS LENGTH " + positions.Length);
-            lm.DrawAllLines(go, positions);
+            lm.DrawAllLines(go.transform.position, positions);
+        }
+    }
+
+    public void DrawAllPlanetsToAll()
+    {
+        if (TradeLinesOn)
+        {
+            Vector3[] positions = new Vector3[current._PlanetNum];
+            int i;
+            for (i = 0; i < current._PlanetNum; i++)
+                positions[i] = current._Planets[i]._GameObject.transform.position;
+            // AT THE MOMENT BELOW DRAWS EXTRA LINES
+            for (i = 0; i < current._PlanetNum; i++)
+            {
+                Debug.Log("i: " + i + " " + positions[i]);
+                lm.DrawAllLines(positions[i], positions);
+            }
         }
     }
 
@@ -179,10 +196,12 @@ public class GalaxyManager : MonoBehaviour
     void Update()
     {
         fCount++;
-        if (fCount % 12 == 0)
+        if (fCount % 15 == 0)
         {
             GameObject.Find("Camera").GetComponent<GalaxyManager>().IncrementOrbits();
+            DestroyAllLines();
             //GameObject.Find("Canvas").GetComponent<DayTextBehaviour>().UpdateDayText();
+            DrawAllPlanetsToAll();
             fCount = 0;
         }
     }

@@ -16,15 +16,11 @@ public class PlanetBehaviour : MonoBehaviour
 
     private void OnMouseOver()
     {
-        if (GameObject.Find("Camera").GetComponent<Camera>().orthographicSize == 15)
-            GameObject.Find("Camera").GetComponent<GalaxyManager>().DrawOnePlanetToAll(this.gameObject);
         
     }
 
     private void OnMouseExit()
     {
-        if (GameObject.Find("Camera").GetComponent<Camera>().orthographicSize == 15)
-            GameObject.Find("Camera").GetComponent<GalaxyManager>().DestroyAllLines(); 
 
     }
 

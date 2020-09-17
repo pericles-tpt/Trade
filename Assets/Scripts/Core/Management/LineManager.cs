@@ -10,15 +10,13 @@ public class LineManager
 
     public Dictionary<Tuple<Vector3, Vector3>, GameObject> Lines = new Dictionary<Tuple<Vector3, Vector3>, GameObject>();
 
-    public void DrawAllLines(GameObject selectedPlanet, Vector3[] positions)
+    public void DrawAllLines(Vector3 selectedPlanetPosition, Vector3[] positions)
     {
         Vector3 s;
 
-        DestroyAllLines();
-
         int selectedIndex = 0;
         for (int i = 0; i < positions.Length; i++)
-            if (positions[i] == selectedPlanet.transform.position)
+            if (positions[i] == selectedPlanetPosition)
                 selectedIndex = i;
 
         s = positions[selectedIndex];
