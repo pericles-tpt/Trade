@@ -101,12 +101,8 @@ public class GalaxyManager : MonoBehaviour
             int i;
             for (i = 0; i < current._PlanetNum; i++)
                 positions[i] = current._Planets[i]._GameObject.transform.position;
-            // AT THE MOMENT BELOW DRAWS EXTRA LINES
-            for (i = 0; i < current._PlanetNum; i++)
-            {
-                Debug.Log("i: " + i + " " + positions[i]);
-                lm.DrawAllLines(positions[i], positions);
-            }
+
+            lm.DrawAllLinesBetweenNodes(positions);
         }
     }
 

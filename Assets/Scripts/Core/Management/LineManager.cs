@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using Vector3 = UnityEngine.Vector3;
 using Vector2 = UnityEngine.Vector2;
+using System.Linq;
 
 public class LineManager
 {
@@ -33,6 +34,38 @@ public class LineManager
             }
 
         }
+
+    }
+
+    public void DrawAllLinesBetweenNodes(Vector3[] nodes)
+    {
+        int dCount = 0;
+
+        List<Vector3> nodesReduce = nodes.ToList<Vector3>();
+        for (int i = 0; i < nodes.Length; i++)
+        {
+            Vector3 s = nodes[i];
+            Vector3 e;
+            for (int j = 0; j < nodesReduce.Count; j++)
+            {
+                e = nodesReduce[j];
+
+                if (nodes[i] != nodesReduce[j])
+                {
+                    if (!LineHitsSunCollider(s, e))
+                        DrawLine(s, e, ref Lines, 0);
+
+                }
+
+                dCount++;
+
+            }
+
+            nodesReduce.RemoveAt(0);
+
+        }
+
+        Debug.Log("Created " + dCount + " lines between planets");
 
     }
 
