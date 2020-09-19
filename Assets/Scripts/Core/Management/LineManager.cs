@@ -28,7 +28,7 @@ public class LineManager
 
             if (selectedIndex != k)
             {
-                if (!LineHitsSunCollider(s, e))
+                if (!LineHitsSunCollider(s, e, selectedIndex))
                     DrawLine(s, e, ref Lines, 0);
 
             }
@@ -52,7 +52,7 @@ public class LineManager
 
                 if (nodes[i] != nodesReduce[j])
                 {
-                    if (!LineHitsSunCollider(s, e))
+                    if (!LineHitsSunCollider(s, e, i))
                         DrawLine(s, e, ref Lines, 0);
 
                 }
@@ -138,15 +138,21 @@ public class LineManager
         Lines.Add(Tuple.Create(start, end), myLine);
     }
 
-    private bool LineHitsSunCollider(Vector3 start, Vector3 end)
+    private bool LineHitsSunCollider(Vector3 start, Vector3 end, int startPlanetIndex)
     {
         Vector2 direction = new Vector2(end.x - start.x, end.y - start.y);
+        GameObject sun = GameObject.Find("sun");
+        GalaxyManager gm = GameObject.Find("Camera").GetComponent<GalaxyManager>();
         RaycastHit2D[] rch = new RaycastHit2D[1000];
-        if (GameObject.Find("sun").GetComponent<CircleCollider2D>().Raycast(direction, rch) == 0)
-        {
+        
+        // Get start planet by index, use its collider to cast a ray to the end point...
+        // if the first position that the ray hits is on the sun's CircleCollider 2D...
+        // then return that the line hits the sun's collider
+        gm.FindPlanetByIndex(startPlanetIndex)._GameObject.GetComponent<CircleCollider2D>().Raycast(direction, rch);
+        if (sun.GetComponent<CircleCollider2D>().bounds.Contains(rch[0].transform.position))
+            return true;
+        else 
             return false;
-        } 
-        return true;
 
     }
 

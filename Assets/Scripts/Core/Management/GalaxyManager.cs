@@ -163,6 +163,11 @@ public class GalaxyManager : MonoBehaviour
         return null;
     }
 
+    public Planet FindPlanetByIndex(int i)
+    {
+        return current._Planets[i];
+    }
+
     public void SetSelectedPlanet(GameObject go)
     {
         PlanetSelected = go;
@@ -192,7 +197,7 @@ public class GalaxyManager : MonoBehaviour
     void Update()
     {
         fCount++;
-        if (fCount % 15 == 0)
+        if (fCount % 12 == 0)
         {
             GameObject.Find("Camera").GetComponent<GalaxyManager>().IncrementOrbits();
             DestroyAllLines();
