@@ -197,7 +197,7 @@ public class GalaxyManager : MonoBehaviour
     void Update()
     {
         fCount++;
-        if (fCount % 12 == 0)
+        if (fCount % 1 == 0)
         {
             GameObject.Find("Camera").GetComponent<GalaxyManager>().IncrementOrbits();
             DestroyAllLines();

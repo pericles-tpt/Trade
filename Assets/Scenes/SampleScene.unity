@@ -8233,9 +8233,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc5ffff1132d42042b0bb9c933ab8eb1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Temperate: {fileID: 21300000, guid: 7d7c879c96e8946f498b6e96cba97e45, type: 3}
-  Molten: {fileID: 21300000, guid: 5c90da3de666a4c348b4f25284b79165, type: 3}
-  Water: {fileID: 21300000, guid: 1d6b726f7ae9e430a88a9f650aa60a05, type: 3}
+  Temperate: {fileID: 21300000, guid: 677336ffc08eda348ac2cc4f9a7393d5, type: 3}
+  Molten: {fileID: 21300000, guid: 2ed4b4499ab702043b1dcce6ed3f82e4, type: 3}
+  Water: {fileID: 21300000, guid: 2ba177cec0e3299478636626367c9735, type: 3}
   TemperatePlanet: {fileID: 2502290665765389085, guid: 3eab5db2aa27f964681c34c33485087e,
     type: 3}
   MoltenPlanet: {fileID: 2502290665765389085, guid: 07b82e88902532b4aa75bb776a7bb592,
@@ -13556,7 +13556,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: feb99574434fe4c90ad5e08c9c66fa66, type: 3}
+  m_Sprite: {fileID: 21300000, guid: d44bd891737257d4c8c8729deed4d6cf, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

@@ -25,58 +25,52 @@ public class Galaxy
         // Planet are all on the same depth level, addHun and addFif try to 
         // vary the relative distances of planets compared to their previous planets
         Vector3 v;
-        int addHun = 1;
-        int addFif = 2;
-        float originDist = 1;
+        float originDist = 0;
         float size;
 
         for (int i = 0; i < (planetNum); i++)
         {
-            // Increment base distance of planet from origin (sun)
-            originDist += i;
 
-            // Decide whether to add 100 or 50 pixels onto distance from origin
-            if ((UnityEngine.Random.Range(0, 2) == 1) && (addHun > 0))
-            {
-                addHun--;
-                originDist++;
-            }
+            if (i == 0 || i == 1)
+                size = 1;
             else
-            {
-
-                if (UnityEngine.Random.Range(0, 2) == 1 && addFif > 0)
-                {
-                    addFif--;
-                    originDist += 0.5f;
-                }
-
-            }
+                size = 1.5f;
 
             // Choose whether to make initial x and y coordinates +,- or 0
-            int xSign, ySign = 0;
+            int xSign = 0, ySign = 0;
 
-            // X is 0
-            xSign = UnityEngine.Random.Range(-1, 2);
-            if (xSign == 0)
-                // Y must be + or -
-                while (ySign == 0)
-                {
-                    ySign = UnityEngine.Random.Range(-1, 2);
-                }
-            else
-                // Y can be -, + or 0
-                ySign = UnityEngine.Random.Range(-1, 2);
+            // Each planet is assigned a set distance from the sun and initialy position...
+            // ... maybe randomise xSign, ySign and originDist later
+            switch(i)
+            {
+                case (0):
+                    originDist = 2f;//UnityEngine.Random.Range(0f, 0.5f);
+                    xSign = 0;
+                    ySign = 1;
+                    break;
+                case (1):
+                    originDist += 1.75f;//UnityEngine.Random.Range(1f, 1.25f);
+                    xSign = 1;
+                    ySign = 0;
+                    break;
+                case (2):
+                    originDist += 2.75f;//UnityEngine.Random.Range(1f, 1.25f);
+                    xSign = -1;
+                    ySign = 0;
+                    break;
+                case (3):
+                    originDist += 2.75f; //UnityEngine.Random.Range(0f, 0.2f);
+                    xSign = 0;
+                    ySign = -1;
+                    break;
+
+            }
+
+            Debug.Log("originDist is " + originDist);
 
             // Stores new planet position in v from previous section
             v = new Vector3(sunPos.x + ((originDist * 100 * xSign) / _DistScale), sunPos.y + ((originDist * 100 * ySign) / _DistScale), _PlanetDepth);
             Debug.Log(v);
-
-            if (i == 0 || i == 1)
-                size = 1;
-            else if (i == 3)
-                size = 1.5f;
-            else
-                size = 2;
 
             int pno = 0;
             string name = GimmeAName(ref pno);

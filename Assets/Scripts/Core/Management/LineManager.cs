@@ -147,7 +147,7 @@ public class LineManager
         
         // Get start planet by index, use its collider to cast a ray to the end point...
         // if the first position that the ray hits is on the sun's CircleCollider 2D...
-        // then return that the line hits the sun's collider
+        // then return true to indicate that the line hits the sun's collider
         gm.FindPlanetByIndex(startPlanetIndex)._GameObject.GetComponent<CircleCollider2D>().Raycast(direction, rch);
         if (sun.GetComponent<CircleCollider2D>().bounds.Contains(rch[0].transform.position))
             return true;
