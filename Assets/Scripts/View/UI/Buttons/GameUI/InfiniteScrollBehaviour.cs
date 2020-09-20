@@ -7,58 +7,38 @@ namespace Assets.Scripts.View.UI.Buttons.GameUI
     public class InfiniteScrollBehaviour : MonoBehaviour
     {
         public GameObject itemCard;
-        // We can fit 8 cards in the scrollview
-        float cardHeight = 92.32861f;
-        Vector3 lastCardPosition;
 
         void Start()
         {
-            //sView = GameObject.Find("Scroll View");
-            lastCardPosition = this.transform.position;
+            int[] a = new int[50];
+            addCardsToView(a, a.Length);
 
-            int[] a = new int[100];
-            Debug.Log("a is " + a[0]);
-
-            if (a.Length < 8)
-            {
-                addCardsToView(a, a.Length);
-            } else
-            {
-                addCardsToView(a, 16);
-            }
+            // BUG FIX: Scroll view for some reason defaults to starting halfway down the scroll space...
+            // ... the below code fixes this by setting the scroll view to start at the top instead.
+            GameObject.Find("Scroll View").GetComponent<ScrollRect>().normalizedPosition = new Vector2(0, 1); 
 
         }
 
-        // BUG: For some reason the y value gets set to some ridiculously high number... and I don't know why
         void addCardsToView(int[] arr, int noCards)
         {
-            Vector3 newCardPosition;
+            GameObject newCard;
+
             for (int i = 0; i < noCards; i++)
             {
-                var newCard = Instantiate(itemCard, new Vector3(-1,-1,-1), Quaternion.identity);
+                newCard = Instantiate(itemCard, new Vector3(0,0,0), Quaternion.identity);
                 newCard.transform.SetParent(this.GetComponent<ScrollRect>().content);
 
-                newCardPosition = new Vector3(lastCardPosition.x, lastCardPosition.y - cardHeight - 11f, lastCardPosition.z);
-                newCard.transform.position = newCardPosition;
-
+                // BUG FIX: For some reason when instantiated the scale defaults to 36 (instead of 1 like...
+                // ... it should be, the below code fixes that
                 Vector3 scale = transform.localScale;
                 scale.Set(1, 1, 1);
                 newCard.transform.localScale = scale;
-
-                Debug.Log("post-card " + i + " position is " + newCard.transform.position);
-
-                lastCardPosition = newCardPosition;
-
-                Debug.Log("pre-card " + i + " position is " + newCard.transform.position);
+                newCard.name = "itemCard_" + i + arr[i];
 
             }
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
 
         }
 
     }
+
 }
