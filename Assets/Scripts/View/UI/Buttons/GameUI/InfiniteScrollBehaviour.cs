@@ -6,13 +6,14 @@ namespace Assets.Scripts.View.UI.Buttons.GameUI
 {
     public class InfiniteScrollBehaviour : MonoBehaviour
     {
+        public GameObject itemCard;
         // We can fit 8 cards in the scrollview
-        UnityEngine.Object itemCard = Resources.Load("Assets/Prefabs/ItemCard");
         float cardHeight = 92.32861f;
         Vector3 lastCardPosition;
 
         void Start()
         {
+            //sView = GameObject.Find("Scroll View");
             lastCardPosition = this.transform.position;
 
             int[] a = new int[100];
@@ -28,16 +29,28 @@ namespace Assets.Scripts.View.UI.Buttons.GameUI
 
         }
 
+        // BUG: For some reason the y value gets set to some ridiculously high number... and I don't know why
         void addCardsToView(int[] arr, int noCards)
         {
             Vector3 newCardPosition;
             for (int i = 0; i < noCards; i++)
             {
-                newCardPosition = new Vector3(lastCardPosition.x + cardHeight + 11f, lastCardPosition.y, lastCardPosition.z);
-                var newCard = Instantiate(itemCard, newCardPosition, Quaternion.identity);
-                newCard.transform.parent = this.GetComponent<ScrollRect>().content.gameObject;
+                var newCard = Instantiate(itemCard, new Vector3(-1,-1,-1), Quaternion.identity);
+                newCard.transform.SetParent(this.GetComponent<ScrollRect>().content);
+
+                newCardPosition = new Vector3(lastCardPosition.x, lastCardPosition.y - cardHeight - 11f, lastCardPosition.z);
+                newCard.transform.position = newCardPosition;
+
+                Vector3 scale = transform.localScale;
+                scale.Set(1, 1, 1);
+                newCard.transform.localScale = scale;
+
+                Debug.Log("post-card " + i + " position is " + newCard.transform.position);
+
                 lastCardPosition = newCardPosition;
-                
+
+                Debug.Log("pre-card " + i + " position is " + newCard.transform.position);
+
             }
         }
 
