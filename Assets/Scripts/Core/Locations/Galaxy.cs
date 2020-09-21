@@ -13,6 +13,7 @@ public class Galaxy
     {
         _Planets = new Planet[planetNum];
         _PlanetNum = planetNum;
+        GeneratePlanets(planetNum);
 
     }
 
@@ -22,8 +23,6 @@ public class Galaxy
         pf = GameObject.Find("Camera").GetComponent<PlanetFactory>();
         Vector3 sunPos = GameObject.Find("sun").transform.position;
 
-        // Planet are all on the same depth level, addHun and addFif try to 
-        // vary the relative distances of planets compared to their previous planets
         Vector3 v;
         float originDist = 0;
         float size;
@@ -40,7 +39,7 @@ public class Galaxy
             int xSign = 0, ySign = 0;
 
             // Each planet is assigned a set distance from the sun and initialy position...
-            // ... maybe randomise xSign, ySign and originDist later
+            // ... maybe randomise xSign, ySign and originDist later?
             switch(i)
             {
                 case (0):
@@ -73,21 +72,19 @@ public class Galaxy
             Debug.Log(v);
 
             int pno = 0;
-            string name = GimmeAName(ref pno);
+            string name = NamePlanet(ref pno);
 
             Debug.Log(v + " " + name + " " + i + " " + size + " " + pno);
             if (originDist <= 2)
-                _Planets[i] = pf.CreateMoltenPlanet(v, name, i, size, pno);
+                _Planets[i] = pf.CreatePlanet(v, Planet.PlanetType.molten, name, i, size, pno);
             else if (originDist > 5)
-                _Planets[i] = pf.CreateWaterPlanet(v, name, i, size, pno);
+                _Planets[i] = pf.CreatePlanet(v, Planet.PlanetType.water, name, i, size, pno);
             else
-                _Planets[i] = pf.CreateTemperatePlanet(v, name, i, size, pno);
-
-            //Debug.Log("Planet name: " + _Planets[i]._Name + " Planet coord: " + _Planets[i]._GameObject.transform.position);
+                _Planets[i] = pf.CreatePlanet(v, Planet.PlanetType.temperate, name, i, size, pno);
 
         }
 
-        InformPlanetPositions();
+        PopulateOtherPlanetPositions();
 
     }
 
@@ -100,7 +97,7 @@ public class Galaxy
         }
     }
 
-    private void InformPlanetPositions()
+    private void PopulateOtherPlanetPositions()
     {
         for(int i = 0; i < _PlanetNum; i++)
         {
@@ -108,35 +105,28 @@ public class Galaxy
             p._OtherPlanetPositions = new Vector3[_PlanetNum];
             for (int j = 0; j < _PlanetNum; j++)
             {
-                //Debug.Log("tis " + _Planets[j]._GameObject.transform.position); ", x: "
                 p._OtherPlanetPositions[j] = _Planets[j]._GameObject.transform.position;
             }
         }
     }
 
-    // DELETEME
-    private string GimmeAName(ref int pno)
+    private string NamePlanet(ref int pno)
     {
         string[] names = { "Yelmeree", "Zvaat", "Frotuus", "Kaxias", "Bireen", "Meldys", "Santoon", "Aorfun", "Codruis", "Dexlaa", "Epveen", "Gweroon", "Hexctus", "Inir", "Jkor", "Lqi", "Nexeneetf", "Onzii", "Plecsis", "Qaatni", "Riredun", "Tevelis", "Unbarekh", "Vol", "Wvalo", "Xeveles"};
         string[] numbers = { "I", "II", "III", "IV", "V", "VI", "VII", "IX", "X" };
 
-        int chosen = UnityEngine.Random.Range(0, names.Length);
+        int chosen = Random.Range(0, names.Length);
         string ret = names[chosen];
 
-        if (UnityEngine.Random.Range(0, 3) == 1)
+        if (Random.Range(0, 3) == 1)
         {
-            int num = UnityEngine.Random.Range(0, numbers.Length);
+            int num = Random.Range(0, numbers.Length);
             ret = ret + " " + numbers[num];
             pno = num; 
 
         }
 
         return ret;
-    }
-
-    public PlanetFactory GetPlanetFactory()
-    {
-        return pf;
     }
 
 }
