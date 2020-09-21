@@ -1,21 +1,19 @@
- 15 lines (13 sloc) 172 Bytes
-# MacOS Generated Files
-.DS_Store*
+# Ignore everything
+/*
+/*/
+*.meta
+
+# Inverse ignore some stuff
+!/Assets/
+!/ProjectSettings/
+!.gitignore
+
+# OS Stuff
+.DS_Store
 ._*
 .Spotlight-V100
 .Trashes
-[Tt]humbs.db
-
-# Blacklist
-/Library/*
-/Temp/*
-*.meta
-
-
-# Whitelist
-!.git*
-!/Assets/
-!/ProjectSettings/
-!README.md
-!*.sln
-!*.csproj
+ehthumbs.db
+Thumbs.db
+$RECYCLE.BIN/
+Desktop.ini
