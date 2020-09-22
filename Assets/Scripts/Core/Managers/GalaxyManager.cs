@@ -9,6 +9,9 @@ public class GalaxyManager : MonoBehaviour
     public GameObject smallStar;
     public GameObject mediumStar;
 
+    public int NumberOfStars;
+    public int SmallToBigStarsRatio;
+
     private bool TradeLinesOn = true;
 
     int frameCount;
@@ -25,11 +28,11 @@ public class GalaxyManager : MonoBehaviour
         // Testing perlin noise function
         int seed = UnityEngine.Random.Range(int.MinValue, int.MaxValue);
 
-        GenerateStars(500, 10);
+        GenerateStars();
 
     }
 
-    private void GenerateStars(int noStars, int smallToBigStars)
+    private void GenerateStars()
     {
         float xMin = -15f;
         float xMax = 15f;
@@ -38,10 +41,11 @@ public class GalaxyManager : MonoBehaviour
 
         int i = 0;
         Vector3 sPos;
-        while (i < noStars)
+
+        while (i < NumberOfStars)
         {
             sPos = new Vector3(Random.Range(xMin, xMax), Random.Range(yMin, yMax), -9);
-            if (Random.Range(1, smallToBigStars) == 1)
+            if (Random.Range(1, SmallToBigStarsRatio) == 1)
             {
                 Instantiate(mediumStar, sPos, Quaternion.identity);
             } else
