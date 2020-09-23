@@ -18,9 +18,9 @@
 
     public double CalculateNetWorth (Item[] inv) {
         double netWorth = 0;
-        
-        foreach (Item i in inv) {
-            netWorth += i._Value;
+
+        for (int i = 0; i < inv.Length; i++) {
+            netWorth += inv[i]._Value;
 
         }
 

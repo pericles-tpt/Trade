@@ -90,9 +90,9 @@ public class Galaxy
 
     public void IncrementOrbits()
     {
-        foreach (Planet p in _Planets)
+        for (int i = 0; i < _Planets.Length; i++)
         {
-            p.IncOrbit();
+            _Planets[i].IncOrbit();
 
         }
     }

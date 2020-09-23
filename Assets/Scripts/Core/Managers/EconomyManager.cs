@@ -1,9 +1,5 @@
 ﻿using UnityEngine;
-using UnityEditor;
 using System.IO;
-using System.Collections.Generic;
-using System.CodeDom.Compiler;
-using System.Reflection;
 
 public class EconomyManager : MonoBehaviour
 {
@@ -17,6 +13,8 @@ public class EconomyManager : MonoBehaviour
 
     private void Start()
     {
+        Screen.SetResolution(1920, 1080, false);
+
         loadedItems = new string[5, maxItems];
 
         int businessToCompanyRatio = 100;
@@ -25,7 +23,15 @@ public class EconomyManager : MonoBehaviour
         _Businesses = new Business[companyNo * businessToCompanyRatio];
 
         string path = @".\goods.csv";
-        ReadCSV(path);
+        
+        for (int i = 0; i < 5; i++)
+        {
+            for (int j = 0; j < maxItems; j++)
+            {
+                loadedItems[i, j] = "asdfghjklmasdfghjklmasdfghjklmasdfghjklmasdfghjklm";
+            }
+        }
+        //ReadCSV(path);
 
         // necessity * composite/atomic * 
 

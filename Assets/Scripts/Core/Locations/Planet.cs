@@ -64,8 +64,7 @@ public class Planet
             }
 
             // Create new v and assign it to the gameobject
-            Vector3 v3 = new Vector3(nextX, nextY, -10);
-            _GameObject.transform.position = v3;
+            _GameObject.transform.position = new Vector3(nextX, nextY, -10);
 
     }
 

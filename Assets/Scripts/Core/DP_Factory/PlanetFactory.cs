@@ -34,9 +34,7 @@ public class PlanetFactory : MonoBehaviour
         go.transform.localScale = new Vector2(scale, scale);
 
         // 3. Create new planet instance to return    
-        Planet p = new Planet(planetName, index, selected, pt, go, scale, pno);
-
-        return p;
+        return new Planet(planetName, index, selected, pt, go, scale, pno);
 
     }
 

@@ -25,6 +25,8 @@ public class GalaxyManager : MonoBehaviour
         int noPlanets = 4;
         current = new Galaxy(noPlanets);
 
+        lm.CreateGOBetweenPlanets(noPlanets);
+
         // Testing perlin noise function
         int seed = UnityEngine.Random.Range(int.MinValue, int.MaxValue);
 
@@ -56,17 +58,6 @@ public class GalaxyManager : MonoBehaviour
         }
     }
 
-    public void DrawOnePlanetToAll(GameObject go)
-    {
-        if (TradeLinesOn)
-        {
-            Vector3[] positions = new Vector3[current._PlanetNum];
-            for (int i = 0; i < current._PlanetNum; i++)
-                positions[i] = current._Planets[i]._GameObject.transform.position;
-            lm.DrawLinesFromOnePlanet(go.transform.position, positions);
-        }
-    }
-
     public void DrawAllPlanetsToAll()
     {
         if (TradeLinesOn)
@@ -75,23 +66,16 @@ public class GalaxyManager : MonoBehaviour
             int i;
             for (i = 0; i < current._PlanetNum; i++)
                 positions[i] = current._Planets[i]._GameObject.transform.position;
-            lm.DrawLinesFromAllPlanets (positions);
+            lm.ReDrawLinesFromAllPlanets(positions);
         }
-    }
-
-    public void ToggleTradeLines(bool setting)
-    {
-        if (setting == false)
-            lm.ToggleHideAllLines(setting);
-        TradeLinesOn = setting;
     }
 
     public Planet GetPlanetByGameObject(GameObject go)
     {
-        foreach (Planet p in current._Planets)
+        for (int i = 0; i < current._Planets.Length; i++)
         {
-            if (p._GameObject == go)
-                return p;
+            if (current._Planets[i]._GameObject == go)
+                return current._Planets[i];
         }
         return null;
     }
@@ -119,7 +103,7 @@ public class GalaxyManager : MonoBehaviour
         {
             current.IncrementOrbits();
 
-            lm.DestroyAllLines();
+            lm.DeactivateAllLines();
             DrawAllPlanetsToAll();
 
             frameCount = 0;
