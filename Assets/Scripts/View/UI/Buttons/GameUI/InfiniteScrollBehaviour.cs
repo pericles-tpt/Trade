@@ -7,11 +7,17 @@ namespace Assets.Scripts.View.UI.Buttons.GameUI
     public class InfiniteScrollBehaviour : MonoBehaviour
     {
         public GameObject itemCard;
-
+        int totalCards = 50;
         void Start()
         {
-            int[] a = new int[50];
+            int activeCards = 8;
+
+            // CREATE ALL THE INSTANCES OF CARDS TO ADD TO THE SCROLL VIEW
+            int[] a = new int[totalCards];
             addCardsToView(a, a.Length);
+
+            // DEACTIVATES CARDS IF ITEMS IN LIST IS < 50
+            deactivateCards(activeCards);
 
             // BUG FIX: Scroll view for some reason defaults to starting halfway down the scroll space...
             // ... the below code fixes this by setting the scroll view to start at the top instead.
@@ -33,10 +39,18 @@ namespace Assets.Scripts.View.UI.Buttons.GameUI
                 Vector3 scale = transform.localScale;
                 scale.Set(1, 1, 1);
                 newCard.transform.localScale = scale;
-                newCard.name = "itemCard_" + i + arr[i];
+                newCard.name = "itemCard_" + i;
 
             }
 
+        }
+
+        void deactivateCards(int deactivateAfterAndIncluding)
+        {
+            for (int i = deactivateAfterAndIncluding; i < totalCards; i++)
+            {
+                GameObject.Find("itemCard_" + i).SetActive(false);
+            }
         }
 
     }
