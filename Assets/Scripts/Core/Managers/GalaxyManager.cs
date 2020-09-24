@@ -101,12 +101,12 @@ public class GalaxyManager : MonoBehaviour
     void Update()
     {
         frameCount++;
-        if (frameCount % 300 == 0)
+        if (frameCount % 5 == 0)
         {
             current.IncrementOrbits();
 
-            //lm.DeactivateAllLines();
-            //DrawAllPlanetsToAll();
+            lm.DeactivateAllLines();
+            DrawAllPlanetsToAll();
 
             frameCount = 0;
         }

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Vector3 = UnityEngine.Vector3;
 using Vector2 = UnityEngine.Vector2;
+using UnityEngine.UI;
 
 public class LineManager
 {
@@ -38,41 +39,40 @@ public class LineManager
     public void ReDrawLinesFromAllPlanets(Vector3[] nodes)
     {
         int lCount = 0;
+        int nlCount = 0;
+
+
 
         // I KNOW .ToList<Vector3>() exists in LINQ but just testing taking outu any LINQ functions to improve performance
-        List<Vector3> nodesReduce = new List<Vector3>();
-        for (int i = 0; i < nodes.Length; i++)
-        {
-            nodesReduce.Add(nodes[i]);
-        }
+        Vector3[] nodes2 = nodes;
 
         for (int i = 0; i < nodes.Length; i++)
         {
             Vector3 s = nodes[i];
             Vector3 e;
-            for (int j = 0; j < nodesReduce.Count; j++)
+            for (int j = 0; j < nodes2.Length; j++)
             {
-                e = nodesReduce[j];
-
-                if (nodes[i] != nodesReduce[j])
+                e = nodes2[j];
+                if (j > i)
                 {
                     if (!LineHitsSunCollider(s, e, i))
                     {
                         ActivateLine(s, e, lCount);
                         lCount++;
+                        UpdateTradeRoutesUI(i, j, true);
+                        Debug.Log("Node link is " + i + " " + j);
+                    } else
+                    {
+                        UpdateTradeRoutesUI(i, j, false);
+                        nlCount++;
+                        Debug.Log("Node link is " + i + " " + j);
                     }
-
-                }
-
-
-
+                } 
             }
-
-            nodesReduce.RemoveAt(0);
-
         }
 
         Debug.Log("Created " + lCount + " lines between planets");
+        Debug.Log(nlCount + " between planets info updated");
 
     }
 
@@ -108,6 +108,39 @@ public class LineManager
             return true; 
         return false;
 
+    }
+
+    public void UpdateTradeRoutesUI(int a, int b, bool isOpen)
+    {
+        if (GameObject.Find("Route" + a + b))
+        {
+            Transform UI = GameObject.Find("Route" + a + b).transform;
+            Planet pa = gm.GetPlanetByIndex(a);
+            Planet pb = gm.GetPlanetByIndex(b);
+            Color red = new Color(197, 78, 78);
+            Color green = new Color(78, 152, 86);
+            UI.FindChild("PlanetAIcon").GetComponent<Image>().sprite = pa._Icon;
+            UI.FindChild("PlanetBIcon").GetComponent<Image>().sprite = pb._Icon;
+            UI.FindChild("PlanetAName").GetComponent<Text>().text = pa._Name;
+            UI.FindChild("PlanetBName").GetComponent<Text>().text = pb._Name;
+
+            Transform rcc = UI.FindChild("RouteChangeCountdown");
+            Transform da = UI.FindChild("DoubleArrow");
+            if (isOpen)
+            {
+                rcc.GetComponent<Text>().color = red;
+                rcc.GetComponent<Text>().text = "CLOSES IN N TURNS";
+                da.GetComponent<Text>().color = green;
+                da.GetComponent<Text>().text = "<->";
+            }
+            else
+            {
+                rcc.GetComponent<Text>().color = green;
+                rcc.GetComponent<Text>().text = "OPENS IN N TURNS";
+                da.GetComponent<Text>().color = red;
+                da.GetComponent<Text>().text = "<-/->";
+            }
+        }
     }
 
 }
