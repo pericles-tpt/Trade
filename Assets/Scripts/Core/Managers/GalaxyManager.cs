@@ -36,24 +36,26 @@ public class GalaxyManager : MonoBehaviour
 
     private void GenerateStars()
     {
-        float xMin = -15f;
-        float xMax = 15f;
+        float xMin = -26.5f;
+        float xMax = 26.5f;
         float yMin = -15f;
         float yMax = 15f;
 
         int i = 0;
         Vector3 sPos;
+        GameObject star;
 
         while (i < NumberOfStars)
         {
             sPos = new Vector3(Random.Range(xMin, xMax), Random.Range(yMin, yMax), -9);
             if (Random.Range(1, SmallToBigStarsRatio) == 1)
             {
-                Instantiate(mediumStar, sPos, Quaternion.identity);
+                star = Instantiate(mediumStar, sPos, Quaternion.identity);
             } else
             {
-                Instantiate(smallStar, sPos, Quaternion.identity);
+                star = Instantiate(smallStar, sPos, Quaternion.identity);
             }
+            star.GetComponent<SpriteRenderer>().sortingOrder = -1;
             i++;
         }
     }
@@ -99,12 +101,12 @@ public class GalaxyManager : MonoBehaviour
     void Update()
     {
         frameCount++;
-        if (frameCount % 12 == 0)
+        if (frameCount % 300 == 0)
         {
             current.IncrementOrbits();
 
-            lm.DeactivateAllLines();
-            DrawAllPlanetsToAll();
+            //lm.DeactivateAllLines();
+            //DrawAllPlanetsToAll();
 
             frameCount = 0;
         }
