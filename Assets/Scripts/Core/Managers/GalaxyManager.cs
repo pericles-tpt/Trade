@@ -68,7 +68,7 @@ public class GalaxyManager : MonoBehaviour
             int i;
             for (i = 0; i < current._PlanetNum; i++)
                 positions[i] = current._Planets[i]._GameObject.transform.position;
-            lm.ReDrawLinesFromAllPlanets(positions);
+            lm.CheckLinesFromAllPlanets(positions, true);
         }
     }
 
@@ -101,7 +101,7 @@ public class GalaxyManager : MonoBehaviour
     void Update()
     {
         frameCount++;
-        if (frameCount % 5 == 0)
+        if (frameCount % 12 == 0)
         {
             current.IncrementOrbits();
 
