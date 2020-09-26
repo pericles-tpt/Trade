@@ -12,7 +12,7 @@ public class GalaxyManager : MonoBehaviour
     public int NumberOfStars;
     public int SmallToBigStarsRatio;
 
-    private bool TradeLinesOn = true;
+    public bool TradeLinesOn = false;
 
     int frameCount;
 
@@ -60,16 +60,13 @@ public class GalaxyManager : MonoBehaviour
         }
     }
 
-    public void DrawAllPlanetsToAll()
+    public void DrawAllPlanetsToAll(bool drawLines)
     {
-        if (TradeLinesOn)
-        {
-            Vector3[] positions = new Vector3[current._PlanetNum];
-            int i;
-            for (i = 0; i < current._PlanetNum; i++)
-                positions[i] = current._Planets[i]._GameObject.transform.position;
-            lm.CheckLinesFromAllPlanets(positions, true);
-        }
+        Vector3[] positions = new Vector3[current._PlanetNum];
+        int i;
+        for (i = 0; i < current._PlanetNum; i++)
+            positions[i] = current._Planets[i]._GameObject.transform.position;
+        lm.CheckLinesFromAllPlanets(positions, drawLines);
     }
 
     public Planet GetPlanetByGameObject(GameObject go)
@@ -101,12 +98,12 @@ public class GalaxyManager : MonoBehaviour
     void Update()
     {
         frameCount++;
-        if (frameCount % 12 == 0)
+        if (frameCount % 120 == 0)
         {
             current.IncrementOrbits();
 
             lm.DeactivateAllLines();
-            DrawAllPlanetsToAll();
+            DrawAllPlanetsToAll(TradeLinesOn);
 
             frameCount = 0;
         }

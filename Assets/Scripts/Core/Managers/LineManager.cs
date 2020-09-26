@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class LineManager
 {
     private GameObject[] betweenPlanetLines;
+    private int[] planetLinesTurnsUntilStateChange;
     private GameObject sun = GameObject.Find("sun");
     private GalaxyManager gm = GameObject.Find("Camera").GetComponent<GalaxyManager>();
 
@@ -22,6 +23,7 @@ public class LineManager
         for (i = noPlanets - 1; i >  0; i--)
             noLines += i;
         betweenPlanetLines = new GameObject[noLines];
+        planetLinesTurnsUntilStateChange = new int[noLines];
 
         // ASSIGN EACH GO IN ARRAY AND ADD LINERENDERER COMPONENT TO THEM
         for (i = 0; i < noLines; i++)
@@ -43,6 +45,8 @@ public class LineManager
     {
         int lCount = 0;
         int nlCount = 0;
+        int totCount = 0;
+        int changeStateTurns = 0;
 
 
 
@@ -65,15 +69,26 @@ public class LineManager
                             ActivateLine(s, e, lCount);
                         }
                         lCount++;
-                        int changeStateTurns = CalculateRouteChangeStateTurns(i, j, true);
-                        UpdateTradeRoutesUI(i, j, true, changeStateTurns);
+
+                        if (planetLinesTurnsUntilStateChange[totCount] == 0 || planetLinesTurnsUntilStateChange[totCount] == 1)
+                            planetLinesTurnsUntilStateChange[totCount] = CalculateRouteChangeStateTurns(i, j, true);
+                        else
+                            planetLinesTurnsUntilStateChange[totCount]--;
+
+                        UpdateTradeRoutesUI(i, j, true, planetLinesTurnsUntilStateChange[totCount]);
                     } else
                     {
                         nlCount++;
-                        int changeStateTurns = CalculateRouteChangeStateTurns(i, j, false);
-                        UpdateTradeRoutesUI(i, j, false, changeStateTurns);
+
+                        if (planetLinesTurnsUntilStateChange[totCount] == 0 || planetLinesTurnsUntilStateChange[totCount] == 1)
+                            planetLinesTurnsUntilStateChange[totCount] = CalculateRouteChangeStateTurns(i, j, false);
+                        else
+                            planetLinesTurnsUntilStateChange[totCount]--;
+
+                        UpdateTradeRoutesUI(i, j, false, planetLinesTurnsUntilStateChange[totCount]);
                     }
                     Debug.Log("Node link is " + i + " " + j);
+                    totCount++;
                 } 
             }
         }
@@ -162,10 +177,13 @@ public class LineManager
             Planet pb = gm.GetPlanetByIndex(b);
             Color red = new Color(197, 78, 78);
             Color green = new Color(78, 152, 86);
+
+            double distance = Math.Round((double)(Vector3.Distance(pa._GameObject.transform.position, pb._GameObject.transform.position) * 100f), 0);
+
             UI.FindChild("PlanetAIcon").GetComponent<Image>().sprite = pa._Icon;
             UI.FindChild("PlanetBIcon").GetComponent<Image>().sprite = pb._Icon;
-            UI.FindChild("PlanetAName").GetComponent<Text>().text = pa._Name + " " + pa._NameNo;
-            UI.FindChild("PlanetBName").GetComponent<Text>().text = pb._Name + " " + pb._NameNo;
+            UI.FindChild("PlanetAName").GetComponent<Text>().text = pa._Name;
+            UI.FindChild("PlanetBName").GetComponent<Text>().text = pb._Name;
 
             Transform rcc = UI.FindChild("RouteChangeCountdown");
             Transform da = UI.FindChild("DoubleArrow");
@@ -174,14 +192,14 @@ public class LineManager
                 rcc.GetComponent<Text>().color = red;
                 rcc.GetComponent<Text>().text = "CLOSES IN " + turnsUntilChangeState + " TURNS";
                 da.GetComponent<Text>().color = green;
-                da.GetComponent<Text>().text = "<--->";
+                da.GetComponent<Text>().text = "<--->\n" + distance + " mil km";
             }
             else
             {
                 rcc.GetComponent<Text>().color = green;
                 rcc.GetComponent<Text>().text = "OPENS IN " + turnsUntilChangeState + " TURNS";
                 da.GetComponent<Text>().color = red;
-                da.GetComponent<Text>().text = "<-/->";
+                da.GetComponent<Text>().text = "<--->\n" + distance + " mil km";
             }
         }
     }

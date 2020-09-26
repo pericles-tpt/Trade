@@ -64,6 +64,7 @@
      <Compile Include="Assets\Scripts\View\UI\Buttons\GameUI\InfiniteScrollBehaviour.cs" />
      <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark03.cs" />
      <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\WarpTextExample.cs" />
+     <Compile Include="Assets\Scripts\View\UI\Buttons\GameUI\ButtonStateChanger.cs" />
      <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextEventCheck.cs" />
      <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextEventHandler.cs" />
      <Compile Include="Assets\Scripts\Core\Items\InvGrid.cs" />
