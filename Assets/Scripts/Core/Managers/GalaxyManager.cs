@@ -32,6 +32,11 @@ public class GalaxyManager : MonoBehaviour
 
         GenerateStars();
 
+        current.IncrementOrbits();
+
+        lm.DeactivateAllLines();
+        DrawAllPlanetsToAll(TradeLinesOn);
+
     }
 
     private void GenerateStars()
@@ -94,11 +99,26 @@ public class GalaxyManager : MonoBehaviour
         return PlanetSelected;
     }
 
+    public bool LMLineHitsSunCollider(Vector3 A, Vector3 B, int a)
+    {
+        return lm.LineHitsSunCollider(A, B, a);
+    }
+
+    public void LMDeactivateLineStartingAt(Vector3 A)
+    {
+        lm.DeactivateLineStartingAt(A);
+    }
+
+    public void LMActivateLine(Vector3 A, Vector3 B, int a)
+    {
+        lm.ActivateLine(A, B, a);
+    }
+
     // Update is called once per frame
     void Update()
     {
         frameCount++;
-        if (frameCount % 120 == 0)
+        if (frameCount % 480 == 0)
         {
             current.IncrementOrbits();
 

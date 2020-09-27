@@ -134,8 +134,17 @@ public class LineManager
             betweenPlanetLines[i].SetActive(false);
     }
 
+    public void DeactivateLineStartingAt(Vector3 start)
+    {
+        for (int i = 0; i < betweenPlanetLines.Length; i++)
+        {
+            if (betweenPlanetLines[i].GetComponent<LineRenderer>().GetPosition(0) == start)
+                betweenPlanetLines[i].SetActive(false);
+        }
+    }
+
     // CHECKING IF LINES HIT OBJECTS
-    private bool LineHitsSunCollider(Vector3 start, Vector3 end, int startPlanetIndex)
+    public bool LineHitsSunCollider(Vector3 start, Vector3 end, int startPlanetIndex)
     {
         Vector2 direction = new Vector2(end.x - start.x, end.y - start.y);
         RaycastHit2D[] rch = new RaycastHit2D[3];
@@ -199,7 +208,7 @@ public class LineManager
                 rcc.GetComponent<Text>().color = green;
                 rcc.GetComponent<Text>().text = "OPENS IN " + turnsUntilChangeState + " TURNS";
                 da.GetComponent<Text>().color = red;
-                da.GetComponent<Text>().text = "<--->\n" + distance + " mil km";
+                da.GetComponent<Text>().text = "<-/->\n" + distance + " mil km";
             }
         }
     }
