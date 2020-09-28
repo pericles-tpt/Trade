@@ -34,13 +34,24 @@ namespace Assets.Scripts.View.UI.Buttons.GameUI
         private void UpdateUI ()
         {
             float xDist = 0;
+            int pixelToUnits = 36;
+            int barHeight = 48;
             float timeLeft = minutes - ((_mgt * minutes) + (_aqn * minutes) + (_shp * minutes) + (_sls * minutes));
             
+            // UPDATING TEXT UI ELEMENTS
             Text mgtTime = this.transform.FindChild("ManagementTime").gameObject.GetComponent<Text>();
             Text aqnTime = this.transform.FindChild("AcquisitionsTime").gameObject.GetComponent<Text>();
             Text shpTime = this.transform.FindChild("ShipmentsTime").gameObject.GetComponent<Text>();
             Text slsTime = this.transform.FindChild("SalesTime").gameObject.GetComponent<Text>();
 
+            mgtTime.GetComponent<Text>().text = ConvertMinutesToText(minutes * _mgt);
+            aqnTime.GetComponent<Text>().text = ConvertMinutesToText(minutes * _aqn);
+            shpTime.GetComponent<Text>().text = ConvertMinutesToText(minutes * _shp);
+            slsTime.GetComponent<Text>().text = ConvertMinutesToText(minutes * _sls);
+
+            this.transform.FindChild("EndTurnButton").FindChild("EndTurnText").GetComponent<Text>().text = "END TURN\n(" + ConvertMinutesToText(timeLeft) + ")";
+
+            // UPDATING PROGRESS BAR UI ELEMENTS
             RectTransform mgtTimeUsed = (RectTransform)this.transform.FindChild("TimeUsedManagement").transform;
             RectTransform aqnTimeUsed = (RectTransform)this.transform.FindChild("TimeUsedAcquisitions").transform;
             RectTransform shpTimeUsed = (RectTransform)this.transform.FindChild("TimeUsedShipments").transform;
@@ -48,27 +59,21 @@ namespace Assets.Scripts.View.UI.Buttons.GameUI
 
             Vector3 BackgroundBarPos = this.transform.FindChild("TimeLeftBarBackground").transform.position;
 
-            mgtTime.GetComponent<Text>().text = ConvertMinutesToText(minutes * _mgt);
-            aqnTime.GetComponent<Text>().text = ConvertMinutesToText(minutes * _aqn);
-            shpTime.GetComponent<Text>().text = ConvertMinutesToText(minutes * _shp);
-            slsTime.GetComponent<Text>().text = ConvertMinutesToText(minutes * _sls);
-
-            mgtTimeUsed.sizeDelta = new Vector2(barFull * _mgt, 48);
+            mgtTimeUsed.sizeDelta = new Vector2(barFull * _mgt, barHeight);
             mgtTimeUsed.transform.position = BackgroundBarPos;
-            xDist += (barFull * _mgt);
+            xDist += mgtTimeUsed.sizeDelta.x;
 
-            aqnTimeUsed.sizeDelta = new Vector2(barFull * _aqn, 48);
-            aqnTimeUsed.transform.position = new Vector3(BackgroundBarPos.x + xDist, BackgroundBarPos.y, BackgroundBarPos.z);
-            xDist += (barFull * _aqn);
+            aqnTimeUsed.sizeDelta = new Vector2(barFull * _aqn, barHeight);
+            aqnTimeUsed.transform.position = new Vector3(BackgroundBarPos.x + xDist/pixelToUnits, BackgroundBarPos.y, BackgroundBarPos.z);
+            xDist += aqnTimeUsed.sizeDelta.x;
 
-            shpTimeUsed.sizeDelta = new Vector2(barFull * _shp, 48);
-            shpTimeUsed.transform.position = new Vector3(BackgroundBarPos.x + xDist, BackgroundBarPos.y, BackgroundBarPos.z);
-            xDist += (barFull * _shp);
+            shpTimeUsed.sizeDelta = new Vector2(barFull * _shp, barHeight);
+            shpTimeUsed.transform.position = new Vector3(BackgroundBarPos.x + xDist/pixelToUnits, BackgroundBarPos.y, BackgroundBarPos.z);
+            xDist += shpTimeUsed.sizeDelta.x;
 
-            slsTimeUsed.sizeDelta = new Vector2(barFull * _sls, 48);
-            slsTimeUsed.transform.position = new Vector3(BackgroundBarPos.x + xDist, BackgroundBarPos.y, BackgroundBarPos.z);
+            slsTimeUsed.sizeDelta = new Vector2(barFull * _sls, barHeight);
+            slsTimeUsed.transform.position = new Vector3(BackgroundBarPos.x + xDist/pixelToUnits, BackgroundBarPos.y, BackgroundBarPos.z);
 
-            this.transform.FindChild("EndTurnButton").FindChild("EndTurnText").GetComponent<Text>().text = "END TURN\n(" + ConvertMinutesToText(timeLeft) + ")";
         }
 
         private string ConvertMinutesToText(float minutes)

@@ -126,7 +126,7 @@ public class GalaxyManager : MonoBehaviour
             lm.DeactivateAllLines();
             DrawAllPlanetsToAll(TradeLinesOn);
 
-            GameObject.Find("TurnTimePanel").GetComponent<TurnTimeBehaviour>().AdjustUsageBar(false, 0.10f, 0.31f, 0.34f, 0.25f);
+            GameObject.Find("TurnTimePanel").GetComponent<TurnTimeBehaviour>().AdjustUsageBar(false, 0.10f, 0.11f, 0.34f, 0.25f);
 
             frameCount = 0;
         }
