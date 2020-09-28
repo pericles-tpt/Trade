@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections;
-using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using UnityEngine.UI;
 
 namespace Assets.Scripts.View.UI.Buttons.GameUI
@@ -11,7 +10,7 @@ namespace Assets.Scripts.View.UI.Buttons.GameUI
         int minutes = 16 * 60;
         int barFull = 395;
 
-        public void AdjustUsageBar(bool offsetMode = false, float mgt = 0, float aqn = 0, float shp = 0, float sls = 0)
+        public void AdjustUsageBarPercentage(float mgt = 0, float aqn = 0, float shp = 0, float sls = 0, bool offsetMode = false)
         {
             if (offsetMode)
             {
@@ -25,6 +24,27 @@ namespace Assets.Scripts.View.UI.Buttons.GameUI
                 _aqn = aqn;
                 _shp = shp;
                 _sls = sls;
+            }
+
+            UpdateUI();
+
+        }
+
+        public void AdjustUsageBarMinutes(int mgtMins = 0, int aqnMins = 0, int shpMins = 0, int slsMins = 0, bool offsetMode = false)
+        {
+            if (offsetMode)
+            {
+                _mgt += (mgtMins / minutes);
+                _aqn += (aqnMins / minutes);
+                _shp += (shpMins / minutes);
+                _sls += (slsMins / minutes);
+            }
+            else
+            {
+                _mgt = (mgtMins / minutes);
+                _aqn = (aqnMins / minutes);
+                _shp = (shpMins / minutes);
+                _sls = (slsMins / minutes);
             }
 
             UpdateUI();
@@ -49,7 +69,7 @@ namespace Assets.Scripts.View.UI.Buttons.GameUI
             shpTime.GetComponent<Text>().text = ConvertMinutesToText(minutes * _shp);
             slsTime.GetComponent<Text>().text = ConvertMinutesToText(minutes * _sls);
 
-            this.transform.FindChild("EndTurnButton").FindChild("EndTurnText").GetComponent<Text>().text = "END TURN\n(" + ConvertMinutesToText(timeLeft) + ")";
+            this.transform.FindChild("EndTurnButton").FindChild("EndTurnText").GetComponent<Text>().text = "END TURN\n(" + ConvertMinutesToText(timeLeft) + " LEFT)";
 
             // UPDATING PROGRESS BAR UI ELEMENTS
             RectTransform mgtTimeUsed = (RectTransform)this.transform.FindChild("TimeUsedManagement").transform;

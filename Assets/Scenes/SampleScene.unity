@@ -3226,7 +3226,21 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 762344594}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 4035792836436073451, guid: 967f8b233801cc04b96a64d9cf0efdc1,
+          type: 3}
+        m_TargetAssemblyTypeName: Assets.Scripts.View.UI.Buttons.GameUI.EndTurnBehaviour,
+          Assembly-CSharp
+        m_MethodName: NextTurn
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &762344594
 MonoBehaviour:
   m_ObjectHideFlags: 0

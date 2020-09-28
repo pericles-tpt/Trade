@@ -115,20 +115,14 @@ public class GalaxyManager : MonoBehaviour
         lm.ActivateLine(A, B, a);
     }
 
-    // Update is called once per frame
-    void Update()
+    public void GoToNextTurn()
     {
-        frameCount++;
-        if (frameCount % 480 == 0)
-        {
-            current.IncrementOrbits();
+        current.IncrementOrbits();
 
-            lm.DeactivateAllLines();
-            DrawAllPlanetsToAll(TradeLinesOn);
+        lm.DeactivateAllLines();
+        DrawAllPlanetsToAll(TradeLinesOn);
 
-            GameObject.Find("TurnTimePanel").GetComponent<TurnTimeBehaviour>().AdjustUsageBar(false, 0.10f, 0.11f, 0.34f, 0.25f);
-
-            frameCount = 0;
-        }
+        GameObject.Find("TurnTimePanel").GetComponent<TurnTimeBehaviour>().AdjustUsageBarPercentage(0.30f, 0.10f, 0.10f, 0.05f);
     }
+
 }

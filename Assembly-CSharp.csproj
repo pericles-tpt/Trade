@@ -58,7 +58,7 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\Core\Items\Item.cs" />
     <Compile Include="Assets\Scripts\Core\Locations\Planet.cs" />
-    <Compile Include="Assets\Scripts\View\UI\Buttons\GameUI\TurnTimeBehaviour.cs" />
+    <Compile Include="Assets\Scripts\View\UI\Buttons\GameUI\EndTurnBehaviour.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_PhoneNumberValidator.cs" />
     <Compile Include="Assets\Scripts\Core\DP_Factory\PlanetFactory.cs" />
     <Compile Include="Assets\Scripts\View\UI\Buttons\MainMenu\NewGameBehaviour.cs" />
@@ -71,10 +71,12 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextEventHandler.cs" />
     <Compile Include="Assets\Scripts\Core\Items\InvGrid.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01.cs" />
+    <Compile Include="Assets\Scripts\View\UI\Buttons\GameUI\TurnTimeBehaviour.cs" />
     <Compile Include="Assets\Scripts\Core\Locations\Galaxy.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\CameraController.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexJitter.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\ChatController.cs" />
+    <Compile Include="Assets\Scripts\View\UI\Buttons\GameUI\RouteStatusBehaviour.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_ExampleScript_01.cs" />
     <Compile Include="Assets\Scripts\Core\Entities\Company.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\ObjectSpin.cs" />
@@ -109,7 +111,6 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexShakeA.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\EnvMapAnimator.cs" />
     <Compile Include="Assets\Scripts\Core\Items\Ship.cs" />
-    <Compile Include="Assets\Scripts\View\UI\Buttons\GameUI\RouteStatusBehaviour.cs" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap.shader" />
