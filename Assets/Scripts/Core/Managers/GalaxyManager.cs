@@ -18,7 +18,7 @@ public class GalaxyManager : MonoBehaviour
     int frameCount;
 
     // Use this for initialization
-    void Start()
+    void Awake()
     {
         frameCount = 0;
         lm = new LineManager();

@@ -1,20 +1,24 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using Assets.Scripts.Core.Data;
 
 namespace Assets.Scripts.View.UI.Buttons.GameUI
 {
     public class InfiniteScrollBehaviour : MonoBehaviour
     {
         public GameObject itemCard;
-        int totalCards = 50;
+        ItemDataLoader IDL;
+        int totalCards;
         void Start()
         {
             int activeCards = 8;
 
+            IDL = GameObject.Find("Camera").GetComponent<ItemDataLoader>();
+            int noItems = IDL.GetNoItems();
+
             // CREATE ALL THE INSTANCES OF CARDS TO ADD TO THE SCROLL VIEW
-            int[] a = new int[totalCards];
-            addCardsToView(a, a.Length);
+            addCardsToView(noItems);
 
             // DEACTIVATES CARDS IF ITEMS IN LIST IS < 50
             deactivateCards(activeCards);
@@ -25,11 +29,11 @@ namespace Assets.Scripts.View.UI.Buttons.GameUI
 
         }
 
-        void addCardsToView(int[] arr, int noCards)
+        void addCardsToView(int noItems)
         {
             GameObject newCard;
 
-            for (int i = 0; i < noCards; i++)
+            for (int i = 0; i < noItems; i++)
             {
                 newCard = Instantiate(itemCard, new Vector3(0,0,0), Quaternion.identity);
                 newCard.transform.SetParent(this.GetComponent<ScrollRect>().content);
@@ -40,6 +44,12 @@ namespace Assets.Scripts.View.UI.Buttons.GameUI
                 scale.Set(1, 1, 1);
                 newCard.transform.localScale = scale;
                 newCard.name = "itemCard_" + i;
+
+                Transform ncTransform = newCard.transform;
+                ncTransform.FindChild("ItemName").GetComponent<Text>().text = IDL.GetItemName(i);
+                ncTransform.FindChild("ItemLocation").GetComponent<Text>().text = IDL.GetItemFound(i)[0].ToString();
+                ncTransform.FindChild("ItemCategory").GetComponent<Text>().text = IDL.GetItemCategory(i);
+                ncTransform.FindChild("ItemValue").GetComponent<Text>().text = IDL.GetItemBasePrice(i).ToString();
 
             }
 
