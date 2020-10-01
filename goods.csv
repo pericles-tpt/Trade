@@ -1,22 +1,22 @@
-Index;Name;Components;Category;Found
-0;Carbon;-1;Element;2
-1;Oxygen;-1;Element;3
-2;Hydrogen;-1;Element;99
-3;Gold;-1;Element;6
-4;Iron;-1;Element;99
-5;Silicon;-1;Element;99
-6;Oil;-1;Element;345
-7;Apple;0, 1;Food;-1
-8;Steel;0, 4;Alloy;-1
-9;Water;1,2;Water?;-1
-10;Engine;4,8;Alloy;-1
-11;Small Cruiser;4,8,9;Ship;-1
-12;Wood;0,1,2;Plant;-1
-13;Microchip;3,5;Electronics;-1
-14;Plastic;6;Synthetic;-1
-15;Petrol;6;Fossil Fuels;-1
-16;Hemp;0,6;Plant;-1
-17;Computer;13,14;Electronics;-1
-18;Cotton;12,16;Fabric;-1
-19;Shirt;18;Clothing;-1
-20;Pants;18;Clothing;-1
+﻿Index;Name;Components;Category;Found;Mass
+0;Carbon;-1;Element;2;1000
+1;Oxygen;-1;Element;3;1000
+2;Hydrogen;-1;Element;99;1000
+3;Gold;-1;Element;6;1000
+4;Iron;-1;Element;99;1000
+5;Silicon;-1;Element;99;1000
+6;Oil;-1;Element;345;1000
+7;Apple;0, 1;Food;-1;1000
+8;Steel;0, 4;Alloy;-1;1000
+9;Water;1,2;Water?;-1;1000
+10;Engine;4,8;Alloy;-1;500000
+11;Small Cruiser;4,8,9;Ship;-1;50000000
+12;Wood;0,1,2;Plant;-1;1000
+13;Microchip;3,5;Electronics;-1;1000
+14;Plastic;6;Synthetic;-1;1000
+15;Petrol;6;Fossil Fuels;-1;1000
+16;Hemp;0,6;Plant;-1;1000
+17;Computer;13,14;Electronics;-1;2500
+18;Cotton;12,16;Fabric;-1;1000
+19;Shirt;18;Clothing;-1;100
+20;Pants;18;Clothing;-1;100

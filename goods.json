@@ -1,0 +1,170 @@
+[
+	{
+		"index": 0,
+		"name": "Carbon",
+		"components": [-1],
+		"category": "Element",
+		"found": [2],
+		"mass": 1000
+	},
+	{
+		"index": 1,
+		"name": "Oxygen",
+		"components": [-1],
+		"category": "Element",
+		"found": [3],
+		"mass": 1000
+	},
+	{
+		"index": 2,
+		"name": "Hydrogen",
+		"components": [-1],
+		"category": "Element",
+		"found": [99],
+		"mass": 1000
+	},
+	{
+		"index": 3,
+		"name": "Gold",
+		"components": [-1],
+		"category": "Element",
+		"found": [6],
+		"mass": 1000
+	},
+	{
+		"index": 4,
+		"name": "Iron",
+		"components": [-1],
+		"category": "Element",
+		"found": [99],
+		"mass": 1000
+	},
+	{
+		"index": 5,
+		"name": "Silicon",
+		"components": [-1],
+		"category": "Element",
+		"found": [99],
+		"mass": 1000
+	},
+	{
+		"index": 6,
+		"name": "Oil",
+		"components": [-1],
+		"category": "Element",
+		"found": [3,4,5],
+		"mass": 1000
+	},
+	{
+		"index": 7,
+		"name": "Apple",
+		"components": [0],
+		"category": "Food",
+		"found": [-1],
+		"mass": 1000
+	},
+	{
+		"index": 8,
+		"name": "Steel",
+		"components": [0,4],
+		"category": "Alloy",
+		"found": [-1],
+		"mass": 1000
+	},
+	{
+		"index": 9,
+		"name": "Water",
+		"components": [1,2],
+		"category": "Water",
+		"found": [99],
+		"mass": 1000
+	},
+	{
+		"index": 10,
+		"name": "Engine",
+		"components": [4,8],
+		"category": "Mechanical",
+		"found": [-1],
+		"mass": 500000
+	},
+	{
+		"index": 11,
+		"name": "Small Cruiser",
+		"components": [-1],
+		"category": "SVehicle",
+		"found": [99],
+		"mass": 1000
+	},
+	{
+		"index": 12,
+		"name": "Wood",
+		"components": [0,1,2],
+		"category": "Plant",
+		"found": [-1],
+		"mass": 1000
+	},
+	{
+		"index": 13,
+		"name": "Microchip",
+		"components": [3,5],
+		"category": "Electronics",
+		"found": [-1],
+		"mass": 1000
+	},
+	{
+		"index": 14,
+		"name": "Plastic",
+		"components": [6],
+		"category": "Synthetic",
+		"found": [-1],
+		"mass": 1000
+	},
+	{
+		"index": 15,
+		"name": "Petrol",
+		"components": [6],
+		"category": "Fossil Fuels",
+		"found": [-1],
+		"mass": 1000
+	},
+	{
+		"index": 16,
+		"name": "Hemp",
+		"components": [0,6],
+		"category": "Plant",
+		"found": [-1],
+		"mass": 1000
+	},
+	{
+		"index": 17,
+		"name": "Computer",
+		"components": [13,14],
+		"category": "Electronics",
+		"found": [-1],
+		"mass": 2500
+	},
+	{
+		"index": 18,
+		"name": "Cotton",
+		"components": [12,16],
+		"category": "Fabric",
+		"found": [-1],
+		"mass": 1000
+	},
+	{
+		"index": 19,
+		"name": "Shirt",
+		"components": [18],
+		"category": "Clothing",
+		"found": [-1],
+		"mass": 100
+	},
+	{
+		"index": 20,
+		"name": "Pants",
+		"components": [18],
+		"category": "Clothing",
+		"found": [-1],
+		"mass": 100
+	}
+]

@@ -110,6 +110,12 @@ public class GalaxyManager : MonoBehaviour
         lm.DeactivateLineStartingAt(A);
     }
 
+    public void LMDeactivateAllLines()
+    {
+        lm.DeactivateAllLines();
+    }
+
+
     public void LMActivateLine(Vector3 A, Vector3 B, int a)
     {
         lm.ActivateLine(A, B, a);
