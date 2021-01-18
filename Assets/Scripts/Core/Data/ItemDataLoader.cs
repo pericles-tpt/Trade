@@ -72,6 +72,8 @@ namespace Assets.Scripts.Core.Data
             public int[] found;
             public int mass;
             public int bprice;
+            public int[] companiesBuy;
+            public int[] companiesSell;
         }
 
     }

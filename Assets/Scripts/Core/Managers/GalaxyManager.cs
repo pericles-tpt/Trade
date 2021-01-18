@@ -12,6 +12,7 @@ public class GalaxyManager : MonoBehaviour
 
     public int NumberOfStars;
     public int SmallToBigStarsRatio;
+    public int noPlanets;
 
     public bool TradeLinesOn = false;
 
@@ -23,7 +24,7 @@ public class GalaxyManager : MonoBehaviour
         frameCount = 0;
         lm = new LineManager();
 
-        int noPlanets = 4;
+        noPlanets = 4;
         current = new Galaxy(noPlanets);
 
         lm.CreateGOBetweenPlanets(noPlanets);

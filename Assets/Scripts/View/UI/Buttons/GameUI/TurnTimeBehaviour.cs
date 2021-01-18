@@ -59,10 +59,10 @@ namespace Assets.Scripts.View.UI.Buttons.GameUI
             float timeLeft = minutes - ((_mgt * minutes) + (_aqn * minutes) + (_shp * minutes) + (_sls * minutes));
             
             // UPDATING TEXT UI ELEMENTS
-            Text mgtTime = this.transform.FindChild("ManagementTime").gameObject.GetComponent<Text>();
-            Text aqnTime = this.transform.FindChild("AcquisitionsTime").gameObject.GetComponent<Text>();
-            Text shpTime = this.transform.FindChild("ShipmentsTime").gameObject.GetComponent<Text>();
-            Text slsTime = this.transform.FindChild("SalesTime").gameObject.GetComponent<Text>();
+            Text mgtTime = this.transform.FindChild("TimeLegend").transform.FindChild("ManagementTime").gameObject.GetComponent<Text>();
+            Text aqnTime = this.transform.FindChild("TimeLegend").transform.FindChild("AcquisitionsTime").gameObject.GetComponent<Text>();
+            Text shpTime = this.transform.FindChild("TimeLegend").transform.FindChild("ShipmentsTime").gameObject.GetComponent<Text>();
+            Text slsTime = this.transform.FindChild("TimeLegend").transform.FindChild("SalesTime").gameObject.GetComponent<Text>();
 
             mgtTime.GetComponent<Text>().text = ConvertMinutesToText(minutes * _mgt);
             aqnTime.GetComponent<Text>().text = ConvertMinutesToText(minutes * _aqn);
@@ -72,12 +72,12 @@ namespace Assets.Scripts.View.UI.Buttons.GameUI
             this.transform.FindChild("EndTurnButton").FindChild("EndTurnText").GetComponent<Text>().text = "END TURN\n(" + ConvertMinutesToText(timeLeft) + " LEFT)";
 
             // UPDATING PROGRESS BAR UI ELEMENTS
-            RectTransform mgtTimeUsed = (RectTransform)this.transform.FindChild("TimeUsedManagement").transform;
-            RectTransform aqnTimeUsed = (RectTransform)this.transform.FindChild("TimeUsedAcquisitions").transform;
-            RectTransform shpTimeUsed = (RectTransform)this.transform.FindChild("TimeUsedShipments").transform;
-            RectTransform slsTimeUsed = (RectTransform)this.transform.FindChild("TimeUsedSales").transform;
+            RectTransform mgtTimeUsed = (RectTransform)this.transform.FindChild("TimeBars").transform.FindChild("TimeUsedManagement").transform;
+            RectTransform aqnTimeUsed = (RectTransform)this.transform.FindChild("TimeBars").transform.FindChild("TimeUsedAcquisitions").transform;
+            RectTransform shpTimeUsed = (RectTransform)this.transform.FindChild("TimeBars").transform.FindChild("TimeUsedShipments").transform;
+            RectTransform slsTimeUsed = (RectTransform)this.transform.FindChild("TimeBars").transform.FindChild("TimeUsedSales").transform;
 
-            Vector3 BackgroundBarPos = this.transform.FindChild("TimeLeftBarBackground").transform.position;
+            Vector3 BackgroundBarPos = this.transform.FindChild("TimeBars").transform.FindChild("TimeLeftBarBackground").transform.position;
 
             mgtTimeUsed.sizeDelta = new Vector2(barFull * _mgt, barHeight);
             mgtTimeUsed.transform.position = BackgroundBarPos;
